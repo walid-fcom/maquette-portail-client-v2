@@ -16,6 +16,9 @@ Partie d'une copie conforme de la maquette du portail client le 2 août 2026.
 La V1 vit dans un autre dépôt, `walid-fcom/maquette-portail-client`, avec son
 propre projet Netlify — les deux ne se touchent jamais.
 
+Un `git push` sur `main` **de ce dépôt** reconstruit et republie le site. Rien
+à lancer à la main.
+
 **La V2 existe aussi dans le dépôt V1**, sous les mêmes noms de fichiers
 (`maquette_front_portail_client_v2.html`, `build_netlify_v2.py`). C'est une
 duplication assumée : les deux copies ne se synchronisent pas toutes seules.
@@ -91,19 +94,19 @@ dashboard 33 publié pour l'embed.
 | Functions directory | `functions` |
 | Variables d'env. | `METABASE_EMBED_SECRET` |
 
-### Reste à faire
+Le rattachement GitHub passe par une **clé de déploiement** en lecture seule
+sur ce dépôt plus un webhook vers `https://api.netlify.com/hooks/github`, comme
+les autres projets. `METABASE_EMBED_SECRET` est posée en contexte production,
+en variable secrète : elle ne se relit pas, elle se réécrit.
 
-1. **`METABASE_EMBED_SECRET`** — à recopier depuis le projet Netlify de la V1
-   (Site configuration → Environment variables). Sans elle,
-   `/api/metabase-guest-token` renvoie 500 et la vue « Tableau de bord » affiche
-   « momentanément indisponible ». Le reste de la maquette fonctionne.
-2. **Rattacher ce dépôt au projet Netlify** pour le déploiement continu, puis
-   renseigner les réglages du tableau ci-dessus. Tant que ce n'est pas fait, la
-   publication passe uniquement par le CLI.
+Attention si tu recrées les variables : `netlify env:set` n'a **pas** d'option
+`--site`. Il agit sur le projet lié au dossier courant — il faut un
+`netlify link --id <site>` d'abord, sinon la commande échoue sur « No project id
+found ». Et `--secret` exige `--context production`.
 
 ## Déployer au CLI
 
-Aujourd'hui, le seul moyen de publier :
+Utile pour un correctif urgent, sans attendre la CI :
 
 ```bash
 python3 build_netlify_v2.py
