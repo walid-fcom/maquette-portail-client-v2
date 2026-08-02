@@ -3865,7 +3865,7 @@
   function renseigner(selecteur,texte){var cible=document.querySelector(selecteur);if(cible&&texte)cible.textContent=texte;}
   function rendreHistoriqueSimple(id,dateCreation,contactClient,dateStatut,statut){
     var historique=document.getElementById(id);if(!historique)return;
-    historique.innerHTML='<section class="card"><ol class="sourcing-historique"><li><time>'+dateCreation+' · 09:30</time><i></i><div><b>Besoin créé</b><p>Créé par le contact client : '+contactClient+'.</p></div></li><li><time>'+dateStatut+' · 14:15</time><i></i><div><b>Statut modifié</b><p>Nouveau statut : '+statut+'.</p></div></li></ol></section>';
+    historique.innerHTML='<section class="card"><ol class="sourcing-historique"><li><time>'+dateCreation+' · 09:30</time><i></i><div><b>Besoin créé</b><p>Créé par le contact client : '+contactClient+'. Référence Freelance.com : E2025048719.</p></div></li><li><time>'+dateStatut+' · 14:15</time><i></i><div><b>Statut modifié</b><p>Nouveau statut : '+statut+'.</p></div></li></ol></section>';
   }
   function renseignerTableCandidatures(candidats,gele,libelleStatut){
     var corps=document.querySelector('#table-candidatures-besoin tbody'),fiches=window.__candidatFiches||{},profilsATF={
