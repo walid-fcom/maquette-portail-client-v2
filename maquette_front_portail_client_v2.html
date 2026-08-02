@@ -1249,9 +1249,11 @@
      bas, au meme format que Prestations, Documents et Conformite : ne pas y
      ajouter de scrollbar-width ni de scrollbar-color, Chromium ignorerait
      alors toutes les regles ::-webkit-scrollbar. */
-  #v-besoins [role="tabpanel"] table{min-width:1560px}
-  #v-besoins [role="tabpanel"] th{white-space:nowrap}
-  #v-besoins [role="tabpanel"] th:first-child,#v-besoins [role="tabpanel"] td:first-child{min-width:236px}
+  #v-besoins .besoin-table{min-width:2040px}
+  #v-besoins .besoin-table th{white-space:nowrap}
+  #v-besoins .besoin-table td[data-col="besoin"]{min-width:236px}
+  #v-besoins .type-besoin{white-space:nowrap}
+  #v-besoins .type-besoin{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#66665f}
   #v-besoins #pb-forfait table th:last-child,#v-besoins #pb-forfait table td:last-child{display:table-cell!important}
   #v-besoins #pb-rm table th:last-child,#v-besoins #pb-rm table td:last-child{display:table-cell!important}
   #v-besoins .badge.b-bleu{background:#eff6ff;color:#1d4ed8}
@@ -2317,77 +2319,38 @@
             <button class="btn presta-nouveau" id="ouvrir-modale"><svg class="ic s"><use href="#i-plus"/></svg>Nouveau besoin</button>
           </div>
           <div class="barre-besoins">
-            <div class="tabs seg" role="tablist" aria-label="Type de besoin">
-              <button class="tab" role="tab" id="tb-at" aria-selected="true" aria-controls="pb-at">AT <span class="n">6</span></button>
-              <button class="tab" role="tab" id="tb-atf" aria-selected="false" aria-controls="pb-atf">ATF <span class="n">1</span></button>
-              <button class="tab" role="tab" id="tb-forfait" aria-selected="false" aria-controls="pb-forfait">Forfait <span class="n">6</span></button>
-              <button class="tab" role="tab" id="tb-rm" aria-selected="false" aria-controls="pb-rm">RM <span class="n">3</span></button>
+            <div class="outils-besoins">
+              <label class="sr-only" for="rech-besoin">Rechercher un besoin</label>
+              <span class="champ-rech"><svg class="ic s" aria-hidden="true"><use href="#i-loupe"/></svg><input id="rech-besoin" type="search" placeholder="Rechercher un besoin..."></span>
+              <label class="sr-only" for="f-statut">Filtrer par statut</label>
+              <select id="f-statut" class="sel-statut"><option>Tous les statuts</option></select>
             </div>
           </div>
-          <div id="pb-at" role="tabpanel" aria-labelledby="tb-at">
-            <div class="twrap" role="region" aria-label="Tableau des besoins en assistance technique" tabindex="0">
+          <div class="twrap" role="region" aria-label="Tableau des besoins" tabindex="0">
             <table class="besoin-table">
-              <thead><tr><th>Besoin</th><th>Marché</th><th>Référence client - Opérationnel</th><th>Localisation</th><th class="num">TJM</th><th>Statut</th><th class="num">Candidatures</th><th>Partenaire pressenti</th><th class="num">Montant total</th><th class="num">Publiée le</th><th><span class="sr-only">Détail</span></th></tr></thead>
+              <thead><tr><th>Type</th><th>Besoin</th><th>Marché</th><th>Référence client - Opérationnel</th><th>Localisation</th><th class="num">TJM</th><th>Statut</th><th>Responsable</th><th class="num">Candidatures</th><th>Ressource</th><th>Poste</th><th>Partenaire pressenti</th><th class="num">Montant total</th><th class="num">Publiée le</th><th>Détail</th></tr></thead>
               <tbody>
-                <tr data-responsable="C. Dupont" data-date="11/07/2026" data-candidats="Léa Morel" data-etape="6"><td><div class="c-nom">Développeur mobile Flutter — app agents terrain</div></td><td>AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0311</td><td>Lyon</td><td class="num">540 €</td><td><span class="badge ok">Démarrage de la mission</span></td><td class="num">1</td><td>—</td><td class="num">108 k€</td><td class="num">11/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr data-responsable="C. Dupont" data-date="10/07/2026" data-candidats="Marta Lopez|Chi N'Guyen" data-etape="1"><td><div class="c-nom">UX designer — parcours de souscription</div></td><td>AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0308</td><td>Paris</td><td class="num">520 €</td><td><span class="badge b-neutre">Analyse du besoin</span></td><td class="num">2</td><td>—</td><td class="num">62 k€</td><td class="num">10/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr class="ligne-attendu" data-responsable="M. Vasseur" data-date="08/07/2026" data-candidats="Elsa Weber|Marc Delon" data-etape="4"><td><div class="c-nom">Consultant cybersécurité — audit ISO 27001</div></td><td>Cybersécurité</td><td class="ref-client">SEC-2026-0074</td><td>Paris</td><td class="num">700 €</td><td><span class="badge b-violet">Validation du candidat</span></td><td class="num">2</td><td>—</td><td class="num">63 k€</td><td class="num">08/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr data-responsable="C. Dupont" data-date="06/07/2026" data-candidats="Julien Berthier" data-etape="5"><td><div class="c-nom">Chef de projet migration SI finance</div></td><td>AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0297</td><td>Nantes</td><td class="num">680 €</td><td><span class="badge b-indigo">Négociation financière</span></td><td class="num">1</td><td>—</td><td class="num">122 k€</td><td class="num">06/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr class="ligne-attendu" data-responsable="C. Dupont" data-date="09/07/2026" data-candidats="Nadia Belkacem|Simon Carvalho" data-etape="2"><td><div class="c-nom">Data engineer — pipeline de facturation</div></td><td>Accord-cadre Data &amp; IA</td><td class="ref-client">DATA-2026-0129</td><td>Paris</td><td class="num">600 €</td><td><span class="badge b-bleu">Proposition des candidats</span></td><td class="num">2</td><td>—</td><td class="num">96 k€</td><td class="num">09/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr class="ligne-attendu" data-responsable="M. Vasseur" data-date="04/07/2026" data-candidats="Paul Fabre|Inès Martin" data-etape="2"><td><div class="c-nom">Architecte cloud AWS — refonte hébergement</div></td><td>Infra &amp; Cloud</td><td class="ref-client">INFRA-2026-0186</td><td>Paris</td><td class="num">750 €</td><td><span class="badge b-bleu">Proposition des candidats</span></td><td class="num">2</td><td>—</td><td class="num">105 k€</td><td class="num">04/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">Forfait</td><td data-col="besoin"><div class="c-nom">Audit RGPD du SI clients</div></td><td data-col="marche">Études &amp; Conseil</td><td class="ref-client">CONS-2026-0052</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">—</td><td><span class="badge b-neutre">Non qualifiée</span></td><td>M. Vasseur</td><td class="num">—</td><td>—</td><td>—</td><td>—</td><td class="num">45 k€</td><td class="num" data-col="date">17/07/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin audit RGPD">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr data-responsable="C. Dupont" data-date="15/07/2026" data-candidats="Sofia Benali|Lucas Perrin" data-etape="2"><td class="type-besoin">ATF</td><td data-col="besoin"><div class="c-nom">Consultant data gouvernance — cadrage plateforme décisionnelle</div></td><td data-col="marche">ATF Data &amp; IA 2026-29</td><td class="ref-client">DATA-2026-0141</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">680 €</td><td><span class="badge b-bleu">Proposition des candidats</span></td><td>C. Dupont</td><td class="num">2</td><td>—</td><td>—</td><td>—</td><td class="num">88 k€</td><td class="num" data-col="date">15/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">Forfait</td><td data-col="besoin"><div class="c-nom">Refonte intranet DSI</div></td><td data-col="marche">AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0289</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">—</td><td><span class="badge b-bleu">Qualifiée en amont</span></td><td>C. Dupont</td><td class="num">—</td><td>—</td><td>—</td><td>Alenia Conseil</td><td class="num">120 k€</td><td class="num" data-col="date">15/07/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin refonte intranet">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">RM</td><td data-col="besoin"><div class="c-nom">Consultant SAP FI/CO — bascule TMA finance</div></td><td data-col="marche">AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0302</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">650 €</td><td><span class="badge b-bleu">Solution identifiée</span></td><td>—</td><td>—</td><td><button type="button" class="avatar avatar-res" data-nom="Pierre Morel" aria-label="Ressource : Pierre Morel">PM</button></td><td>Consultant SAP FI/CO</td><td>—</td><td class="num">137 k€</td><td class="num" data-col="date">12/07/2026</td><td><a class="lien" href="#" data-vue="portage-detail" aria-label="Voir le détail du besoin consultant SAP">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr data-responsable="C. Dupont" data-date="11/07/2026" data-candidats="Léa Morel" data-etape="6"><td class="type-besoin">AT</td><td data-col="besoin"><div class="c-nom">Développeur mobile Flutter — app agents terrain</div></td><td data-col="marche">AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0311</td><td data-col="lieu">Lyon</td><td class="num" data-col="tjm">540 €</td><td><span class="badge ok">Démarrage de la mission</span></td><td>C. Dupont</td><td class="num">1</td><td>—</td><td>—</td><td>—</td><td class="num">108 k€</td><td class="num" data-col="date">11/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr data-responsable="C. Dupont" data-date="10/07/2026" data-candidats="Marta Lopez|Chi N'Guyen" data-etape="1"><td class="type-besoin">AT</td><td data-col="besoin"><div class="c-nom">UX designer — parcours de souscription</div></td><td data-col="marche">AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0308</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">520 €</td><td><span class="badge b-neutre">Analyse du besoin</span></td><td>C. Dupont</td><td class="num">2</td><td>—</td><td>—</td><td>—</td><td class="num">62 k€</td><td class="num" data-col="date">10/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">Forfait</td><td data-col="besoin"><div class="c-nom">Migration data warehouse</div></td><td data-col="marche">Accord-cadre Data &amp; IA</td><td class="ref-client">DATA-2026-0118</td><td data-col="lieu">Lyon</td><td class="num" data-col="tjm">—</td><td><span class="badge b-bleu">Qualifiée en aval</span></td><td>C. Dupont</td><td class="num">—</td><td>—</td><td>—</td><td>Datalys</td><td class="num">240 k€</td><td class="num" data-col="date">10/07/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin migration data warehouse">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr class="ligne-attendu" data-responsable="C. Dupont" data-date="09/07/2026" data-candidats="Nadia Belkacem|Simon Carvalho" data-etape="2"><td class="type-besoin">AT</td><td data-col="besoin"><div class="c-nom">Data engineer — pipeline de facturation</div></td><td data-col="marche">Accord-cadre Data &amp; IA</td><td class="ref-client">DATA-2026-0129</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">600 €</td><td><span class="badge b-bleu">Proposition des candidats</span></td><td>C. Dupont</td><td class="num">2</td><td>—</td><td>—</td><td>—</td><td class="num">96 k€</td><td class="num" data-col="date">09/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr class="ligne-attendu" data-responsable="M. Vasseur" data-date="08/07/2026" data-candidats="Elsa Weber|Marc Delon" data-etape="4"><td class="type-besoin">AT</td><td data-col="besoin"><div class="c-nom">Consultant cybersécurité — audit ISO 27001</div></td><td data-col="marche">Cybersécurité</td><td class="ref-client">SEC-2026-0074</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">700 €</td><td><span class="badge b-violet">Validation du candidat</span></td><td>M. Vasseur</td><td class="num">2</td><td>—</td><td>—</td><td>—</td><td class="num">63 k€</td><td class="num" data-col="date">08/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr data-responsable="C. Dupont" data-date="06/07/2026" data-candidats="Julien Berthier" data-etape="5"><td class="type-besoin">AT</td><td data-col="besoin"><div class="c-nom">Chef de projet migration SI finance</div></td><td data-col="marche">AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0297</td><td data-col="lieu">Nantes</td><td class="num" data-col="tjm">680 €</td><td><span class="badge b-indigo">Négociation financière</span></td><td>C. Dupont</td><td class="num">1</td><td>—</td><td>—</td><td>—</td><td class="num">122 k€</td><td class="num" data-col="date">06/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">RM</td><td data-col="besoin"><div class="c-nom">Expert réseaux — extension couverture agences</div></td><td data-col="marche">Infra &amp; Cloud</td><td class="ref-client">INFRA-2026-0179</td><td data-col="lieu">Lyon</td><td class="num" data-col="tjm">580 €</td><td><span class="badge b-indigo">Négociation financière</span></td><td>—</td><td>—</td><td><button type="button" class="avatar avatar-res" data-nom="Anaïs Girard" aria-label="Ressource : Anaïs Girard">AG</button></td><td>Expert réseaux</td><td>—</td><td class="num">104 k€</td><td class="num" data-col="date">05/07/2026</td><td><a class="lien" href="#" data-vue="portage-detail" aria-label="Voir le détail du besoin expert réseaux">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr class="ligne-attendu" data-responsable="M. Vasseur" data-date="04/07/2026" data-candidats="Paul Fabre|Inès Martin" data-etape="2"><td class="type-besoin">AT</td><td data-col="besoin"><div class="c-nom">Architecte cloud AWS — refonte hébergement</div></td><td data-col="marche">Infra &amp; Cloud</td><td class="ref-client">INFRA-2026-0186</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">750 €</td><td><span class="badge b-bleu">Proposition des candidats</span></td><td>M. Vasseur</td><td class="num">2</td><td>—</td><td>—</td><td>—</td><td class="num">105 k€</td><td class="num" data-col="date">04/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">Forfait</td><td data-col="besoin"><div class="c-nom">Application mobile agents</div></td><td data-col="marche">AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0274</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">—</td><td><span class="badge b-violet">Proposition envoyée</span></td><td>C. Dupont</td><td class="num">—</td><td>—</td><td>—</td><td>Nexworks</td><td class="num">180 k€</td><td class="num" data-col="date">04/07/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin application mobile agents">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">Forfait</td><td data-col="besoin"><div class="c-nom">Refonte SI facturation</div></td><td data-col="marche">Infra &amp; Cloud</td><td class="ref-client">INFRA-2026-0163</td><td data-col="lieu">Nantes</td><td class="num" data-col="tjm">—</td><td><span class="badge b-cyan">Soutenance effectuée</span></td><td>M. Vasseur</td><td class="num">—</td><td>—</td><td>—</td><td>Cloudéris</td><td class="num">320 k€</td><td class="num" data-col="date">26/06/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin refonte SI facturation">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">RM</td><td data-col="besoin"><div class="c-nom">Formateur cybersécurité — sensibilisation phishing</div></td><td data-col="marche">Cybersécurité</td><td class="ref-client">SEC-2026-0068</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">520 €</td><td><span class="badge ok">Démarrage</span></td><td>—</td><td>—</td><td><button type="button" class="avatar avatar-res" data-nom="Sarah Nguyen" aria-label="Ressource : Sarah Nguyen">SN</button></td><td>Formateur cybersécurité</td><td>—</td><td class="num">31 k€</td><td class="num" data-col="date">22/06/2026</td><td><a class="lien" href="#" data-vue="portage-detail" aria-label="Voir le détail du besoin formateur cybersécurité">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
+                <tr><td class="type-besoin">Forfait</td><td data-col="besoin"><div class="c-nom">Plateforme IoT compteurs</div></td><td data-col="marche">Infra &amp; Cloud</td><td class="ref-client">INFRA-2026-0155</td><td data-col="lieu">Paris</td><td class="num" data-col="tjm">—</td><td><span class="badge ok">Gagnée</span></td><td>M. Vasseur</td><td class="num">—</td><td>—</td><td>—</td><td>Novatim</td><td class="num">410 k€</td><td class="num" data-col="date">18/06/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin plateforme IoT">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
               </tbody>
             </table>
-            </div>
           </div>
-          <div id="pb-atf" role="tabpanel" aria-labelledby="tb-atf" hidden>
-            <div class="twrap" role="region" aria-label="Tableau des besoins ATF" tabindex="0">
-            <table class="besoin-table">
-              <thead><tr><th>Besoin</th><th>Marché</th><th>Référence client - Opérationnel</th><th>Localisation</th><th class="num">TJM</th><th>Statut</th><th class="num">Candidatures</th><th>Partenaire pressenti</th><th class="num">Montant total</th><th class="num">Publiée le</th><th><span class="sr-only">Détail</span></th></tr></thead>
-              <tbody>
-                <tr data-responsable="C. Dupont" data-date="15/07/2026" data-candidats="Sofia Benali|Lucas Perrin" data-etape="2"><td><div class="c-nom">Consultant data gouvernance — cadrage plateforme décisionnelle</div></td><td>ATF Data &amp; IA 2026-29</td><td class="ref-client">DATA-2026-0141</td><td>Paris</td><td class="num">680 €</td><td><span class="badge b-bleu">Proposition des candidats</span></td><td class="num">2</td><td>—</td><td class="num">88 k€</td><td class="num">15/07/2026</td><td class="num"><a class="lien" href="#" data-vue="besoin-detail">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-              </tbody>
-            </table>
-            </div>
-          </div>
-          <div id="pb-forfait" role="tabpanel" aria-labelledby="tb-forfait" hidden>
-            <div class="twrap" role="region" aria-label="Tableau des besoins au forfait" tabindex="0">
-            <table>
-              <thead><tr><th>Besoin</th><th>Marché</th><th>Référence client - Opérationnel</th><th>Statut</th><th>Responsable</th><th>Localisation</th><th class="num">TJM</th><th class="num">Candidatures</th><th>Partenaire pressenti</th><th class="num">Montant total</th><th class="num">Publiée le</th><th class="num">Détail</th></tr></thead>
-              <tbody>
-                <tr><td><div class="c-nom">Audit RGPD du SI clients</div></td><td>Études &amp; Conseil</td><td class="ref-client">CONS-2026-0052</td>
-                  <td><span class="badge b-neutre">Non qualifiée</span></td><td>M. Vasseur</td><td>Paris</td><td class="num">—</td><td class="num">—</td><td>—</td><td class="num">45 k€</td><td class="num">17/07/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin audit RGPD">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr><td><div class="c-nom">Refonte intranet DSI</div></td><td>AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0289</td>
-                  <td><span class="badge b-bleu">Qualifiée en amont</span></td><td>C. Dupont</td><td>Paris</td><td class="num">—</td><td class="num">—</td><td>Alenia Conseil</td><td class="num">120 k€</td><td class="num">15/07/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin refonte intranet">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr><td><div class="c-nom">Migration data warehouse</div></td><td>Accord-cadre Data &amp; IA</td><td class="ref-client">DATA-2026-0118</td>
-                  <td><span class="badge b-bleu">Qualifiée en aval</span></td><td>C. Dupont</td><td>Lyon</td><td class="num">—</td><td class="num">—</td><td>Datalys</td><td class="num">240 k€</td><td class="num">10/07/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin migration data warehouse">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr><td><div class="c-nom">Application mobile agents</div></td><td>AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0274</td>
-                  <td><span class="badge b-violet">Proposition envoyée</span></td><td>C. Dupont</td><td>Paris</td><td class="num">—</td><td class="num">—</td><td>Nexworks</td><td class="num">180 k€</td><td class="num">04/07/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin application mobile agents">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr><td><div class="c-nom">Refonte SI facturation</div></td><td>Infra &amp; Cloud</td><td class="ref-client">INFRA-2026-0163</td>
-                  <td><span class="badge b-cyan">Soutenance effectuée</span></td><td>M. Vasseur</td><td>Nantes</td><td class="num">—</td><td class="num">—</td><td>Cloudéris</td><td class="num">320 k€</td><td class="num">26/06/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin refonte SI facturation">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr><td><div class="c-nom">Plateforme IoT compteurs</div></td><td>Infra &amp; Cloud</td><td class="ref-client">INFRA-2026-0155</td>
-                  <td><span class="badge ok">Gagnée</span></td><td>M. Vasseur</td><td>Paris</td><td class="num">—</td><td class="num">—</td><td>Novatim</td><td class="num">410 k€</td><td class="num">18/06/2026</td><td class="num"><a class="lien" href="#" data-vue="forfait-detail" aria-label="Voir le détail du besoin plateforme IoT">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-              </tbody>
-            </table>
-            </div>
-          </div>
-          <div id="pb-rm" role="tabpanel" aria-labelledby="tb-rm" hidden>
-            <div class="twrap" role="region" aria-label="Tableau des besoins en portage" tabindex="0">
-            <table>
-              <thead><tr><th>Besoin</th><th>Marché</th><th>Référence client - Opérationnel</th><th>Localisation</th><th class="num">TJM</th><th>Ressource</th><th>Poste</th><th>Statut</th><th>Partenaire pressenti</th><th class="num">Montant total</th><th class="num">Publiée le</th><th>Détail</th></tr></thead>
-              <tbody>
-                <tr><td><div class="c-nom">Consultant SAP FI/CO — bascule TMA finance</div></td><td>AT Prestations SI 2024-28</td><td class="ref-client">DSI-2026-0302</td>
-                  <td>Paris</td><td class="num">650 €</td><td><button type="button" class="avatar avatar-res" data-nom="Pierre Morel" aria-label="Ressource : Pierre Morel">PM</button></td><td>Consultant SAP FI/CO</td><td><span class="badge b-bleu">Solution identifiée</span></td><td>—</td><td class="num">137 k€</td><td class="num">12/07/2026</td>
-                  <td><a class="lien" href="#" data-vue="portage-detail" aria-label="Voir le détail du besoin consultant SAP">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr><td><div class="c-nom">Expert réseaux — extension couverture agences</div></td><td>Infra &amp; Cloud</td><td class="ref-client">INFRA-2026-0179</td>
-                  <td>Lyon</td><td class="num">580 €</td><td><button type="button" class="avatar avatar-res" data-nom="Anaïs Girard" aria-label="Ressource : Anaïs Girard">AG</button></td><td>Expert réseaux</td><td><span class="badge b-indigo">Négociation financière</span></td><td>—</td><td class="num">104 k€</td><td class="num">05/07/2026</td>
-                  <td><a class="lien" href="#" data-vue="portage-detail" aria-label="Voir le détail du besoin expert réseaux">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-                <tr><td><div class="c-nom">Formateur cybersécurité — sensibilisation phishing</div></td><td>Cybersécurité</td><td class="ref-client">SEC-2026-0068</td>
-                  <td>Paris</td><td class="num">520 €</td><td><button type="button" class="avatar avatar-res" data-nom="Sarah Nguyen" aria-label="Ressource : Sarah Nguyen">SN</button></td><td>Formateur cybersécurité</td><td><span class="badge ok">Démarrage</span></td><td>—</td><td class="num">31 k€</td><td class="num">22/06/2026</td>
-                  <td><a class="lien" href="#" data-vue="portage-detail" aria-label="Voir le détail du besoin formateur cybersécurité">Voir le détail<svg class="ic s"><use href="#i-fleche"/></svg></a></td></tr>
-              </tbody>
-            </table>
-            </div>
-          </div>
+          <p class="vide-filtre" aria-live="polite" hidden>Aucun besoin ne correspond aux filtres.</p>
+
         </section>
       </section>
 
@@ -3872,7 +3835,32 @@
     var initOn=false;try{initOn=localStorage.getItem(CLE)==='on';}catch(e){}
     appliquer(initOn);
   });
-  function texteCellule(ligne,index){return ligne&&ligne.cells[index]?ligne.cells[index].textContent.trim():'';}
+  garde('rech-besoin',function(){
+    var rech=document.getElementById('rech-besoin'),sel=document.getElementById('f-statut'),
+        table=document.querySelector('#v-besoins .besoin-table');
+    if(!rech||!sel||!table)return;
+    var corps=table.tBodies[0],vide=document.querySelector('#v-besoins .vide-filtre');
+    function filtrer(){
+      var q=rech.value.trim().toLowerCase(),st=sel.value,n=0;
+      corps.querySelectorAll('tr').forEach(function(tr){
+        /* Le statut est le premier badge de la ligne : Type est du texte nu. */
+        var badge=tr.querySelector('.badge');
+        var ok=(!q||tr.textContent.toLowerCase().indexOf(q)!==-1)
+          &&(st==='Tous les statuts'||(badge&&badge.textContent.trim()===st));
+        tr.hidden=!ok;if(ok)n++;
+      });
+      if(vide)vide.hidden=n>0;
+    }
+    var vus={},options='<option>Tous les statuts</option>';
+    corps.querySelectorAll('.badge').forEach(function(b){var t=b.textContent.trim();
+      if(!vus[t]){vus[t]=1;options+='<option>'+t+'</option>';}});
+    sel.innerHTML=options;
+    rech.addEventListener('input',filtrer);
+    sel.addEventListener('change',filtrer);
+  });
+  /* Lecture par nom de colonne : ajouter ou deplacer une colonne du tableau
+     des besoins ne casse plus le remplissage de la fiche detail. */
+  function texteCellule(ligne,nom){var c=ligne&&ligne.querySelector('[data-col="'+nom+'"]');return c?c.textContent.trim():'';}
   function renseigner(selecteur,texte){var cible=document.querySelector(selecteur);if(cible&&texte)cible.textContent=texte;}
   function rendreHistoriqueSimple(id,dateCreation,contactClient,dateStatut,statut){
     var historique=document.getElementById(id);if(!historique)return;
@@ -3889,7 +3877,7 @@
     if(!corps.dataset.decisionsLiees){corps.dataset.decisionsLiees='true';corps.addEventListener('click',function(event){var bouton=event.target.closest('[data-candidature-decision]');if(!bouton)return;var ligne=bouton.closest('tr'),badge=ligne.querySelector('.badge'),accepte=bouton.dataset.candidatureDecision==='accept';badge.className='badge '+(accepte?'ok':'bad');badge.textContent=accepte?'Validée':'Refusée';bouton.closest('td').innerHTML='<span class="decision-done '+(accepte?'accepted':'refused')+'">Candidature '+(accepte?'validée':'refusée')+'</span>';});}
   }
   function renseignerBesoin(lien){
-    var ligne=lien.closest('tr'),titre=texteCellule(ligne,0).replace('Action requise','').trim(),marche=texteCellule(ligne,1),lieu=texteCellule(ligne,3),tjm=texteCellule(ligne,4),responsable=ligne.dataset.responsable||'C. Dupont',date=ligne.dataset.date||texteCellule(ligne,9),candidats=(ligne.dataset.candidats||'').split('|').filter(Boolean);
+    var ligne=lien.closest('tr'),titre=texteCellule(ligne,'besoin').replace('Action requise','').trim(),marche=texteCellule(ligne,'marche'),lieu=texteCellule(ligne,'lieu'),tjm=texteCellule(ligne,'tjm'),responsable=ligne.dataset.responsable||'C. Dupont',date=ligne.dataset.date||texteCellule(ligne,'date'),candidats=(ligne.dataset.candidats||'').split('|').filter(Boolean);
     renseigner('#v-besoin-detail .fiche-status h2',titre);renseigner('#v-besoin-detail .fiche-status .card-sub','Besoin déposé par '+responsable+' le '+date);
     var compteurCandidatures=document.getElementById('compteur-candidatures-besoin');if(compteurCandidatures){compteurCandidatures.textContent=candidats.length;compteurCandidatures.setAttribute('aria-label',candidats.length+' candidature'+(candidats.length>1?'s':'')+' associée'+(candidats.length>1?'s':''));}
     mettreEtapeBesoin(ligne.dataset.etape||1);appliquerStatutBesoin(titre);
