@@ -3861,7 +3861,15 @@
   });
   /* Lecture par nom de colonne : ajouter ou deplacer une colonne du tableau
      des besoins ne casse plus le remplissage de la fiche detail. */
-  function texteCellule(ligne,nom){var c=ligne&&ligne.querySelector('[data-col="'+nom+'"]');return c?c.textContent.trim():'';}
+  function texteCellule(ligne,cle){
+    /* Accepte un nom de colonne (data-col) ou, pour les tableaux qui n'en
+       portent pas encore, une position. Un nom survit a l'ajout d'une
+       colonne, une position non : preferer le nom. */
+    if(!ligne)return '';
+    if(typeof cle==='number'){return ligne.cells[cle]?ligne.cells[cle].textContent.trim():'';}
+    var c=ligne.querySelector('[data-col="'+cle+'"]');
+    return c?c.textContent.trim():'';
+  }
   function renseigner(selecteur,texte){var cible=document.querySelector(selecteur);if(cible&&texte)cible.textContent=texte;}
   function rendreHistoriqueSimple(id,dateCreation,contactClient,dateStatut,statut,reference){
     var historique=document.getElementById(id);if(!historique)return;
