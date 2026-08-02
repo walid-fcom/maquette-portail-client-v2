@@ -1,0 +1,4 @@
+# Le front appelle /api/metabase-guest-token (chemin hérité du projet Vercel).
+# On le route vers la function sans changer une ligne de la maquette.
+# Le « ! » force la règle même si un fichier statique porte le même chemin.
+/api/*  /.netlify/functions/:splat  200!

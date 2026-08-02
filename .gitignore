@@ -1,0 +1,14 @@
+# Artefacts de build — reconstruits par build_netlify_v2.py, jamais édités à la main
+deploy_netlify_v2/
+*.zip
+
+# Secrets — le JWT d'embed Metabase est signé avec METABASE_EMBED_SECRET,
+# qui vit UNIQUEMENT dans les variables d'environnement Netlify.
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# Local Netlify folder
+.netlify
