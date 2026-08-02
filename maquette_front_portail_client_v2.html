@@ -1242,9 +1242,16 @@
   #v-besoins .barre-besoins .champ-rech input:focus{border-color:transparent;box-shadow:none;outline:0}
   #v-besoins .barre-besoins .sel-statut{min-height:44px;border-radius:999px;padding:0 15px}
   #v-besoins .barre-besoins .btn-filtre{border-radius:999px;padding:0 16px}
-  #v-besoins #f-actions{margin-left:auto}
   @media(max-width:880px){#v-besoins .barre-besoins{padding:10px}#v-besoins .outils-besoins{flex-wrap:wrap;width:100%}#v-besoins .barre-besoins .champ-rech{max-width:none}}
   #v-besoins .twrap{border:1px solid #e8e6e0;border-radius:14px;background:#fff;overflow-x:auto;overflow-y:hidden}
+  /* 11 a 12 colonnes : on laisse les tableaux a leur largeur naturelle et on
+     assume le defilement horizontal. La barre elle-meme est deja stylee plus
+     bas, au meme format que Prestations, Documents et Conformite : ne pas y
+     ajouter de scrollbar-width ni de scrollbar-color, Chromium ignorerait
+     alors toutes les regles ::-webkit-scrollbar. */
+  #v-besoins [role="tabpanel"] table{min-width:1560px}
+  #v-besoins [role="tabpanel"] th{white-space:nowrap}
+  #v-besoins [role="tabpanel"] th:first-child,#v-besoins [role="tabpanel"] td:first-child{min-width:236px}
   #v-besoins #pb-forfait table th:last-child,#v-besoins #pb-forfait table td:last-child{display:table-cell!important}
   #v-besoins #pb-rm table th:last-child,#v-besoins #pb-rm table td:last-child{display:table-cell!important}
   #v-besoins .badge.b-bleu{background:#eff6ff;color:#1d4ed8}
@@ -1344,7 +1351,6 @@
   .dswitch .dswitch-thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s}
   .dswitch[aria-checked="true"] .dswitch-thumb{transform:translateX(17px)}
   .dswitch:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
-  body[data-actions="off"] #v-besoins #f-actions{display:none}
   body[data-actions="off"] #v-besoins .action-requise{display:none}
   body[data-actions="off"] #v-besoins tr.ligne-attendu{background:transparent}
   body[data-actions="off"] #v-besoins tr.ligne-attendu td:first-child{box-shadow:none}
@@ -2317,13 +2323,6 @@
               <button class="tab" role="tab" id="tb-forfait" aria-selected="false" aria-controls="pb-forfait">Forfait <span class="n">6</span></button>
               <button class="tab" role="tab" id="tb-rm" aria-selected="false" aria-controls="pb-rm">RM <span class="n">3</span></button>
             </div>
-            <div class="outils-besoins">
-              <label class="sr-only" for="rech-besoin">Rechercher un besoin</label>
-              <span class="champ-rech"><svg class="ic s" aria-hidden="true"><use href="#i-loupe"/></svg><input id="rech-besoin" type="search" placeholder="Rechercher un besoin..."></span>
-              <label class="sr-only" for="f-statut">Filtrer par statut</label>
-              <select id="f-statut" class="sel-statut"><option>Tous les statuts</option></select>
-              <button class="btn-filtre" id="f-actions" aria-pressed="false"><svg class="ic s" aria-hidden="true"><use href="#i-filtre"/></svg>Actions requises</button>
-            </div>
           </div>
           <div id="pb-at" role="tabpanel" aria-labelledby="tb-at">
             <div class="twrap" role="region" aria-label="Tableau des besoins en assistance technique" tabindex="0">
@@ -2339,7 +2338,6 @@
               </tbody>
             </table>
             </div>
-            <p class="vide-filtre" aria-live="polite" hidden>Aucun besoin ne correspond aux filtres.</p>
           </div>
           <div id="pb-atf" role="tabpanel" aria-labelledby="tb-atf" hidden>
             <div class="twrap" role="region" aria-label="Tableau des besoins ATF" tabindex="0">
@@ -2350,7 +2348,6 @@
               </tbody>
             </table>
             </div>
-            <p class="vide-filtre" aria-live="polite" hidden>Aucun besoin ne correspond aux filtres.</p>
           </div>
           <div id="pb-forfait" role="tabpanel" aria-labelledby="tb-forfait" hidden>
             <div class="twrap" role="region" aria-label="Tableau des besoins au forfait" tabindex="0">
@@ -2372,7 +2369,6 @@
               </tbody>
             </table>
             </div>
-            <p class="vide-filtre" aria-live="polite" hidden>Aucun besoin ne correspond aux filtres.</p>
           </div>
           <div id="pb-rm" role="tabpanel" aria-labelledby="tb-rm" hidden>
             <div class="twrap" role="region" aria-label="Tableau des besoins en portage" tabindex="0">
@@ -2391,7 +2387,6 @@
               </tbody>
             </table>
             </div>
-            <p class="vide-filtre" aria-live="polite" hidden>Aucun besoin ne correspond aux filtres.</p>
           </div>
         </section>
       </section>
@@ -3776,37 +3771,6 @@
     reset.addEventListener('click',function(){[compte,statut,periode].forEach(function(filtre){filtre.value='tous';});filtrer();});
     document.querySelectorAll('[data-bdc-col]').forEach(function(choix){choix.addEventListener('change',function(){document.querySelectorAll('#table-bdc tr').forEach(function(ligne){var cellule=ligne.children[+choix.dataset.bdcCol-1];if(cellule)cellule.classList.toggle('masque',!choix.checked);});});});
     document.querySelectorAll('.bdc-download').forEach(function(lien){lien.href='cv-demo.pdf';lien.download='DEMO.pdf';lien.rel='noopener';});
-  });
-  garde('rech-besoin',function(){
-    var rech=document.getElementById('rech-besoin'),sel=document.getElementById('f-statut'),act=document.getElementById('f-actions');
-    if(!rech)return;
-    function panneau(){return document.querySelector('#v-besoins [role="tabpanel"]:not([hidden])');}
-    function filtrer(){
-      var p=panneau();if(!p)return;
-      var q=rech.value.trim().toLowerCase(),st=sel.value,ar=act.getAttribute('aria-pressed')==='true',n=0;
-      p.querySelectorAll('tbody tr').forEach(function(tr){
-        var badge=tr.querySelector('.badge');
-        var ok=(!q||tr.textContent.toLowerCase().indexOf(q)!==-1)
-          &&(st==='Tous les statuts'||(badge&&badge.textContent.trim()===st))
-          &&(!ar||tr.classList.contains('ligne-attendu'));
-        tr.hidden=!ok;if(ok)n++;
-      });
-      var vide=p.querySelector('.vide-filtre');if(vide)vide.hidden=n>0;
-    }
-    function majOptions(){
-      var p=panneau();if(!p)return;
-      var vus={},h='<option>Tous les statuts</option>';
-      p.querySelectorAll('tbody .badge').forEach(function(b){var t=b.textContent.trim();
-        if(!vus[t]){vus[t]=1;h+='<option>'+t+'</option>';}});
-      sel.innerHTML=h;filtrer();
-    }
-    rech.addEventListener('input',filtrer);
-    sel.addEventListener('change',filtrer);
-    act.addEventListener('click',function(){
-      act.setAttribute('aria-pressed',act.getAttribute('aria-pressed')==='true'?'false':'true');filtrer();});
-    document.querySelectorAll('#v-besoins [role="tab"]').forEach(function(t){
-      t.addEventListener('click',function(){rech.value='';act.setAttribute('aria-pressed','false');setTimeout(majOptions,0);});});
-    majOptions();
   });
   garde('v-besoins-candidature-table',function(){
     var table=document.querySelector('#v-besoins .candidature-table');
