@@ -1272,18 +1272,12 @@
   #v-besoins .candidate-role{min-width:145px;font-size:12px;color:var(--t-600)}
   #v-besoins .cv-link{display:inline-flex;align-items:center;color:var(--brand);font-size:12px;font-weight:700;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
   #v-besoins .candidate-actions{display:flex;gap:7px;min-width:174px}
-  #v-besoins .btn-candidate{min-height:32px;padding:0 10px;border:1px solid;border-radius:7px;background:#fff;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;transition:.15s}
-  #v-besoins .btn-candidate.refuse{border-color:#e5a6a6;color:#b42318}
-  #v-besoins .btn-candidate.refuse:hover{background:#fff0f0}
-  #v-besoins .btn-candidate.accept{border-color:var(--brand);background:var(--brand);color:#fff}
-  #v-besoins .btn-candidate.accept:hover{background:#00369f}
-  #v-besoins .btn-candidate:disabled{border-color:#d9dee8;background:#eef1f5;color:#9aa4b5;cursor:not-allowed}
-  #v-besoins .btn-candidate:disabled:hover{background:#eef1f5}
+  #table-candidatures-besoin .champ-decision{width:100%;max-width:190px;min-height:32px;padding:0 10px;border:1px solid #d9dee8;border-radius:7px;background:#fff;font-family:inherit;font-size:12px;color:var(--t-900)}
+  #table-candidatures-besoin .champ-decision::placeholder{color:#9aa4b5;font-weight:600}
+  #table-candidatures-besoin .champ-decision:focus{border-color:var(--brand);outline:2px solid rgba(0,63,187,.18);outline-offset:0}
+  #table-candidatures-besoin .champ-decision:disabled{background:#eef1f5;color:#9aa4b5;cursor:not-allowed}
   #v-besoins .candidature-table .badge.ok{background:#e8f7ee;color:#18713e}
   #v-besoins .candidature-table .badge.bad{background:#fdecec;color:#b42318}
-  #v-besoins .decision-done{font-size:12px;font-weight:800}
-  #v-besoins .decision-done.accepted{color:#18713e}
-  #v-besoins .decision-done.refused{color:#b42318}
   /* ── Référentiel fournisseurs ── */
   #v-partenaires > .card{background:transparent;border:0;box-shadow:none;padding:34px 0 48px}
   #v-partenaires .partenaires-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:25px}
@@ -1334,12 +1328,6 @@
   .prestation-compliance{padding:24px}.prestation-compliance-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}.prestation-compliance-head h2{font-size:20px;color:var(--t-900)}.prestation-compliance-head p{margin-top:5px;color:var(--t-600);font-size:12.5px}.prestation-compliance-kpis{display:flex;gap:8px;flex-wrap:wrap}.prestation-compliance-kpis span{padding:7px 10px;border-radius:999px;background:#e8f7ee;color:#18713e;font-size:11px;font-weight:800}.prestation-compliance-kpis span.warn{background:#fff5d9;color:#986700}.prestation-compliance .twrap{margin-top:20px}.prestation-compliance .twrap table{margin:0}.prestation-compliance .lien{font-size:12px;font-weight:800}.prestation-compliance:not(#table-candidatures-besoin) table th:last-child,.prestation-compliance:not(#table-candidatures-besoin) table td:last-child{display:none}
   #table-candidatures-besoin table th:last-child,#table-candidatures-besoin table td:last-child{display:table-cell}
   #table-candidatures-besoin .candidate-actions{display:table-cell;text-align:right;white-space:nowrap;min-width:166px}
-  #table-candidatures-besoin .candidate-actions .btn-candidate{display:inline-flex;align-items:center;vertical-align:middle}
-  #table-candidatures-besoin .candidate-actions .btn-candidate+.btn-candidate{margin-left:7px}
-  #table-candidatures-besoin .btn-candidate{min-height:32px;padding:0 10px;border:1px solid;border-radius:7px;background:#fff;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer}
-  #table-candidatures-besoin .btn-candidate.refuse{border-color:#e5a6a6;color:#b42318}
-  #table-candidatures-besoin .btn-candidate.accept{border-color:var(--brand);background:var(--brand);color:#fff}
-  #table-candidatures-besoin .btn-candidate:disabled{border-color:#d9dee8;background:#eef1f5;color:#9aa4b5;cursor:not-allowed}
   #table-candidatures-besoin .candidate-cv .cv-link{gap:5px;min-height:32px;padding:4px 2px}
   @media(max-width:700px){#v-partenaires .partenaires-toolbar{align-items:flex-start;flex-direction:column}#v-partenaires .partenaires-filtres{padding:14px;grid-template-columns:1fr}#v-partenaires .champ-rech{max-width:none;min-width:100%}#v-partenaires .partner-search-action{width:100%}}
   /* Correctifs contraste AA : en-têtes de table + onglets inactifs (préexistants) */
@@ -3880,8 +3868,8 @@
     };
     if(!corps)return;
     corps.innerHTML='';
-    candidats.forEach(function(nom){var fiche=fiches[nom]||profilsATF[nom]||{},ligne=document.createElement('tr');ligne.innerHTML='<td><b></b></td><td></td><td></td><td class="num"></td><td><span class="badge b-bleu">Proposée</span></td><td class="candidate-cv"><a class="cv-link" href="cv-demo.pdf" target="_blank" rel="noopener"><svg class="ic s" aria-hidden="true"><use href="#i-doc"/></svg>CV</a></td><td class="candidate-actions"><button class="btn-candidate refuse" type="button" data-candidature-decision="refuse">Refuser</button><button class="btn-candidate accept" type="button" data-candidature-decision="accept">Valider</button></td>';ligne.cells[0].querySelector('b').textContent=nom;ligne.cells[1].textContent=fiche.role||'Candidat proposé';ligne.cells[2].textContent=(fiche.meta||'').split(' · ')[0]||'—';ligne.cells[3].textContent=fiche.tjm||'—';var lienCv=ligne.querySelector('.cv-link');if(lienCv)lienCv.setAttribute('aria-label','Voir le CV de '+nom);if(gele){ligne.querySelectorAll('.btn-candidate').forEach(function(btn){btn.disabled=true;btn.setAttribute('title','Décision indisponible : besoin en « '+(libelleStatut||'')+' »');});}corps.appendChild(ligne);});
-    if(!corps.dataset.decisionsLiees){corps.dataset.decisionsLiees='true';corps.addEventListener('click',function(event){var bouton=event.target.closest('[data-candidature-decision]');if(!bouton)return;var ligne=bouton.closest('tr'),badge=ligne.querySelector('.badge'),accepte=bouton.dataset.candidatureDecision==='accept';badge.className='badge '+(accepte?'ok':'bad');badge.textContent=accepte?'Validée':'Refusée';bouton.closest('td').innerHTML='<span class="decision-done '+(accepte?'accepted':'refused')+'">Candidature '+(accepte?'validée':'refusée')+'</span>';});}
+    candidats.forEach(function(nom){var fiche=fiches[nom]||profilsATF[nom]||{},ligne=document.createElement('tr');ligne.innerHTML='<td><b></b></td><td></td><td></td><td class="num"></td><td><span class="badge b-bleu">Proposée</span></td><td class="candidate-cv"><a class="cv-link" href="cv-demo.pdf" target="_blank" rel="noopener"><svg class="ic s" aria-hidden="true"><use href="#i-doc"/></svg>CV</a></td><td class="candidate-actions"><input type="text" class="champ-decision" placeholder="Saisir la décision"></td>';ligne.cells[0].querySelector('b').textContent=nom;ligne.cells[1].textContent=fiche.role||'Candidat proposé';ligne.cells[2].textContent=(fiche.meta||'').split(' · ')[0]||'—';ligne.cells[3].textContent=fiche.tjm||'—';var lienCv=ligne.querySelector('.cv-link');if(lienCv)lienCv.setAttribute('aria-label','Voir le CV de '+nom);var champ=ligne.querySelector('.champ-decision');if(champ)champ.setAttribute('aria-label','Décision pour '+nom);if(gele){ligne.querySelectorAll('.champ-decision').forEach(function(champ){champ.disabled=true;champ.placeholder='—';champ.setAttribute('title','Décision indisponible : besoin en « '+(libelleStatut||'')+' »');});}corps.appendChild(ligne);});
+    
   }
   function renseignerBesoin(lien){
     var ligne=lien.closest('tr'),titre=texteCellule(ligne,'besoin').replace('Action requise','').trim(),marche=texteCellule(ligne,'marche'),lieu=texteCellule(ligne,'lieu'),tjm=texteCellule(ligne,'tjm'),responsable=ligne.dataset.responsable||'C. Dupont',date=ligne.dataset.date||texteCellule(ligne,'date'),candidats=(ligne.dataset.candidats||'').split('|').filter(Boolean);
