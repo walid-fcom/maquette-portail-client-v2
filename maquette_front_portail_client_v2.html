@@ -446,25 +446,30 @@
   .sourcing-parcours-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
   .sourcing-parcours h2,.sourcing-detail h2{font-size:15px;font-weight:800;color:var(--t-900)}
   .sourcing-parcours-head p{font-size:12px;color:var(--t-600);margin-top:3px}
-  .sourcing-etapes{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:20px;list-style:none;padding:0}
-  #v-forfait-detail .sourcing-etapes{grid-template-columns:repeat(7,1fr)}
-  /* Neuf etapes : la grille suit, et le gabarit se resserre pour que le fil
-     tienne sur une seule ligne sans deborder. */
-  #v-besoin-detail .sourcing-etapes,#v-forfait-detail .sourcing-etapes,#v-portage-detail .sourcing-etapes{grid-template-columns:repeat(9,1fr)}
-  #v-besoin-detail .sourcing-etapes li,#v-forfait-detail .sourcing-etapes li,#v-portage-detail .sourcing-etapes li{gap:7px}
-  #v-besoin-detail .sourcing-etapes li>span,#v-forfait-detail .sourcing-etapes li>span,#v-portage-detail .sourcing-etapes li>span{width:23px;height:23px;font-size:11px}
-  #v-besoin-detail .sourcing-etapes li:not(:last-child)::after,#v-forfait-detail .sourcing-etapes li:not(:last-child)::after,#v-portage-detail .sourcing-etapes li:not(:last-child)::after{left:24px;top:11px}
-  #v-besoin-detail .sourcing-etapes b,#v-forfait-detail .sourcing-etapes b,#v-portage-detail .sourcing-etapes b{font-size:10.5px;letter-spacing:-.1px}
-  #v-besoin-detail .sourcing-etapes small,#v-forfait-detail .sourcing-etapes small,#v-portage-detail .sourcing-etapes small{font-size:9.5px}
-  .sourcing-etapes li{position:relative;display:flex;align-items:flex-start;gap:9px;min-width:0}
-  .sourcing-etapes li:not(:last-child)::after{content:"";position:absolute;z-index:0;height:2px;background:var(--t-200);left:28px;right:-2px;top:13px}
-  .sourcing-etapes li.fait:not(:last-child)::after{background:#8bc9a0}
-  .sourcing-etapes li>span{position:relative;z-index:1;display:grid;place-items:center;width:27px;height:27px;border-radius:50%;border:2px solid var(--t-300);background:#fff;color:var(--t-500);font-size:11px;font-weight:800;flex:none}
-  .sourcing-etapes li.fait>span{border-color:#4a9e65;background:#4a9e65;color:#fff}
-  .sourcing-etapes li.en-cours>span{border-color:var(--brand);color:var(--brand);box-shadow:0 0 0 4px #edf3ff}
-  .sourcing-etapes b{display:block;font-size:11.5px;font-weight:800;line-height:1.25;color:var(--t-800)}
-  .sourcing-etapes small{display:block;margin-top:3px;font-size:10.5px;color:var(--t-500)}
-  .sourcing-etapes li.en-cours b{color:var(--brand)}
+  /* ── Fil d'etapes ───────────────────────────────────────────────────────
+     Une colonne par etape, marqueur au-dessus du libelle : un seul axe de
+     lecture, et le rail ne traverse plus le texte. Le rail porte l'etat —
+     plein derriere l'etape en cours, pointille devant, parce que ce qui
+     reste a faire n'est pas encore trace. Les etapes acquises se reduisent
+     a un point : neuf coches vertes noyaient la seule qui compte. */
+  .sourcing-etapes{display:grid;grid-template-columns:repeat(9,1fr);gap:0;margin-top:24px;list-style:none;padding:0}
+  .sourcing-etapes li{position:relative;display:flex;flex-direction:column;align-items:center;gap:11px;min-width:0;padding:0 7px;text-align:center}
+  /* Segment de rail vers l'etape suivante, degage des deux marqueurs. */
+  .sourcing-etapes li:not(:last-child)::after{content:"";position:absolute;z-index:0;top:13px;left:calc(50% + 20px);width:calc(100% - 40px);border-top:2px dashed var(--t-300)}
+  .sourcing-etapes li.fait:not(:last-child)::after{border-top-style:solid;border-top-color:#4a9e65}
+  .sourcing-etapes li>span{position:relative;z-index:1;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;flex:none;font-size:0;color:transparent;font-weight:800}
+  .sourcing-etapes li>span::before{content:"";position:absolute;inset:9px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px var(--t-300)}
+  .sourcing-etapes li.fait>span::before{background:#4a9e65;box-shadow:none}
+  /* Seul marqueur plein format : celui ou en est le dossier. */
+  .sourcing-etapes li.en-cours>span{font-size:11.5px;color:var(--brand);box-shadow:inset 0 0 0 2px var(--brand),0 0 0 5px #edf3ff}
+  .sourcing-etapes li.en-cours>span::before{content:none}
+  .sourcing-etapes b{display:block;font-size:11px;font-weight:600;line-height:1.3;letter-spacing:-.1px;color:var(--t-400)}
+  .sourcing-etapes li.fait b{font-weight:700;color:var(--t-700)}
+  .sourcing-etapes li.en-cours b{font-size:11.5px;font-weight:800;color:var(--brand)}
+  /* L'etat n'est ecrit que pour l'etape en cours ; ailleurs le marqueur le dit
+     deja. Le texte reste dans l'arbre d'accessibilite pour les lecteurs d'ecran. */
+  .sourcing-etapes small{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .sourcing-etapes li.en-cours small{position:static;display:block;width:auto;height:auto;margin:4px 0 0;overflow:visible;clip-path:none;font-size:10px;font-weight:600;color:var(--t-500)}
   .sourcing-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
   .sourcing-duo{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;margin-top:14px;align-items:stretch}
   .sourcing-infos{display:grid;grid-template-columns:repeat(3,1fr);gap:0 24px;margin-top:18px}
@@ -525,8 +530,15 @@
   .candidatures-attente h2{font-size:15px;font-weight:800;color:var(--t-900)}
   .candidatures-attente p{max-width:470px;margin-top:4px;font-size:12.5px;line-height:1.55;color:var(--t-600)}
   @media(max-width:1040px){.sourcing-duo{grid-template-columns:1fr}.sourcing-contact-card{display:grid;grid-template-columns:1fr 1fr;gap:14px}.sourcing-contact-head{grid-column:1/-1}.contact-reperes,.contact-message{margin-top:0}.sourcing-contact-card .btn{align-self:end;margin-top:0}}
-  @media(max-width:860px){.sourcing-etapes{grid-template-columns:1fr;gap:12px}
-  #v-forfait-detail .sourcing-etapes,#v-besoin-detail .sourcing-etapes{grid-template-columns:1fr}.sourcing-etapes li:not(:last-child)::after{width:2px;height:20px;left:13px;top:28px;right:auto}.sourcing-infos{grid-template-columns:1fr 1fr}}
+  /* Sous 860px le fil bascule a la verticale : le rail passe a gauche, les
+     libelles a droite, meme grammaire de plein et de pointille. */
+  @media(max-width:860px){.sourcing-etapes{grid-template-columns:1fr;gap:16px}
+  .sourcing-etapes li{flex-direction:row;align-items:flex-start;gap:12px;padding:0;text-align:left}
+  .sourcing-etapes li>div{padding-top:5px}
+  .sourcing-etapes li:not(:last-child)::after{top:28px;left:13px;width:0;height:calc(100% - 12px);border-top:0;border-left:2px dashed var(--t-300)}
+  .sourcing-etapes li.fait:not(:last-child)::after{border-left-style:solid;border-left-color:#4a9e65}
+  .sourcing-etapes b{font-size:12px}.sourcing-etapes li.en-cours b{font-size:12.5px}
+  .sourcing-infos{grid-template-columns:1fr 1fr}}
   @media(max-width:900px){.commande-resume>summary{grid-template-columns:repeat(2,1fr)}.commande-resume .chevron{grid-column:2;grid-row:1;align-self:start}.commande-client-top{grid-template-columns:1fr}.commande-finance-grid{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:900px){.forfait-info-columns{grid-template-columns:1fr}.forfait-finance-grid{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:760px){.marches-cards{grid-template-columns:1fr}}
@@ -1295,7 +1307,7 @@
   #table-candidatures-besoin .champ-decision{width:100%;max-width:190px;min-height:32px;padding:0 10px;border:1px solid #d9dee8;border-radius:7px;background:#fff;font-family:inherit;font-size:12px;color:var(--t-900)}
   #table-candidatures-besoin .champ-decision::placeholder{color:#9aa4b5;font-weight:600}
   #table-candidatures-besoin .champ-decision:focus{border-color:var(--brand);outline:2px solid rgba(0,63,187,.18);outline-offset:0}
-  #v-besoin-detail .sourcing-etapes li.rejet>span,#v-forfait-detail .sourcing-etapes li.rejet>span,#v-portage-detail .sourcing-etapes li.rejet>span{border-color:#b42318;background:#fbe9e9;color:#b42318;box-shadow:0 0 0 4px #fdf3f3}
+  #v-besoin-detail .sourcing-etapes li.rejet>span,#v-forfait-detail .sourcing-etapes li.rejet>span,#v-portage-detail .sourcing-etapes li.rejet>span{background:#fff;color:#b42318;box-shadow:inset 0 0 0 2px #b42318,0 0 0 5px #fdf3f3}
   #v-besoin-detail .sourcing-etapes li.rejet b,#v-forfait-detail .sourcing-etapes li.rejet b,#v-portage-detail .sourcing-etapes li.rejet b{color:#b42318}
   #v-besoin-detail .sourcing-etapes li.inatteignable,#v-forfait-detail .sourcing-etapes li.inatteignable,#v-portage-detail .sourcing-etapes li.inatteignable{opacity:.45}
   #table-candidatures-besoin .champ-decision:disabled{background:#eef1f5;color:#9aa4b5;cursor:not-allowed}
@@ -3721,7 +3733,8 @@
       if(numero===8)item.classList.toggle('rejet',!!rejet&&courant);
       if(numero===9)item.classList.toggle('inatteignable',!!rejet);
       if(repere)repere.textContent=past?'✓':numero;
-      if(sousTitre)sousTitre.textContent=past?'Terminé':(courant?'En cours':'À venir');
+      /* Une etape rejetee est close, pas en cours : le fil s'arrete la. */
+      if(sousTitre)sousTitre.textContent=past||(courant&&rejet&&numero===8)?'Terminé':(courant?'En cours':'À venir');
     });
     return n;
   }
