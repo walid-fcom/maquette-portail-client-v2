@@ -811,7 +811,8 @@
   tbody tr:hover td{background:#f5f8ff}
   .prestation-panel>.card,.fiche-sourcing-panel>.card{border-color:var(--ligne)}
   [role="tabpanel"] .card-sub:only-child{min-height:44px;display:flex;align-items:center;color:var(--t-600)}
-  .portal-footer{width:100%;max-width:none;margin-top:auto;padding:24px 108px 28px 32px;border-top:1px solid var(--t-200);display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;color:var(--t-500)}
+  /* 25px en bas, et non 28 : c'est ce qui met les liens à la hauteur exacte du bloc profil de la barre latérale. */
+  .portal-footer{width:100%;max-width:none;margin-top:auto;padding:24px 108px 25px 32px;border-top:1px solid var(--t-200);display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;color:var(--t-500)}
   .portal-footer a{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:4px 14px;color:var(--t-600);font-size:12px;font-weight:600;text-decoration:none}
   .portal-footer a+a{border-left:1px solid var(--t-300)}
   .portal-footer a:hover{color:var(--brand);text-decoration:underline;text-underline-offset:3px}
@@ -1875,6 +1876,13 @@
   /* ═══ Harmonisation UI globale : même grammaire pour listes et fiches ═══ */
   :root{--ui-fond:#f6f5f0;--ui-surface:#fff;--ui-bord:#e8e6e0;--ui-texte:#161616;--ui-muted:#66665f;--ui-rayon:14px;--ui-rayon-lg:18px;--ui-espace:14px}
   .cont{background:var(--ui-fond)}
+  /* Le footer descend jusqu'au bas de l'écran, à hauteur du bloc profil de la barre
+     latérale : la respiration du bas passe du conteneur à la vue elle-même. Le
+     sélecteur :has vaut celui des fiches détail, qui redéfinissent ce padding. */
+  .cont:has(.portal-footer){padding-bottom:0}
+  /* Les fiches détail redéfinissent ce padding avec un sélecteur porteur d'un id :
+     on le neutralise à specificité égale, en arrivant après elles. */
+  .cont:has(:is(#v-besoin-detail,#v-forfait-detail,#v-portage-detail,#v-activite-detail,#v-portage-prestation-detail,#v-marche-detail,#v-dc4-detail,#v-conformite-detail,#v-forfait-affaire):not([hidden])){padding-bottom:0}
   :is(.presta-toolbar,.besoins-toolbar,.pool-header,.partenaires-toolbar,.ged-toolbar,.conformite-head,.activite-pilotage,.pilotage-tete,.carbon-head){gap:16px;margin-bottom:24px;padding:0 2px;border:0}
   :is(.presta-toolbar,.besoins-toolbar,.pool-header,.partenaires-toolbar,.ged-toolbar,.conformite-head,.activite-pilotage,.pilotage-tete,.carbon-head,.notifications-page) :is(h1,h2,.h-vue){color:var(--ui-texte);font-size:32px;line-height:1.15;font-weight:800;letter-spacing:-.04em}
   :is(.presta-toolbar,.besoins-toolbar,.pool-header,.partenaires-toolbar,.ged-toolbar,.conformite-head,.activite-pilotage,.pilotage-tete,.carbon-head) p{color:var(--ui-muted)}
