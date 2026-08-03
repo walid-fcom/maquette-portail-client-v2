@@ -4236,9 +4236,10 @@
       atf:['affaire','ref','marche','entite','op','statut','tjm','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
       portage:['affaire','ref','marche','entite','op','statut','tjm','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
       forfait:['affaire','type','statut','conso','fin'],
-      /* Liste unique : union des jeux precedents, la colonne Type
-         distinguant desormais les lignes entre elles. */
-      tous:['affaire','type','ref','marche','entite','op','statut','conso','tjm','debut','fin','jours-commandes','jours-travailles','commande','total-facture']
+      /* Liste unique : ordre de reference de la vue Mon activite. Les colonnes
+         absentes de ce tableau restent disponibles dans le configurateur, en
+         fin de liste et decochees. */
+      tous:['affaire','ref','statut','marche','entite','op','lieu','debut','fin','conso','jours-commandes','jours-travailles','tjm','commande','total-facture','type-partenaire','nom-partenaire','jours-restant-facturer','prestations-facturees','frais-factures','astreintes-facturees','reste-facturer']
     };
     function appliquerConfigurationColonnes(type){
       var selection=colonnesParType[type]||colonnesParType.tous,choix=[].slice.call(document.querySelectorAll('[data-presta-col]'));
@@ -4256,7 +4257,9 @@
         var type='tous',selection=colonnesParType[type];if(choix.checked&&selection.indexOf(choix.dataset.prestaCol)===-1)selection.push(choix.dataset.prestaCol);if(!choix.checked)colonnesParType[type]=selection.filter(function(colonne){return colonne!==choix.dataset.prestaCol;});appliquerConfigurationColonnes(type);});
     });
     appliquerConfigurationColonnes('tous');
-    var menuColonnesPrestations=document.querySelector('.presta-colonnes-menu'),colonneEnCours=null;
+    /* Selecteur porte sur #v-prestations : sans cela il attrapait le menu de
+       Mes besoins, premier du document, dont les cases portent data-besoin-col. */
+    var menuColonnesPrestations=document.querySelector('#v-prestations .presta-colonnes-menu'),colonneEnCours=null;
     function appliquerOrdreColonnesPrestations(){
       if(!menuColonnesPrestations)return;
       var ordre=Array.prototype.map.call(menuColonnesPrestations.querySelectorAll('label'),function(label){return label.querySelector('[data-presta-col]').dataset.prestaCol;});
