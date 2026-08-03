@@ -1256,6 +1256,8 @@
      alors toutes les regles ::-webkit-scrollbar. */
   #v-besoins .besoin-table{min-width:1830px}
   #v-besoins .outils-besoins .f-config{margin-left:auto}
+  .presta-colonnes-menu label.colonne-verrouillee{color:var(--t-400);cursor:default}
+  .presta-colonnes-menu label.colonne-verrouillee input{cursor:default}
   #v-besoins .besoin-table th{white-space:nowrap}
   #v-besoins .besoin-table td[data-col="besoin"]{min-width:236px}
   #v-besoins .besoin-table td[data-col="op"]{white-space:nowrap}
@@ -2316,7 +2318,7 @@
               <span class="champ-rech"><svg class="ic s" aria-hidden="true"><use href="#i-loupe"/></svg><input id="rech-besoin" type="search" placeholder="Rechercher un besoin..."></span>
               <label class="sr-only" for="f-statut">Filtrer par statut</label>
               <select id="f-statut" class="sel-statut"><option>Tous les statuts</option></select>
-              <details class="presta-colonnes f-config"><summary>Configurer les colonnes</summary><div class="presta-colonnes-menu"><b>Colonnes à afficher</b><label><input type="checkbox" data-besoin-col="besoin" checked> Besoin</label><label><input type="checkbox" data-besoin-col="ref" checked> Référence client</label><label><input type="checkbox" data-besoin-col="marche" checked> Marché</label><label><input type="checkbox" data-besoin-col="op" checked> Opérationnel</label><label><input type="checkbox" data-besoin-col="lieu" checked> Localisation</label><label><input type="checkbox" data-besoin-col="tjm" checked> TJM</label><label><input type="checkbox" data-besoin-col="montant" checked> Montant total</label><label><input type="checkbox" data-besoin-col="candidatures" checked> Candidatures</label><label><input type="checkbox" data-besoin-col="statut" checked> Statut</label><label><input type="checkbox" data-besoin-col="ressource" checked> Ressource</label><label><input type="checkbox" data-besoin-col="partenaire" checked> Partenaire pressenti</label><label><input type="checkbox" data-besoin-col="date" checked> Publiée le</label><label><input type="checkbox" data-besoin-col="detail" checked> Détail</label></div></details>
+              <details class="presta-colonnes f-config"><summary>Configurer les colonnes</summary><div class="presta-colonnes-menu"><b>Colonnes à afficher</b><label class="colonne-verrouillee"><input type="checkbox" data-besoin-col="besoin" checked disabled title="Colonne structurante, toujours affichée"> Besoin</label><label><input type="checkbox" data-besoin-col="ref" checked> Référence client</label><label><input type="checkbox" data-besoin-col="marche" checked> Marché</label><label><input type="checkbox" data-besoin-col="op" checked> Opérationnel</label><label><input type="checkbox" data-besoin-col="lieu" checked> Localisation</label><label><input type="checkbox" data-besoin-col="tjm" checked> TJM</label><label><input type="checkbox" data-besoin-col="montant" checked> Montant total</label><label><input type="checkbox" data-besoin-col="candidatures" checked> Candidatures</label><label><input type="checkbox" data-besoin-col="statut" checked> Statut</label><label><input type="checkbox" data-besoin-col="ressource" checked> Ressource</label><label><input type="checkbox" data-besoin-col="partenaire" checked> Partenaire pressenti</label><label><input type="checkbox" data-besoin-col="date" checked> Publiée le</label><label class="colonne-verrouillee"><input type="checkbox" data-besoin-col="detail" checked disabled title="Colonne structurante, toujours affichée"> Détail</label></div></details>
             </div>
           </div>
           <div class="twrap" role="region" aria-label="Tableau des besoins" tabindex="0">
@@ -3878,6 +3880,7 @@
        summary, et chaque case masque sa colonne — en-tete et cellules — via
        la classe .masque. Les cibles sont designees par data-col, pas par
        position : ajouter une colonne ne desalignera pas le selecteur. */
+    var VERROUILLEES=['besoin','detail'];
     var config=document.querySelector('#v-besoins .f-config>summary');
     if(!config)return;
     config.setAttribute('aria-label','Configurer les colonnes');
@@ -3885,6 +3888,10 @@
       +'<span class="sr-only">Configurer les colonnes</span>';
     document.querySelectorAll('#v-besoins [data-besoin-col]').forEach(function(choix){
       choix.addEventListener('change',function(){
+        /* Garde-fou : Besoin identifie la ligne, Detail permet de l'ouvrir.
+           Les masquer laisserait une grille de valeurs inexploitable. Le
+           refus est aussi porte ici, pas seulement par l'attribut disabled. */
+        if(VERROUILLEES.indexOf(choix.dataset.besoinCol)>-1){choix.checked=true;return;}
         document.querySelectorAll('#v-besoins [data-col="'+choix.dataset.besoinCol+'"]')
           .forEach(function(cellule){cellule.classList.toggle('masque',!choix.checked);});
       });
