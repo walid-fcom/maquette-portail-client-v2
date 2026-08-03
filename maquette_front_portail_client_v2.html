@@ -1257,6 +1257,16 @@
      alors toutes les regles ::-webkit-scrollbar. */
   #v-besoins .besoin-table{min-width:1830px}
   #v-besoins .outils-besoins .f-config{margin-left:auto}
+  .pagination{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--t-600)}
+  .pagination-taille{display:inline-flex;align-items:center;gap:7px;font-weight:600}
+  .pagination-taille select{min-height:34px;padding:0 8px;border:1px solid #d9dee8;border-radius:8px;background:#fff;font:inherit;color:var(--t-900)}
+  .pagination-etat{font-weight:600}
+  .pagination-pages{display:inline-flex;align-items:center;gap:4px;margin-left:auto}
+  .pagination-pages button{min-width:34px;min-height:34px;padding:0 9px;border:1px solid #d9dee8;border-radius:8px;background:#fff;font:700 12.5px Montserrat,sans-serif;color:var(--t-700);cursor:pointer}
+  .pagination-pages button:hover:not(:disabled){background:#f4f6fa}
+  .pagination-pages button[aria-current="true"]{border-color:var(--brand);background:var(--brand);color:#fff}
+  .pagination-pages button:disabled{opacity:.4;cursor:not-allowed}
+  tr.hors-page{display:none}
   .presta-colonnes-menu label.colonne-verrouillee{color:var(--t-400);cursor:default}
   .presta-colonnes-menu label.colonne-verrouillee input{cursor:default}
   #v-besoins .besoin-table th{white-space:nowrap}
@@ -3897,6 +3907,80 @@
           .forEach(function(cellule){cellule.classList.toggle('masque',!choix.checked);});
       });
     });
+  });
+  garde('pagination',function(){
+    /* Un seul composant pour les quatre tableaux. Il ne connait pas les filtres
+       de chaque page : ceux-ci masquent leurs lignes avec l'attribut hidden, la
+       pagination utilise la classe hors-page. Les deux ne se marchent donc pas
+       dessus, et une ligne filtree n'entre jamais dans le decompte des pages.
+       Le recalcul est declenche par tout input ou change de la vue, differe d'un
+       tour de boucle pour passer apres le filtre lui-meme. */
+    function installer(selecteurTable, parPageInitial){
+      var table=document.querySelector(selecteurTable);
+      if(!table||!table.tBodies[0])return;
+      var corps=table.tBodies[0],vue=table.closest('.vue')||document;
+      var hote=table.closest('.twrap')||table.closest('.presta-table')||table.parentNode;
+      var page=1,parPage=parPageInitial;
+
+      var barre=document.createElement('div');
+      barre.className='pagination';
+      barre.setAttribute('role','navigation');
+      barre.setAttribute('aria-label','Pagination du tableau');
+      barre.innerHTML='<label class="pagination-taille">Lignes par page '
+        +'<select>'+[5,10,25].map(function(n){
+          return '<option value="'+n+'"'+(n===parPage?' selected':'')+'>'+n+'</option>';}).join('')
+        +'</select></label>'
+        +'<span class="pagination-etat" aria-live="polite"></span>'
+        +'<div class="pagination-pages"></div>';
+      hote.parentNode.insertBefore(barre,hote.nextSibling);
+
+      var etat=barre.querySelector('.pagination-etat'),
+          pages=barre.querySelector('.pagination-pages'),
+          taille=barre.querySelector('select');
+
+      function eligibles(){
+        return [].slice.call(corps.rows).filter(function(l){return !l.hidden;});
+      }
+      function rendre(){
+        var lignes=eligibles(),total=lignes.length,
+            nb=Math.max(1,Math.ceil(total/parPage));
+        if(page>nb)page=nb;
+        var debut=(page-1)*parPage;
+        [].slice.call(corps.rows).forEach(function(l){l.classList.remove('hors-page');});
+        lignes.forEach(function(l,i){
+          if(i<debut||i>=debut+parPage)l.classList.add('hors-page');});
+        etat.textContent=total
+          ? (debut+1)+'–'+Math.min(debut+parPage,total)+' sur '+total
+          : 'Aucune ligne';
+        var boutons='<button type="button" data-pg="prec" aria-label="Page précédente"'
+          +(page===1?' disabled':'')+'>‹</button>';
+        for(var n=1;n<=nb;n++){
+          boutons+='<button type="button" data-pg="'+n+'"'
+            +(n===page?' aria-current="true"':'')
+            +' aria-label="Page '+n+'">'+n+'</button>';
+        }
+        boutons+='<button type="button" data-pg="suiv" aria-label="Page suivante"'
+          +(page===nb?' disabled':'')+'>›</button>';
+        pages.innerHTML=boutons;
+      }
+      pages.addEventListener('click',function(e){
+        var b=e.target.closest('button[data-pg]');if(!b||b.disabled)return;
+        var v=b.dataset.pg;
+        page=v==='prec'?page-1:(v==='suiv'?page+1:Number(v));
+        rendre();
+      });
+      taille.addEventListener('change',function(){parPage=Number(taille.value)||10;page=1;rendre();});
+      /* Un filtre vient de tourner : on repart de la premiere page. */
+      function differer(){setTimeout(function(){page=1;rendre();},0);}
+      vue.addEventListener('input',differer);
+      vue.addEventListener('change',function(e){
+        if(e.target!==taille)differer();});
+      setTimeout(rendre,0);
+    }
+    installer('#v-besoins .besoin-table',10);
+    installer('#v-prestations .presta-table table',10);
+    installer('#table-bdc',10);
+    installer('#table-factures',10);
   });
   function texteCellule(ligne,cle){
     /* Accepte un nom de colonne (data-col) ou, pour les tableaux qui n'en
