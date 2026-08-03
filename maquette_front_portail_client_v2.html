@@ -2383,7 +2383,7 @@
         </section>
         <section class="fiche-sourcing-panel" id="fp-detail" role="tabpanel" aria-labelledby="fb-detail">
           <section class="card sourcing-parcours">
-            <div class="sourcing-parcours-head"><div><h2>Avancement du recrutement</h2></div><span class="badge b-bleu" id="etape-besoin">Étape 1 sur 6</span></div>
+            <div class="sourcing-parcours-head"><div><h2>Avancement du recrutement</h2></div></div>
             <ol class="sourcing-etapes">
               <li class="en-cours" data-etape="1"><span>1</span><div><b>Reçu</b><small>En cours</small></div></li>
               <li data-etape="2"><span>2</span><div><b>En attente de qualification</b><small>À venir</small></div></li>
@@ -2621,7 +2621,7 @@
         </section>
         <section class="fiche-sourcing-panel" id="ffp-detail" role="tabpanel" aria-labelledby="ff-detail">
           <section class="card sourcing-parcours">
-            <div class="sourcing-parcours-head"><div><h2>Avancement de la qualification</h2></div><span class="badge b-bleu" id="ff-etape-compteur">Étape 1 sur 9</span></div>
+            <div class="sourcing-parcours-head"><div><h2>Avancement de la qualification</h2></div></div>
             <ol class="sourcing-etapes">
               <li class="en-cours" data-etape="1"><span>1</span><div><b>Reçu</b><small>En cours</small></div></li>
               <li data-etape="2"><span>2</span><div><b>En attente de qualification</b><small>À venir</small></div></li>
@@ -2686,7 +2686,7 @@
         </section>
         <section class="fiche-sourcing-panel" id="ptp-detail" role="tabpanel" aria-labelledby="pt-detail">
           <section class="card sourcing-parcours">
-            <div class="sourcing-parcours-head"><div><h2>Avancement du portage</h2></div><span class="badge b-bleu" id="ptp-etape-compteur">Étape 1 sur 9</span></div>
+            <div class="sourcing-parcours-head"><div><h2>Avancement du portage</h2></div></div>
             <ol class="sourcing-etapes">
               <li class="en-cours" data-etape="1"><span>1</span><div><b>Reçu</b><small>En cours</small></div></li>
               <li data-etape="2"><span>2</span><div><b>En attente de qualification</b><small>À venir</small></div></li>
@@ -3708,7 +3708,7 @@
 
   var candidaturesEnDecision=false,etapeBesoin=1,besoinRejete=false,
       libellesEtapes=['','Reçu','En attente de qualification','Recherche en cours','Shortlist à valider','Proposition transmise','Soutenance planifiée','En attente de validation','Solution validée','Commandée'];
-  function rendreFil(scope,etape,rejet,compteurId){
+  function rendreFil(scope,etape,rejet){
     /* Un seul rendu pour les quatre types de besoin. L'etape 8 porte l'issue :
        validee, ou rejetee et le fil s'arrete la — « Commandee » devient alors
        inatteignable, un fil d'Ariane n'avancant que dans un sens. */
@@ -3723,14 +3723,11 @@
       if(repere)repere.textContent=past?'✓':numero;
       if(sousTitre)sousTitre.textContent=past?'Terminé':(courant?'En cours':'À venir');
     });
-    var cpt=compteurId&&document.getElementById(compteurId);
-    if(cpt)cpt.textContent='Étape '+n+' sur 9';
     return n;
   }
   function mettreEtapeBesoin(etape,rejet){
-    etapeBesoin=rendreFil('#v-besoin-detail',etape,rejet,'ff-inexistant');besoinRejete=!!rejet;
-    var badge=document.getElementById('etape-besoin'),statut=document.getElementById('statut-besoin');
-    if(badge)badge.textContent='Étape '+etapeBesoin+' sur 9';
+    etapeBesoin=rendreFil('#v-besoin-detail',etape,rejet);besoinRejete=!!rejet;
+    var statut=document.getElementById('statut-besoin');
     if(statut){
       var couleur=besoinRejete?'bad':['','b-neutre','b-neutre','b-bleu','b-cyan','b-bleu','b-violet','b-indigo','ok','ok'][etapeBesoin];
       statut.className='badge statut-besoin '+couleur;
@@ -3990,7 +3987,7 @@
     renseigner('#v-forfait-detail .sourcing-infos div:nth-child(1) dd',titre);renseigner('#v-forfait-detail .sourcing-infos div:nth-child(2) dd',marche);renseigner('#v-forfait-detail .sourcing-infos div:nth-child(3) dd',lieu);renseigner('#v-forfait-detail .sourcing-infos div:nth-child(4) dd',montant);renseigner('#v-forfait-detail .sourcing-infos div:nth-child(6) dd',partenaire);renseigner('#v-forfait-detail .sourcing-description p','Prestation au forfait rattachée au marché '+marche+', suivie par '+responsable+'.');renseigner('#v-forfait-detail .fiche-header .card-sub','Besoin déposé par '+responsable+' le '+publiee);renseigner('#v-forfait-detail .forfait-finance-grid .forfait-tile:nth-child(1) b',montant);
     var sansPartenaire=(statut==='Non qualifiée'||partenaire==='—'||partenaire==='');
     var etapeFf=Number(ligne.dataset.etape)||1,rejetFf=ligne.dataset.rejet==='1',estGagne=(etapeFf>=8&&!rejetFf);
-    rendreFil('#v-forfait-detail',etapeFf,rejetFf,'ff-etape-compteur');
+    rendreFil('#v-forfait-detail',etapeFf,rejetFf);
     ['ff-phases'].forEach(function(id){var t=document.getElementById(id);if(t)t.style.display=estGagne?'':'none';});
     var phases=document.getElementById('ffp-phases'),documents=document.getElementById('ffp-documents');if(phases){var mNum=parseFloat((montant||'').replace(/[^\d.,]/g,'').replace(',','.'))||0,uNom=(montant||'').replace(/[\d\s.,]/g,'')||'k€',ph1=Math.round(mNum*0.3),ph2=Math.round(mNum*0.5),ph3=mNum-ph1-ph2,fmtP=function(n){return n+' '+uNom;};phases.innerHTML='<section class="card"><div class="forfait-phases-table"><table><thead><tr><th>Phase</th><th>Date de début</th><th>Date de fin</th><th class="num">Montant</th></tr></thead><tbody><tr><td>Cadrage et lancement</td><td>01/09/2026</td><td>30/09/2026</td><td class="num">'+fmtP(ph1)+'</td></tr><tr><td>Réalisation</td><td>01/10/2026</td><td>30/11/2026</td><td class="num">'+fmtP(ph2)+'</td></tr><tr><td>Restitution</td><td>01/12/2026</td><td>31/12/2026</td><td class="num">'+fmtP(ph3)+'</td></tr></tbody></table></div></section>';}if(documents)documents.innerHTML=sansPartenaire?'<section class="card"><div class="forfait-document"><div class="forfait-document-icone">—</div><div class="forfait-document-infos"><b>Aucune proposition</b><span>Besoin non qualifié — aucun partenaire associé à ce stade.</span></div></div></section>':'<section class="card"><div class="forfait-document"><div class="forfait-document-icone">PDF</div><div class="forfait-document-infos"><b>Proposition '+partenaire+'</b><span>Version de démonstration · dossier '+titre+'</span></div></div></section>';
     rendreHistoriqueSimple('ffp-historique',publiee,responsable,'18/07/2026',statut,ligne.dataset.refFcom);
@@ -4008,7 +4005,7 @@
     renseigner('#v-portage-detail .fiche-status h2',titre);renseigner('#v-portage-detail .fiche-status .card-sub','Besoin de portage · Publié le '+date);renseigner('#ptp-header-statut',statutAffiche);if(badge&&statutDetail)statutDetail.className=badge.className+' statut-besoin';
     renseigner('#v-portage-detail .sourcing-infos div:nth-child(1) dd',titre.split('—')[0].trim());renseigner('#v-portage-detail .sourcing-infos div:nth-child(2) dd',lieu);renseigner('#v-portage-detail .sourcing-infos div:nth-child(5) dd',tjm+' HT / jour');
     renseigner('#ptp-ressource-candidat',ressource);renseigner('#ptp-ressource-poste',titre.split('—')[0].trim());renseigner('#ptp-ressource-localisation',lieu);renseigner('#ptp-ressource-tjm',tjm+' HT / jour');renseigner('#ptp-ressource-statut',statut);renseigner('#v-portage-detail .sourcing-description p','Besoin rattaché au marché '+marche+' et suivi par '+responsable+'.');
-    rendreFil('#v-portage-detail',ligne.dataset.etape,ligne.dataset.rejet==='1','ptp-etape-compteur');
+    rendreFil('#v-portage-detail',ligne.dataset.etape,ligne.dataset.rejet==='1');
     rendreHistoriqueSimple('ptp-historique',date,responsable,'18/07/2026',statut,ligne.dataset.refFcom);
   }
   function renseignerMarche(lien){
