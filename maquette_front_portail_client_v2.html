@@ -1308,17 +1308,25 @@
   /* Les colonnes sont reparties explicitement plutot que laissees a la largeur
      automatique, qui repartissait le surplus au prorata : « Nantes » recevait
      360 px pendant que le commentaire se coupait. Chaque largeur couvre le
-     contenu le plus large mesure sur tous les besoins, padding compris, et le
-     retour client — seule colonne sans largeur — absorbe tout le reste. Le
-     min-width lui garde 300 px ; en dessous, .twrap defile plutot que d'ecraser
-     les colonnes. */
-  #table-candidatures-besoin table{table-layout:fixed;min-width:1120px}
-  #table-candidatures-besoin .c-candidat{width:140px}
-  #table-candidatures-besoin .c-poste{width:220px}
-  #table-candidatures-besoin .c-lieu{width:122px}
-  #table-candidatures-besoin .c-tjm{width:130px}
-  #table-candidatures-besoin .c-statut{width:100px}
-  #table-candidatures-besoin .c-cv{width:100px}
+     contenu le plus large mesure sur tous les besoins, padding compris.
+
+     Les parts sont en pourcentage, pas en pixels : le tableau garde alors les
+     memes proportions a toutes les tailles. Des largeurs fixes donnaient tout
+     le surplus au commentaire, qui montait a 53 % pendant que Candidat tombait
+     a 8 % — un tableau deux fois plus vide a gauche qu'a droite.
+
+     Le min-width tient lieu de plancher : a 1160 px, la plus juste des parts
+     (TJM, 11 % = 128 px) couvre encore ses 122 px de contenu. En dessous,
+     .twrap defile plutot que de replier les colonnes. Pas de max(%, px) ici :
+     Chromium ignore la fonction sur un <col> et retombe a sept parts egales. */
+  #table-candidatures-besoin table{table-layout:fixed;min-width:1160px}
+  #table-candidatures-besoin .c-candidat{width:14%}
+  #table-candidatures-besoin .c-poste{width:22%}
+  #table-candidatures-besoin .c-lieu{width:13%}
+  #table-candidatures-besoin .c-tjm{width:11%}
+  #table-candidatures-besoin .c-statut{width:9.5%}
+  #table-candidatures-besoin .c-cv{width:9%}
+  #table-candidatures-besoin .c-retour{width:21.5%}
   /* Retour client : la cellule ne se saisit plus, elle donne a lire le commentaire et ouvre la modale. */
   /* La colonne ayant desormais une part fixe, le texte n'a plus besoin d'un plafond
      pour se tronquer : min-width:0 suffit a le laisser couper. */
@@ -1327,12 +1335,7 @@
   #table-candidatures-besoin .retour-texte b{display:block;font-size:12px;font-weight:800;color:var(--t-900)}
   #table-candidatures-besoin .retour-texte span{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--t-600)}
   #table-candidatures-besoin .retour-texte span.retour-absent{color:#9aa4b5}
-  /* Une ligne sans commentaire laissait un crayon seul a 700 px de son libelle.
-     Elle porte desormais l'action en toutes lettres ; la ligne commentee garde
-     l'icone seule, le texte disant deja de quoi il s'agit. */
-  #table-candidatures-besoin .retour-editer{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;margin-left:auto;height:38px;padding:0 14px;border:1px solid var(--t-200);border-radius:10px;background:#fff;color:var(--brand);font:800 12px/1 inherit;white-space:nowrap;cursor:pointer}
-  #table-candidatures-besoin .retour-editer.retour-icone{width:38px;padding:0}
-  #table-candidatures-besoin .retour-libelle[hidden]{display:none}
+  #table-candidatures-besoin .retour-editer{display:grid;place-items:center;flex:none;margin-left:auto;width:38px;height:38px;border:1px solid var(--t-200);border-radius:10px;background:#fff;color:var(--brand);cursor:pointer}
   #table-candidatures-besoin .retour-editer:hover{border-color:#c7d6fb;background:#f5f8ff}
   #table-candidatures-besoin .retour-editer:focus-visible{outline:2px solid rgba(0,63,187,.35);outline-offset:2px}
   #v-besoin-detail .sourcing-etapes li.rejet>span,#v-forfait-detail .sourcing-etapes li.rejet>span,#v-portage-detail .sourcing-etapes li.rejet>span{background:#fff;color:#b42318;box-shadow:inset 0 0 0 2px #b42318,0 0 0 5px #fdf3f3}
@@ -3973,7 +3976,7 @@
     if(!corps)return;
     corps.innerHTML='';
     var titreBesoin=document.querySelector('#v-besoin-detail .fiche-status h2'),besoin=titreBesoin?titreBesoin.textContent.trim():'';
-    candidats.forEach(function(nom){var fiche=fiches[nom]||profilsATF[nom]||{},ligne=document.createElement('tr');ligne.innerHTML='<td><b></b></td><td></td><td></td><td class="num"></td><td><span class="badge b-bleu">Proposée</span></td><td class="candidate-cv"><a class="cv-link" href="cv-demo.pdf" target="_blank" rel="noopener"><svg class="ic s" aria-hidden="true"><use href="#i-doc"/></svg>CV</a></td><td class="candidate-actions"><div class="retour-cell"><div class="retour-texte"><b>Commentaire</b><span></span></div><button class="retour-editer" type="button"><svg class="ic s" aria-hidden="true"><use href="#i-crayon"/></svg><span class="retour-libelle">Ajouter un commentaire</span></button></div></td>';ligne.cells[0].querySelector('b').textContent=nom;ligne.cells[1].textContent=fiche.role||'Candidat proposé';ligne.cells[2].textContent=(fiche.meta||'').split(' · ')[0]||'—';ligne.cells[3].textContent=fiche.tjm||'—';var lienCv=ligne.querySelector('.cv-link');if(lienCv)lienCv.setAttribute('aria-label','Voir le CV de '+nom);ligne.dataset.candidat=nom;ligne.dataset.besoin=besoin;afficherRetour(ligne);if(gele){var editer=ligne.querySelector('.retour-editer');editer.disabled=true;editer.setAttribute('title','Retour indisponible : besoin en « '+(libelleStatut||'')+' »');}corps.appendChild(ligne);});
+    candidats.forEach(function(nom){var fiche=fiches[nom]||profilsATF[nom]||{},ligne=document.createElement('tr');ligne.innerHTML='<td><b></b></td><td></td><td></td><td class="num"></td><td><span class="badge b-bleu">Proposée</span></td><td class="candidate-cv"><a class="cv-link" href="cv-demo.pdf" target="_blank" rel="noopener"><svg class="ic s" aria-hidden="true"><use href="#i-doc"/></svg>CV</a></td><td class="candidate-actions"><div class="retour-cell"><div class="retour-texte"><b>Commentaire</b><span></span></div><button class="retour-editer" type="button"><svg class="ic s" aria-hidden="true"><use href="#i-crayon"/></svg></button></div></td>';ligne.cells[0].querySelector('b').textContent=nom;ligne.cells[1].textContent=fiche.role||'Candidat proposé';ligne.cells[2].textContent=(fiche.meta||'').split(' · ')[0]||'—';ligne.cells[3].textContent=fiche.tjm||'—';var lienCv=ligne.querySelector('.cv-link');if(lienCv)lienCv.setAttribute('aria-label','Voir le CV de '+nom);ligne.dataset.candidat=nom;ligne.dataset.besoin=besoin;afficherRetour(ligne);if(gele){var editer=ligne.querySelector('.retour-editer');editer.disabled=true;editer.setAttribute('title','Retour indisponible : besoin en « '+(libelleStatut||'')+' »');}corps.appendChild(ligne);});
     if(!corps.dataset.decisionsLiees){
       corps.dataset.decisionsLiees='true';
       corps.addEventListener('click',function(e){
@@ -3988,19 +3991,12 @@
   function cleRetour(ligne){return (ligne.dataset.besoin||'')+'|'+(ligne.dataset.candidat||'');}
   function afficherRetour(ligne){
     var texte=retoursCandidats[cleRetour(ligne)]||'',cible=ligne.querySelector('.retour-texte span'),
-        editer=ligne.querySelector('.retour-editer'),libelle=editer&&editer.querySelector('.retour-libelle'),
-        nom=ligne.dataset.candidat||'';
-    if(!cible||!editer||!libelle)return;
-    cible.textContent=texte;
-    /* Sans commentaire, le libelle « Commentaire » et sa ligne vide ne disent rien
-       que le bouton ne dise deja : on ne garde que le bouton. */
-    ligne.querySelector('.retour-texte').hidden=!texte;
+        editer=ligne.querySelector('.retour-editer'),nom=ligne.dataset.candidat||'';
+    if(!cible||!editer)return;
+    cible.textContent=texte||'Aucun commentaire';
+    cible.classList.toggle('retour-absent',!texte);
     if(texte)cible.setAttribute('title',texte);else cible.removeAttribute('title');
-    /* Sans commentaire le bouton s'annonce, avec commentaire il s'efface derriere
-       le texte : l'intitule visible et l'intitule lu disent alors la meme chose. */
-    libelle.hidden=!!texte;
-    editer.classList.toggle('retour-icone',!!texte);
-    editer.setAttribute('aria-label',(texte?'Modifier le commentaire sur la candidature de ':'Ajouter un commentaire sur la candidature de ')+nom);
+    editer.setAttribute('aria-label',(texte?'Modifier le commentaire sur la candidature de ':'Commenter la candidature de ')+nom);
   }
   var retourDialog=document.getElementById('retour-dialog'),retourLigne=null;
   function ouvrirRetour(ligne){
