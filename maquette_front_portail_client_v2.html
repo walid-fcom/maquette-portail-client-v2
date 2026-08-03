@@ -2027,12 +2027,12 @@
     <a href="#" data-vue="tdb"><svg class="ic"><use href="#i-graph"/></svg>Tableau de bord</a>
     <a href="#" data-vue="besoins"><svg class="ic"><use href="#i-besoin"/></svg>Mes besoins</a>
     <a href="#" data-vue="activites"><svg class="ic"><use href="#i-couches"/></svg>Mon activité</a>
-    <a href="#" data-vue="intervenants"><svg class="ic"><use href="#i-gens"/></svg>Annuaire intervenants</a>
+    
     <a href="#" data-vue="partenaires"><svg class="ic"><use href="#i-gens"/></svg>Partenaires</a>
     <a href="#" data-vue="bdc"><svg class="ic"><use href="#i-dossier"/></svg>BDC</a>
     <a href="#" data-vue="factures"><svg class="ic"><use href="#i-doc"/></svg>Factures</a>
-    <a href="#" data-vue="empreinte-carbone"><svg class="ic"><use href="#i-graph"/></svg>RSE</a>
-    <a href="#" data-vue="notifications"><svg class="ic"><use href="#i-cloche"/></svg>Notification</a>
+    
+    
     </nav>
     <div class="side-account" id="side-account">
       <button class="side-account-trigger" id="side-account-trigger" type="button" aria-expanded="false" aria-controls="side-account-menu">
@@ -2781,51 +2781,6 @@
         </section>
         </div>
       </section>
-      <section class="vue" id="v-empreinte-carbone" tabindex="-1" hidden>
-        <div class="carbon-page">
-          <section class="card carbon-intro">
-            <div><h2>RSE</h2></div>
-            <span class="badge ok">Données Smartcarbone</span>
-          </section>
-          <section class="card">
-            <div class="carbon-tabs" role="tablist" aria-label="Périmètre RSE">
-              <button class="carbon-tab" id="carbon-tab-missions" type="button" role="tab" aria-selected="true" aria-controls="carbon-panel-missions">Missions en cours</button>
-            </div>
-            <div class="presta-filtres" aria-label="Rechercher et filtrer les émissions">
-              <span class="presta-filtre-label">Filtres</span>
-              <span class="champ-rech"><svg class="ic s" aria-hidden="true"><use href="#i-loupe"/></svg><input id="carbon-search" type="search" placeholder="Rechercher un besoin par une mission"></span>
-              <select class="presta-filter" id="carbon-market" aria-label="Filtrer par marché"><option value="tous">Tous les marchés</option><option value="data-ia">Accord-cadre Data &amp; IA</option><option value="infra">Marché Infra &amp; Cloud</option><option value="at-si">AT Prestations SI 2024-28</option><option value="cyber">Cybersécurité</option></select>
-              <select class="presta-filter" id="carbon-impact" aria-label="Filtrer par niveau d’émission"><option value="tous">Toutes les émissions</option><option value="modere">≤ 0,50 kg CO₂e</option><option value="eleve">&gt; 0,50 kg CO₂e</option></select>
-              <button class="presta-reset" id="carbon-reset" type="button">Reset les filtres</button>
-            </div>
-            <div class="carbon-panel" id="carbon-panel-missions" role="tabpanel" aria-labelledby="carbon-tab-missions">
-              <div class="twrap carbon-table" role="region" aria-label="Émissions carbone des missions" tabindex="0"><table>
-                <thead><tr><th>Mission</th><th>N° BdC</th><th>Période</th><th>Opérationnel</th><th>Marché</th><th class="num">Émissions carbone</th></tr></thead>
-                <tbody>
-                  <tr data-carbon-market="data-ia" data-carbon-impact="modere"><td><div class="carbon-mission">Data platform — équipe augmentée</div></td><td>446547</td><td>01/04/2026 — 31/03/2027</td><td>Camille Moreau</td><td>Accord-cadre Data &amp; IA</td><td class="num"><span class="carbon-value" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,35 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,22 kg CO₂e</em></span><span>Numérique <em>0,13 kg CO₂e</em></span></span></span></td></tr>
-                  <tr data-carbon-market="infra" data-carbon-impact="eleve"><td><div class="carbon-mission">Refonte infrastructure cloud</div></td><td>447982</td><td>01/09/2026 — 28/02/2027</td><td>Camille Moreau</td><td>Marché Infra &amp; Cloud</td><td class="num"><span class="carbon-value high" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>1,43 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>1,02 kg CO₂e</em></span><span>Numérique <em>0,41 kg CO₂e</em></span></span></span></td></tr>
-                  <tr data-carbon-market="at-si" data-carbon-impact="eleve"><td><div class="carbon-mission">Portage SAP FI/CO — TMA finance</div></td><td>448006</td><td>01/06/2026 — 31/05/2027</td><td>Camille Moreau</td><td>AT Prestations SI 2024-28</td><td class="num"><span class="carbon-value" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,54 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,36 kg CO₂e</em></span><span>Numérique <em>0,18 kg CO₂e</em></span></span></span></td></tr>
-                  <tr data-carbon-market="at-si" data-carbon-impact="modere"><td><div class="carbon-mission">App agents terrain — développeur Flutter</div></td><td>448120</td><td>01/10/2026 — 31/03/2027</td><td>Kevin Roulot</td><td>AT Prestations SI 2024-28</td><td class="num"><span class="carbon-value" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,20 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,12 kg CO₂e</em></span><span>Numérique <em>0,08 kg CO₂e</em></span></span></span></td></tr>
-                </tbody>
-              </table></div>
-            </div>
-            <div class="carbon-panel" id="carbon-panel-candidats" role="tabpanel" aria-labelledby="carbon-tab-candidats" hidden>
-              <div class="twrap carbon-table" role="region" aria-label="Empreinte carbone des candidatures proposées" tabindex="0"><table>
-                <thead><tr><th>Besoin</th><th>Candidat proposé</th><th>Localisation</th><th>Marché</th><th>Étape</th><th class="num">Empreinte carbone</th></tr></thead>
-                <tbody>
-                  <tr data-carbon-market="at-si" data-carbon-impact="modere"><td><div class="carbon-mission">Développeur mobile Flutter — app agents terrain</div></td><td><div class="c-nom">Ana Costa</div><div class="c-sub">Développeuse Flutter</div></td><td>Lyon</td><td>AT Prestations SI 2024-28</td><td><span class="badge b-neutre">Démarrage de la mission</span></td><td class="num"><span class="carbon-value" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,20 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,12 kg CO₂e</em></span><span>Numérique <em>0,08 kg CO₂e</em></span></span></span></td></tr>
-                  <tr data-carbon-market="at-si" data-carbon-impact="modere"><td><div class="carbon-mission">UX designer — parcours de souscription</div></td><td><div class="c-nom">Marta Lopez</div><div class="c-sub">UX designer</div></td><td>Paris</td><td>AT Prestations SI 2024-28</td><td><span class="badge b-neutre">Entretien candidats</span></td><td class="num"><span class="carbon-value" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,28 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,17 kg CO₂e</em></span><span>Numérique <em>0,11 kg CO₂e</em></span></span></span></td></tr>
-                  <tr data-carbon-market="at-si" data-carbon-impact="eleve"><td><div class="carbon-mission">UX designer — parcours de souscription</div></td><td><div class="c-nom">Chi N’Guyen</div><div class="c-sub">UX designer</div></td><td>Paris</td><td>AT Prestations SI 2024-28</td><td><span class="badge b-neutre">Entretien candidats</span></td><td class="num"><span class="carbon-value high" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,58 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,44 kg CO₂e</em></span><span>Numérique <em>0,14 kg CO₂e</em></span></span></span></td></tr>
-                  <tr data-carbon-market="at-si" data-carbon-impact="modere"><td><div class="carbon-mission">UX designer — parcours de souscription</div></td><td><div class="c-nom">Théo Roussel</div><div class="c-sub">UX designer</div></td><td>Paris</td><td>AT Prestations SI 2024-28</td><td><span class="badge b-neutre">Entretien candidats</span></td><td class="num"><span class="carbon-value" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,31 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,19 kg CO₂e</em></span><span>Numérique <em>0,12 kg CO₂e</em></span></span></span></td></tr>
-                  <tr data-carbon-market="cyber" data-carbon-impact="eleve"><td><div class="carbon-mission">Consultant cybersécurité — audit ISO 27001</div></td><td><div class="c-nom">Elsa Weber</div><div class="c-sub">Consultante cybersécurité</div></td><td>Paris</td><td>Cybersécurité</td><td><span class="badge b-neutre">Validation du candidat</span></td><td class="num"><span class="carbon-value high" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,74 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,55 kg CO₂e</em></span><span>Numérique <em>0,19 kg CO₂e</em></span></span></span></td></tr>
-                  <tr data-carbon-market="at-si" data-carbon-impact="eleve"><td><div class="carbon-mission">Chef de projet migration SI finance</div></td><td><div class="c-nom">Julien Berthier</div><div class="c-sub">Chef de projet SI</div></td><td>Nantes</td><td>AT Prestations SI 2024-28</td><td><span class="badge b-neutre">Négociation financière</span></td><td class="num"><span class="carbon-value high" tabindex="0"><svg class="ic s"><use href="#i-graph"/></svg>0,69 kg CO₂e<span class="carbon-tip" role="tooltip"><b>Smartcarbone · estimation</b><span>Transport <em>0,48 kg CO₂e</em></span><span>Numérique <em>0,21 kg CO₂e</em></span></span></span></td></tr>
-                </tbody>
-              </table></div>
-            </div>
-          </section>
-        </div>
-      </section>
-      <!-- ═══ MON ACTIVITÉ (consultation historique) ═══ -->
       <section class="vue" id="v-activite" tabindex="-1" hidden>
         <section class="card">
           <div class="activite-pilotage">
@@ -3062,32 +3017,6 @@
         </section>
       </section>
 
-      <section class="vue" id="v-intervenants" tabindex="-1" hidden>
-        <section class="card pool-page">
-          <div class="pool-header">
-            <div><h2>Annuaire intervenants</h2><p>Profils, partenaires et freelances associés à vos prestations.</p></div>
-          </div>
-          <div class="pool-filtres" aria-label="Filtres du réseau">
-            <strong>Filtres</strong>
-            <select aria-label="Marché"><option>Tous les marchés</option><option>Accord-cadre Data &amp; IA</option><option>AT Prestations SI 2024-28</option><option>Marché Infra &amp; Cloud</option></select>
-            <select aria-label="Entité"><option>Toutes les entités</option><option>Enedis</option><option>EDF Commerce</option><option>EDF — DSI</option></select>
-            <button class="pool-reset" type="button">Reset les filtres</button><details class="presta-colonnes f-config"><summary>Configurer les colonnes</summary><div class="presta-colonnes-menu"><b>Colonnes à afficher</b><label><input type="checkbox" data-profil-col="1" checked> Intervenant</label><label><input type="checkbox" data-profil-col="2" checked> Type</label><label><input type="checkbox" data-profil-col="3" checked> Dernière affaire</label><label><input type="checkbox" data-profil-col="4" checked> Dernière collaboration</label></div></details></div>
-          <div class="twrap pool-table" role="region" aria-label="Pool de partenaires et freelances" tabindex="0">
-            <table>
-              <thead><tr><th>Intervenant</th><th>Type</th><th>Dernière affaire</th><th>Dernière collaboration</th></tr></thead>
-              <tbody>
-                <tr><td><span class="c-nom">Lucie Martin</span></td><td>Freelance · Data senior</td><td class="pool-affaire">Data platform — équipe augmentée</td><td>Juin 2026</td></tr>
-                <tr><td><span class="c-nom">Sekou Diallo</span></td><td>Freelance · Data confirmé</td><td class="pool-affaire">Data platform — équipe augmentée</td><td>Juin 2026</td></tr>
-                <tr><td><span class="c-nom">Rachid Haddad</span></td><td>Partenaire · PTN-0001</td><td class="pool-affaire">Data platform — équipe augmentée</td><td>Mai 2026</td></tr>
-                <tr><td><span class="c-nom">Ana Costa</span></td><td>Partenaire · PTN-0002</td><td class="pool-affaire">App agents terrain — développeur Flutter</td><td>Juin 2026</td></tr>
-                <tr><td><span class="c-nom">Elsa Weber</span></td><td>Partenaire · PTN-0003</td><td class="pool-affaire">Audit sécurité &amp; pentest</td><td>Mars 2026</td></tr>
-                <tr><td><span class="c-nom">Karim Ben Salem</span></td><td>Partenaire · PTN-0004</td><td class="pool-affaire">Poste de travail &amp; outillage</td><td>Février 2026</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </section>
-
       <section class="vue" id="v-dc4-detail" tabindex="-1" hidden>
         <button class="retour" data-vue="conformite"><svg class="ic s"><use href="#i-gauche"/></svg>Retour aux DC4</button>
         <div class="dc4-layout">
@@ -3214,27 +3143,7 @@
         </section>
       </section>
 
-      <section class="vue" id="v-notifications" tabindex="-1" hidden>
-        <section class="notifications-page">
-          <h2>Notifications</h2>
-          <div class="notifications-tabs" aria-label="Statut des notifications"><button class="notification-tab" type="button" data-notif-tab="toutes" aria-pressed="true">Toutes les notifications</button><button class="notification-tab" type="button" data-notif-tab="non-lues" aria-pressed="false">Non lues</button><button class="notification-tab" type="button" data-notif-tab="lues" aria-pressed="false">Lues</button><button class="notification-tab" type="button" data-notif-tab="priorites" aria-pressed="false">Priorités</button></div>
-          <div class="notifications-filters">
-            <span class="notif-filter-label">Filtres</span>
-            <input class="notif-filter-search" id="notif-search" type="search" placeholder="Rechercher" aria-label="Rechercher une notification">
-            <select class="notif-filter-select" id="notif-type" aria-label="Filtrer par type"><option value="tous">Tous les types</option><option value="information">Information</option><option value="alerte">Alerte</option></select>
-            <select class="notif-filter-select" id="notif-period" aria-label="Filtrer par période"><option value="tous">Depuis le début</option><option value="7j">7 derniers jours</option><option value="30j">30 derniers jours</option></select>
-            <button class="presta-reset" id="notif-reset" type="button">Reset les filtres</button>
-          </div>
-          <div class="notifications-actions"><label><input class="notif-check" id="notif-all" type="checkbox" aria-label="Sélectionner toutes les notifications"></label><button type="button" id="notif-prioriser">★ Prioriser</button><button type="button" id="notif-deprioriser">☆ Déprioriser</button><button type="button" id="notif-lire">◉ Marquer comme lue</button><button type="button" id="notif-non-lire">⊘ Marquer comme non lue</button></div>
-          <div class="notif-list" id="notif-list">
-            <article class="notif-item" data-notif-type="information" data-notif-read="false" data-notif-priority="false" data-notif-date="2026-07-18"><label><input class="notif-check notif-select" type="checkbox" aria-label="Sélectionner la notification"></label><button class="notif-star" type="button" aria-label="Prioriser">★</button><div class="notif-main"><div class="notif-top"><span class="notif-kind info">Information</span><h3>3 profils proposés pour « UX designer — parcours de souscription »</h3></div><p>Camille Moreau a partagé trois candidatures que vous pouvez comparer avant de planifier les entretiens.</p><time datetime="2026-07-18">Le 18 juillet 2026 à 09:30</time></div><a class="notif-see" href="#" data-vue="besoins"><svg class="ic s"><use href="#i-fleche"/></svg>Voir</a></article>
-            <p class="notif-empty" id="notif-empty" hidden>Aucune notification ne correspond à vos critères.</p>
-          </div>
-        </section>
-      </section>
-
-    </div>
-    <footer class="portal-footer" aria-label="Liens utiles"><a href="file:///Users/walid/Downloads/CGU.html">CGU</a><a href="#">Cookies</a><a href="#">Besoin d’aide&nbsp;?</a><a class="portal-guide" href="#"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Télécharger le guide du portail</a></footer>
+      <footer class="portal-footer" aria-label="Liens utiles"><a href="file:///Users/walid/Downloads/CGU.html">CGU</a><a href="#">Cookies</a><a href="#">Besoin d’aide&nbsp;?</a><a class="portal-guide" href="#"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Télécharger le guide du portail</a></footer>
   </main>
 </div>
 
@@ -3594,8 +3503,8 @@
     filtrer();
   });
 
-  var titres={accueil:'Vos marchés',tdb:'Tableau de bord',besoins:'Besoins','besoin-detail':'Besoins','forfait-detail':'Prestations','forfait-affaire':'Prestations','portage-detail':'Besoins','portage-prestation-detail':'Prestations',prestations:'Prestations','empreinte-carbone':'RSE',factures:'Factures',bdc:'Bons de commande',marches:'Marchés','marche-detail':'Marchés','activite-detail':'Prestations',partenaires:'Partenaires',
-    intervenants:'Annuaire intervenants',conformite:'Conformité','conformite-detail':'Conformité','dc4-detail':'Conformité',documents:'Documents',notifications:'Notifications',activites:'Activités'};
+  var titres={accueil:'Vos marchés',tdb:'Tableau de bord',besoins:'Besoins','besoin-detail':'Besoins','forfait-detail':'Prestations','forfait-affaire':'Prestations','portage-detail':'Besoins','portage-prestation-detail':'Prestations',prestations:'Prestations',factures:'Factures',bdc:'Bons de commande',marches:'Marchés','marche-detail':'Marchés','activite-detail':'Prestations',partenaires:'Partenaires',
+    conformite:'Conformité','conformite-detail':'Conformité','dc4-detail':'Conformité',documents:'Documents',activites:'Activités'};
   function vueDepuisHash(){
     var nom=location.hash.slice(1);
     return Object.prototype.hasOwnProperty.call(titres,nom)?nom:'';
