@@ -4917,21 +4917,21 @@
   document.querySelectorAll('#tpresta-conformite,#ppd-conformite').forEach(function(onglet){onglet.textContent='Intervenants';onglet.setAttribute('aria-label','Intervenants');});
   function afficherIntervenants(panneau,intervenants){
     var table=document.querySelector(panneau+' .prestation-compliance table');if(!table)return;
-    table.innerHTML='<thead><tr><th>Intervenant</th><th>Type</th><th>Dernière vérification</th><th>Statut conformité</th></tr></thead><tbody></tbody>';
+    table.innerHTML='<thead><tr><th>Intervenant</th><th>Type</th><th>Statut conformité</th></tr></thead><tbody></tbody>';
     var corps=table.tBodies[0];
     intervenants.forEach(function(intervenant){
       var ligne=document.createElement('tr');
-      ligne.innerHTML='<td>'+intervenant.nom+'</td><td>'+intervenant.type+'</td><td>'+intervenant.verification+'</td><td><span class="badge '+intervenant.classe+'">'+intervenant.statut+'</span></td>';
+      ligne.innerHTML='<td>'+intervenant.nom+'</td><td>'+intervenant.type+'</td><td><span class="badge '+intervenant.classe+'">'+intervenant.statut+'</span></td>';
       corps.appendChild(ligne);
     });
   }
   afficherIntervenants('#ppresta-conformite',[
-    {nom:'Lucie Martin',type:'Freelance',verification:'12/06/2026',classe:'ok',statut:'Dossier à jour'},
-    {nom:'Sekou Diallo',type:'Freelance',verification:'10/06/2026',classe:'ok',statut:'Dossier à jour'},
-    {nom:'DATAPY',type:'Partenaire',verification:'08/06/2026',classe:'warn',statut:'À compléter'}
+    {nom:'Lucie Martin',type:'Freelance',classe:'ok',statut:'Dossier à jour'},
+    {nom:'Sekou Diallo',type:'Freelance',classe:'ok',statut:'Dossier à jour'},
+    {nom:'DATAPY',type:'Partenaire',classe:'warn',statut:'À compléter'}
   ]);
   afficherIntervenants('#ppp-conformite',[
-    {nom:'Pierre Morel',type:'Salarié porté',verification:'03/06/2026',classe:'ok',statut:'Dossier à jour'}
+    {nom:'Pierre Morel',type:'Salarié porté',classe:'ok',statut:'Dossier à jour'}
   ]);
 })();
 </script>
