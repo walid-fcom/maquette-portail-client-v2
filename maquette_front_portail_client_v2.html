@@ -1327,7 +1327,12 @@
   #table-candidatures-besoin .retour-texte b{display:block;font-size:12px;font-weight:800;color:var(--t-900)}
   #table-candidatures-besoin .retour-texte span{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--t-600)}
   #table-candidatures-besoin .retour-texte span.retour-absent{color:#9aa4b5}
-  #table-candidatures-besoin .retour-editer{display:grid;place-items:center;flex:none;width:38px;height:38px;border:1px solid var(--t-200);border-radius:10px;background:#fff;color:var(--brand);cursor:pointer}
+  /* Une ligne sans commentaire laissait un crayon seul a 700 px de son libelle.
+     Elle porte desormais l'action en toutes lettres ; la ligne commentee garde
+     l'icone seule, le texte disant deja de quoi il s'agit. */
+  #table-candidatures-besoin .retour-editer{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;margin-left:auto;height:38px;padding:0 14px;border:1px solid var(--t-200);border-radius:10px;background:#fff;color:var(--brand);font:800 12px/1 inherit;white-space:nowrap;cursor:pointer}
+  #table-candidatures-besoin .retour-editer.retour-icone{width:38px;padding:0}
+  #table-candidatures-besoin .retour-libelle[hidden]{display:none}
   #table-candidatures-besoin .retour-editer:hover{border-color:#c7d6fb;background:#f5f8ff}
   #table-candidatures-besoin .retour-editer:focus-visible{outline:2px solid rgba(0,63,187,.35);outline-offset:2px}
   #v-besoin-detail .sourcing-etapes li.rejet>span,#v-forfait-detail .sourcing-etapes li.rejet>span,#v-portage-detail .sourcing-etapes li.rejet>span{background:#fff;color:#b42318;box-shadow:inset 0 0 0 2px #b42318,0 0 0 5px #fdf3f3}
@@ -3968,7 +3973,7 @@
     if(!corps)return;
     corps.innerHTML='';
     var titreBesoin=document.querySelector('#v-besoin-detail .fiche-status h2'),besoin=titreBesoin?titreBesoin.textContent.trim():'';
-    candidats.forEach(function(nom){var fiche=fiches[nom]||profilsATF[nom]||{},ligne=document.createElement('tr');ligne.innerHTML='<td><b></b></td><td></td><td></td><td class="num"></td><td><span class="badge b-bleu">Proposée</span></td><td class="candidate-cv"><a class="cv-link" href="cv-demo.pdf" target="_blank" rel="noopener"><svg class="ic s" aria-hidden="true"><use href="#i-doc"/></svg>CV</a></td><td class="candidate-actions"><div class="retour-cell"><div class="retour-texte"><b>Commentaire</b><span></span></div><button class="retour-editer" type="button"><svg class="ic s" aria-hidden="true"><use href="#i-crayon"/></svg></button></div></td>';ligne.cells[0].querySelector('b').textContent=nom;ligne.cells[1].textContent=fiche.role||'Candidat proposé';ligne.cells[2].textContent=(fiche.meta||'').split(' · ')[0]||'—';ligne.cells[3].textContent=fiche.tjm||'—';var lienCv=ligne.querySelector('.cv-link');if(lienCv)lienCv.setAttribute('aria-label','Voir le CV de '+nom);ligne.dataset.candidat=nom;ligne.dataset.besoin=besoin;afficherRetour(ligne);if(gele){var editer=ligne.querySelector('.retour-editer');editer.disabled=true;editer.setAttribute('title','Retour indisponible : besoin en « '+(libelleStatut||'')+' »');}corps.appendChild(ligne);});
+    candidats.forEach(function(nom){var fiche=fiches[nom]||profilsATF[nom]||{},ligne=document.createElement('tr');ligne.innerHTML='<td><b></b></td><td></td><td></td><td class="num"></td><td><span class="badge b-bleu">Proposée</span></td><td class="candidate-cv"><a class="cv-link" href="cv-demo.pdf" target="_blank" rel="noopener"><svg class="ic s" aria-hidden="true"><use href="#i-doc"/></svg>CV</a></td><td class="candidate-actions"><div class="retour-cell"><div class="retour-texte"><b>Commentaire</b><span></span></div><button class="retour-editer" type="button"><svg class="ic s" aria-hidden="true"><use href="#i-crayon"/></svg><span class="retour-libelle">Ajouter un commentaire</span></button></div></td>';ligne.cells[0].querySelector('b').textContent=nom;ligne.cells[1].textContent=fiche.role||'Candidat proposé';ligne.cells[2].textContent=(fiche.meta||'').split(' · ')[0]||'—';ligne.cells[3].textContent=fiche.tjm||'—';var lienCv=ligne.querySelector('.cv-link');if(lienCv)lienCv.setAttribute('aria-label','Voir le CV de '+nom);ligne.dataset.candidat=nom;ligne.dataset.besoin=besoin;afficherRetour(ligne);if(gele){var editer=ligne.querySelector('.retour-editer');editer.disabled=true;editer.setAttribute('title','Retour indisponible : besoin en « '+(libelleStatut||'')+' »');}corps.appendChild(ligne);});
     if(!corps.dataset.decisionsLiees){
       corps.dataset.decisionsLiees='true';
       corps.addEventListener('click',function(e){
@@ -3983,12 +3988,19 @@
   function cleRetour(ligne){return (ligne.dataset.besoin||'')+'|'+(ligne.dataset.candidat||'');}
   function afficherRetour(ligne){
     var texte=retoursCandidats[cleRetour(ligne)]||'',cible=ligne.querySelector('.retour-texte span'),
-        editer=ligne.querySelector('.retour-editer'),nom=ligne.dataset.candidat||'';
-    if(!cible||!editer)return;
-    cible.textContent=texte||'Aucun commentaire';
-    cible.classList.toggle('retour-absent',!texte);
+        editer=ligne.querySelector('.retour-editer'),libelle=editer&&editer.querySelector('.retour-libelle'),
+        nom=ligne.dataset.candidat||'';
+    if(!cible||!editer||!libelle)return;
+    cible.textContent=texte;
+    /* Sans commentaire, le libelle « Commentaire » et sa ligne vide ne disent rien
+       que le bouton ne dise deja : on ne garde que le bouton. */
+    ligne.querySelector('.retour-texte').hidden=!texte;
     if(texte)cible.setAttribute('title',texte);else cible.removeAttribute('title');
-    editer.setAttribute('aria-label',(texte?'Modifier le commentaire sur la candidature de ':'Commenter la candidature de ')+nom);
+    /* Sans commentaire le bouton s'annonce, avec commentaire il s'efface derriere
+       le texte : l'intitule visible et l'intitule lu disent alors la meme chose. */
+    libelle.hidden=!!texte;
+    editer.classList.toggle('retour-icone',!!texte);
+    editer.setAttribute('aria-label',(texte?'Modifier le commentaire sur la candidature de ':'Ajouter un commentaire sur la candidature de ')+nom);
   }
   var retourDialog=document.getElementById('retour-dialog'),retourLigne=null;
   function ouvrirRetour(ligne){
