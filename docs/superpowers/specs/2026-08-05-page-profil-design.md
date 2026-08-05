@@ -1,0 +1,169 @@
+# Page Profil — portail client V2
+
+Design validé le 5 août 2026.
+
+## Le problème
+
+Le menu compte de la barre latérale propose « Profil », mais le lien ne fait
+rien : il referme le menu. Ses deux voisins, « Paramètres » et
+« Notifications », promettaient sans tenir — ils viennent d'être supprimés.
+Il ne reste donc qu'une porte pour tout ce qui relève du compte, et elle
+n'ouvre sur rien.
+
+## Le périmètre
+
+Une fiche d'identité minimale, plus les deux seuls réglages que le produit
+sait réellement offrir : la méthode de vérification en deux étapes et le mot
+de passe. Rien d'autre.
+
+Explicitement hors périmètre : sessions actives et appareils connectés, codes
+de secours, préférences de notification, langue et fuseau horaire, photo de
+profil, suppression de compte. Chacun ouvrirait une promesse que le produit ne
+tient pas — c'est précisément ce qu'on vient de retirer du menu.
+
+Tout est client-side. Aucun appel réseau, aucune persistance entre deux
+rechargements : la maquette repart volontairement du login.
+
+## L'écran
+
+Une vue de plus dans le fichier, sur le modèle de toutes les autres :
+
+```html
+<section class="vue" id="v-profil" tabindex="-1" hidden>
+```
+
+Elle s'atteint par le lien « Profil » du menu compte, et par `#profil` dans
+l'URL. Elle n'entre pas dans la navigation principale : c'est un écran de
+compte, pas un écran de travail. Aucune entrée de barre latérale ne doit
+s'allumer quand elle est ouverte — le calcul de `navNom` dans `afficher()`
+donne déjà ce résultat sans modification, puisqu'aucun `a[data-vue="profil"]`
+n'existe dans la barre.
+
+Trois cartes empilées, dans cet ordre : identité, vérification en deux étapes,
+mot de passe.
+
+### Bloc 1 — Identité
+
+En lecture seule, sans exception. La fiche appartient à Salesforce ; une
+maquette qui laisse modifier un champ non modifiable ment sur le produit.
+
+Avatar en initiales `RD` et nom en titre, puis quatre lignes :
+
+| Champ | Valeur de démonstration |
+|---|---|
+| Email de connexion | robert.duris@yopmail.com |
+| Fonction | Responsable achats IT |
+| Société | ELECTRICITE DE FRANCE — EDF |
+| Rôle portail | Contract manager *(badge)* |
+
+Le rôle portail porte un badge parce qu'il n'est pas décoratif : c'est lui qui
+détermine ce que Robert voit du portefeuille, via le `data-role` déjà câblé
+sur `<body>`.
+
+Sous le bloc, une phrase discrète : « Ces informations viennent de votre fiche
+Freelance.com. Pour les corriger, contactez Camille Moreau », le nom étant un
+lien vers l'interlocuteur.
+
+### Bloc 2 — Vérification en deux étapes
+
+L'état actuel en évidence : **Par email**, badge actif, adresse rappelée.
+
+En dessous, les deux méthodes en boutons radio :
+
+- **Par email** — code envoyé à l'adresse de connexion
+- **Application d'authentification** — Google Authenticator, Authy, Microsoft
+  Authenticator
+
+Sélectionner « Application d'authentification » n'enregistre rien. Cela arme
+un bouton **Configurer** qui ouvre la modale d'appairage. C'est le seul
+chemin : on n'active pas une méthode qu'on n'a pas prouvé savoir utiliser.
+
+#### La modale d'appairage
+
+Deux étapes numérotées dans une seule modale :
+
+1. **Scanner** — un QR code, plus la clé en clair juste en dessous
+   (`JBSW Y3DP EHPK 3PXP`) pour qui ne peut pas scanner.
+2. **Confirmer** — six cases de saisie, puis un bouton *Confirmer*.
+
+Le QR est un SVG inline décoratif — un damier qui en a l'allure —, marqué
+`aria-hidden`, et non un vrai code encodé : la maquette n'embarque pas de
+bibliothèque de génération, et il n'y a de toute façon aucun secret réel à
+appairer. Le composant de saisie à six cases existe
+déjà pour le MFA du login (`.mfa-case` et `window.portailMfaSaisie`) — on le
+réutilise tel quel, avance automatique de case en case comprise.
+
+N'importe quel code à six chiffres est accepté : c'est une démonstration, et
+un refus arbitraire ne prouverait rien. Le bouton *Confirmer* reste désactivé
+tant que les six cases ne sont pas remplies, exactement comme au login.
+
+À la confirmation, la modale se ferme et le bloc bascule : méthode active
+« Application d'authentification », badge, date d'activation du jour, et un
+bouton **Changer de méthode** qui ramène au choix.
+
+#### La conséquence sur le login
+
+Une fois l'application appairée, la modale MFA de connexion doit dire
+« Saisissez le code à 6 chiffres de votre application » au lieu de
+« Saisissez le code à 6 chiffres envoyé à **r.duris@edf.fr** ». Le bouton
+« Renvoyer le code » et le compte à rebours de validité n'ont plus de sens
+avec une application : ils disparaissent.
+
+Sans cela, la démonstration se contredit à l'écran suivant. C'est la seule
+partie de ce travail qui touche du code existant.
+
+### Bloc 3 — Mot de passe
+
+Une ligne d'état — « Dernière modification le 12/05/2026 » — puis trois
+champs : mot de passe actuel, nouveau mot de passe, confirmation.
+
+Les deux champs de saisie portent le bouton œil déjà utilisé sur l'écran de
+login (`.l-mdp-champ`, `.l-mdp-visibilite`), avec son `aria-pressed` et son
+libellé qui bascule.
+
+Les règles sont affichées en clair sous le champ plutôt que devinées : 12
+caractères minimum, une majuscule, un chiffre, un caractère spécial. Une jauge
+se met à jour à la frappe et compte simplement les règles satisfaites — une ou
+deux : faible, trois : moyen, les quatre : fort.
+
+Le bouton **Modifier le mot de passe** reste désactivé tant que les trois
+champs ne sont pas remplis et que la confirmation ne correspond pas au nouveau
+mot de passe. À la validation : message de confirmation en place, champs
+vidés, date d'état mise à jour. On reste sur la page.
+
+## L'intégration au fichier
+
+Le portail est un fichier HTML autonome. Cinq points de contact :
+
+1. **La vue** — `<section class="vue" id="v-profil">` parmi les autres vues,
+   avec ses trois cartes.
+2. **La modale d'appairage** — au niveau des autres modales, sur le modèle de
+   `#mfa-modale` : un `.ov`, un `.ov-scrim`, une classe sur `<body>` pour
+   l'ouverture, fermeture à l'Échap et au clic sur le voile.
+3. **Le routage** — une entrée `profil:'Mon profil'` dans la table `titres`,
+   qui suffit à rendre `#profil` navigable et à titrer la page.
+4. **Le lien du menu compte** — `#profile-link` appelle `afficher('profil')`
+   puis referme le menu, au lieu de seulement le refermer.
+5. **Le comportement** — un bloc `garde('v-profil', …)` par convention du
+   fichier, pour que l'écran ne puisse pas casser le reste de la page s'il
+   lève.
+
+Le CSS suit les conventions en vigueur : classes `.card`, `.eyebrow`,
+`.badge`, `.btn` / `.btn.ghost`, préfixe `#v-profil` pour ce qui est propre à
+l'écran.
+
+## Comment on saura que c'est bon
+
+- Le lien « Profil » du menu compte ouvre la page ; `#profil` dans l'URL
+  l'ouvre aussi ; aucune entrée de la barre latérale ne s'allume.
+- Le bloc identité n'expose aucun champ modifiable.
+- Choisir « Application d'authentification » n'active rien tant que
+  l'appairage n'est pas confirmé.
+- Après appairage, le bloc affiche la nouvelle méthode, et la modale MFA du
+  login parle de l'application, sans bouton de renvoi ni compte à rebours.
+- Le bouton de changement de mot de passe reste inerte tant que la
+  confirmation ne correspond pas.
+- Aucune erreur JavaScript à l'ouverture de la page ni pendant les deux
+  parcours.
+- Le reste du portail est intact : navigation, besoins, MFA du login quand la
+  méthode est restée « email ».
