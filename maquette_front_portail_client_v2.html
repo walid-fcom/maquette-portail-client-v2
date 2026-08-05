@@ -1568,6 +1568,15 @@
   .compte-mfa-option b{display:block;font-size:13.5px;color:var(--t-900)}
   .compte-mfa-option small{display:block;margin-top:4px;color:var(--t-600);font-size:12.5px;line-height:1.5}
   .compte-mfa-actions{display:flex;align-items:center;gap:14px;margin-top:20px}
+  body.appairage-open .ov-scrim.s-appairage{display:block}
+  body.appairage-open .ov.o-appairage{display:flex}
+  .appairage-box{width:min(100%,460px);margin:auto;padding:30px;border-radius:20px;background:#fff;box-shadow:0 24px 64px rgba(15,23,42,.24)}
+  .appairage-etape{display:grid;grid-template-columns:26px minmax(0,1fr);gap:14px;margin-top:22px}
+  .appairage-num{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;font:800 12px Montserrat,system-ui,sans-serif}
+  .appairage-etape b{font-size:13.5px;color:var(--t-900)}
+  .appairage-qr{display:block;width:158px;height:158px;margin:14px 0 10px;border:1px solid var(--t-200);border-radius:12px;background:#fff;padding:8px}
+  .appairage-cle{display:inline-block;padding:8px 12px;border-radius:9px;background:var(--t-50);color:var(--t-800);font:700 13px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
+  .appairage-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:26px}
   /* ═══ Détail prestation AT (#v-activite-detail) · refonte charte crème (aligné sur la liste + la maquette de référence) ═══ */
   .cont:has(#v-activite-detail:not([hidden])){background:#f6f5f0}
   #v-activite-detail{--t-50:#faf9f6;--t-100:#efeee9;--t-200:#e8e6e0;--t-300:#d8d6cf;--t-400:#8f8e87;--t-500:#66665f;--t-600:#565650;--t-700:#3d3d3d;--t-800:#2a2724;--t-900:#161616}
@@ -3322,12 +3331,52 @@
 </div>
 
 <div class="ov-scrim s-mfa"></div>
+<div class="ov-scrim s-appairage" id="appairage-scrim"></div>
+<div class="ov o-appairage" id="appairage-modale" role="dialog" aria-modal="true" aria-labelledby="appairage-titre">
+  <div class="appairage-box">
+    <div class="m-tete">
+      <h2 id="appairage-titre">Configurer l’application</h2>
+      <button class="m-fermer" id="appairage-fermer" type="button" aria-label="Fermer la fenêtre"><svg class="ic"><use href="#i-croix"/></svg></button>
+    </div>
+    <div class="appairage-etape">
+      <span class="appairage-num" aria-hidden="true">1</span>
+      <div>
+        <b>Scannez ce code avec votre application</b>
+        <svg class="appairage-qr" viewBox="0 0 29 29" aria-hidden="true" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><path fill="#161616" d="M0 0h7v7H0zM22 0h7v7h-7zM0 22h7v7H0zM2 2h3v3H2zM24 2h3v3h-3zM2 24h3v3H2zM9 0h2v2H9zM13 0h2v3h-2zM17 1h2v2h-2zM9 4h3v2H9zM14 5h2v2h-2zM18 4h2v3h-2zM0 9h2v2H0zM4 9h3v2H4zM9 9h2v2H9zM13 9h3v2h-3zM18 9h2v2h-2zM22 9h2v2h-2zM26 9h3v2h-3zM2 12h3v2H2zM7 12h2v3H7zM11 12h2v2h-2zM15 12h3v2h-3zM20 12h2v3h-2zM24 12h2v2h-2zM0 16h3v2H0zM5 16h2v2H5zM9 15h2v3H9zM13 16h2v2h-2zM17 15h2v3h-2zM22 16h2v2h-2zM26 16h3v2h-3zM9 19h2v2H9zM13 19h3v2h-3zM18 19h2v2h-2zM22 20h3v2h-3zM26 20h2v2h-2zM9 23h3v2H9zM14 22h2v3h-2zM18 23h2v2h-2zM22 24h2v2h-2zM26 24h2v3h-2zM9 26h2v3H9zM13 26h3v2h-3zM18 26h2v3h-2zM22 27h5v2h-5z"/></svg>
+        <span class="appairage-cle" id="appairage-cle">JBSW Y3DP EHPK 3PXP</span>
+        <p class="card-sub">Impossible de scanner ? Saisissez cette clé à la main dans votre application.</p>
+      </div>
+    </div>
+    <div class="appairage-etape">
+      <span class="appairage-num" aria-hidden="true">2</span>
+      <div>
+        <b>Entrez le code affiché par l’application</b>
+        <div class="mfa-cases" data-bouton="appairage-confirmer" role="group" aria-label="Code d’appairage à 6 chiffres">
+          <input class="mfa-case" type="text" inputmode="numeric" maxlength="1" aria-label="Chiffre 1 sur 6" oninput="portailMfaSaisie(this)">
+          <input class="mfa-case" type="text" inputmode="numeric" maxlength="1" aria-label="Chiffre 2 sur 6" oninput="portailMfaSaisie(this)">
+          <input class="mfa-case" type="text" inputmode="numeric" maxlength="1" aria-label="Chiffre 3 sur 6" oninput="portailMfaSaisie(this)">
+          <input class="mfa-case" type="text" inputmode="numeric" maxlength="1" aria-label="Chiffre 4 sur 6" oninput="portailMfaSaisie(this)">
+          <input class="mfa-case" type="text" inputmode="numeric" maxlength="1" aria-label="Chiffre 5 sur 6" oninput="portailMfaSaisie(this)">
+          <input class="mfa-case" type="text" inputmode="numeric" maxlength="1" aria-label="Chiffre 6 sur 6" oninput="portailMfaSaisie(this)">
+        </div>
+      </div>
+    </div>
+    <div class="appairage-actions">
+      <button class="btn ghost" id="appairage-annuler" type="button">Annuler</button>
+      <button class="btn" id="appairage-confirmer" type="button" disabled>Confirmer</button>
+    </div>
+  </div>
+</div>
 <script>
   /* Secours autonome : le code MFA reste utilisable même si un script métier
      de la maquette est interrompu plus bas dans la page. */
   window.portailMfaSaisie=function(champ){
-    var cases=Array.prototype.slice.call(document.querySelectorAll('.mfa-case'));
-    var index=cases.indexOf(champ),bouton=document.getElementById('mfa-verifier');
+    /* Chaque groupe de cases est autonome : le portail en compte deux (connexion
+       et appairage), et le bouton pilote est celui que le groupe designe. */
+    var groupe=champ.closest('.mfa-cases')||document;
+    var cases=Array.prototype.slice.call(groupe.querySelectorAll('.mfa-case'));
+    var index=cases.indexOf(champ);
+    var bouton=document.getElementById(groupe.dataset&&groupe.dataset.bouton||'mfa-verifier');
     champ.value=(champ.value||'').replace(/\D/g,'').slice(-1);
     champ.classList.toggle('rempli',!!champ.value);
     if(champ.value&&index>-1&&index<cases.length-1)cases[index+1].focus();
@@ -3569,6 +3618,35 @@
     radios.forEach(function(r){r.addEventListener('change',majBouton);});
     majBouton();
     window.__compteMfaMajBouton=majBouton;
+  });
+
+  garde('appairage-modale',function(){
+    var modale=document.getElementById('appairage-modale'),voile=document.getElementById('appairage-scrim'),
+        ouvrirBouton=document.getElementById('compte-mfa-configurer'),
+        confirmer=document.getElementById('appairage-confirmer'),
+        etat=document.getElementById('compte-mfa-etat'),cible=document.getElementById('compte-mfa-cible'),
+        statut=document.getElementById('compte-mfa-statut'),
+        cases=[].slice.call(modale.querySelectorAll('.mfa-case')),declencheur=null;
+    if(!modale||!ouvrirBouton)return;
+    function vider(){cases.forEach(function(c){c.value='';c.classList.remove('rempli');});confirmer.disabled=true;}
+    function ouvrir(){declencheur=document.activeElement;vider();document.body.classList.add('appairage-open');cases[0].focus();}
+    function fermer(){document.body.classList.remove('appairage-open');if(declencheur&&declencheur.focus)declencheur.focus();}
+    function choix(){var r=document.querySelector('input[name="compte-mfa"]:checked');return r?r.value:'email';}
+    function appliquer(methode){
+      document.body.dataset.mfaMethode=methode;
+      etat.textContent=methode==='app'?'Application d’authentification':'Par email';
+      cible.textContent=methode==='app'?'Appairée le '+new Date().toLocaleDateString('fr-FR'):'robert.duris@yopmail.com';
+      statut.textContent=methode==='app'?'Application appairée. Elle vous sera demandée à la prochaine connexion.':'Vérification par email rétablie.';
+      if(window.__compteMfaMajBouton)window.__compteMfaMajBouton();
+    }
+    /* Revenir a l'email ne demande pas d'appairage : il n'y a rien a prouver. */
+    ouvrirBouton.addEventListener('click',function(){if(choix()==='app')ouvrir();else appliquer('email');});
+    confirmer.addEventListener('click',function(){appliquer('app');fermer();});
+    document.getElementById('appairage-annuler').addEventListener('click',fermer);
+    document.getElementById('appairage-fermer').addEventListener('click',fermer);
+    voile.addEventListener('click',fermer);
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape'&&document.body.classList.contains('appairage-open'))fermer();});
   });
 
   garde('partenaires-supplier-search',function(){

@@ -66,6 +66,38 @@ const CONTROLES=[
     egal(await page.$eval('#compte-mfa-configurer',e=>e.disabled),false,'bouton Configurer');
     egal(await page.$eval('#compte-mfa-etat',e=>e.textContent.trim()),'Par email','méthode active inchangée');
   }},
+  {nom:'Configurer ouvre la modale d appairage avec sa cle en clair',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.check('input[name="compte-mfa"][value="app"]');
+    await page.click('#compte-mfa-configurer');
+    await page.waitForSelector('#appairage-modale',{state:'visible'});
+    egal(await page.$eval('#appairage-cle',e=>e.textContent.trim()),'JBSW Y3DP EHPK 3PXP','clé en clair');
+    egal(await page.$eval('#appairage-confirmer',e=>e.disabled),true,'bouton Confirmer avant saisie');
+  }},
+  {nom:'six chiffres appairent l application et basculent la methode',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.check('input[name="compte-mfa"][value="app"]');
+    await page.click('#compte-mfa-configurer');
+    await page.waitForSelector('#appairage-modale',{state:'visible'});
+    const cases=await page.$$('#appairage-modale .mfa-case');
+    egal(cases.length,6,'nombre de cases');
+    for(let i=0;i<cases.length;i++)await cases[i].fill('4');
+    egal(await page.$eval('#appairage-confirmer',e=>e.disabled),false,'bouton Confirmer après saisie');
+    await page.click('#appairage-confirmer');
+    await page.waitForSelector('#appairage-modale',{state:'hidden'});
+    egal(await page.$eval('#compte-mfa-etat',e=>e.textContent.trim()),'Application d’authentification','méthode active');
+    egal(await page.evaluate(()=>document.body.dataset.mfaMethode),'app','marqueur sur body');
+  }},
+  {nom:'la saisie d appairage est scopee a sa propre modale',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.check('input[name="compte-mfa"][value="app"]');
+    await page.click('#compte-mfa-configurer');
+    await page.waitForSelector('#appairage-modale',{state:'visible'});
+    const cases=await page.$$('#appairage-modale .mfa-case');
+    for(let i=0;i<3;i++)await cases[i].fill('7');
+    egal(await page.$eval('#appairage-confirmer',e=>e.disabled),true,'Confirmer avec trois chiffres seulement');
+    egal(await page.$$eval('#mfa-modale .mfa-case',e=>e.map(x=>x.value).join('')),'123456','cases du login intactes');
+  }},
 ];
 
 (async()=>{
