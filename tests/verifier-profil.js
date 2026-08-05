@@ -54,6 +54,18 @@ const CONTROLES=[
       'champs de la fiche');
     egal(await page.$$eval('#v-profil .compte-identite input,#v-profil .compte-identite textarea,#v-profil .compte-identite select',e=>e.length),0,'champs modifiables');
   }},
+  {nom:'la methode active est email, et Configurer est inerte',fn:async page=>{
+    await ouvrirProfil(page);
+    egal(await page.$eval('#compte-mfa-etat',e=>e.textContent.trim()),'Par email','méthode active');
+    egal(await page.$eval('#compte-mfa-configurer',e=>e.disabled),true,'bouton Configurer');
+    egal(await page.$eval('input[name="compte-mfa"][value="email"]',e=>e.checked),true,'radio email coché');
+  }},
+  {nom:'choisir l application arme le bouton Configurer sans rien activer',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.check('input[name="compte-mfa"][value="app"]');
+    egal(await page.$eval('#compte-mfa-configurer',e=>e.disabled),false,'bouton Configurer');
+    egal(await page.$eval('#compte-mfa-etat',e=>e.textContent.trim()),'Par email','méthode active inchangée');
+  }},
 ];
 
 (async()=>{

@@ -1558,6 +1558,16 @@
   .compte-champs dt{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t-600)}
   .compte-champs dd{margin-top:6px;font-size:14px;font-weight:600;color:var(--t-900)}
   .compte-note{margin-top:22px;padding-top:18px;border-top:1px solid var(--t-200);color:var(--t-600);font-size:12.5px;line-height:1.6}
+  .compte-mfa-actuel{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;padding:16px 18px;border:1px solid var(--t-200);border-radius:14px;background:var(--t-50)}
+  .compte-mfa-actuel b{font-size:14px;color:var(--t-900)}
+  .compte-mfa-actuel span.compte-mfa-cible{color:var(--t-600);font-size:12.5px}
+  .compte-mfa-choix{display:grid;gap:12px;margin-top:20px}
+  .compte-mfa-option{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start;padding:16px 18px;border:1px solid var(--t-200);border-radius:14px;cursor:pointer}
+  .compte-mfa-option:hover{background:var(--t-50)}
+  .compte-mfa-option:has(input:checked){border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,60,194,.09)}
+  .compte-mfa-option b{display:block;font-size:13.5px;color:var(--t-900)}
+  .compte-mfa-option small{display:block;margin-top:4px;color:var(--t-600);font-size:12.5px;line-height:1.5}
+  .compte-mfa-actions{display:flex;align-items:center;gap:14px;margin-top:20px}
   /* ═══ Détail prestation AT (#v-activite-detail) · refonte charte crème (aligné sur la liste + la maquette de référence) ═══ */
   .cont:has(#v-activite-detail:not([hidden])){background:#f6f5f0}
   #v-activite-detail{--t-50:#faf9f6;--t-100:#efeee9;--t-200:#e8e6e0;--t-300:#d8d6cf;--t-400:#8f8e87;--t-500:#66665f;--t-600:#565650;--t-700:#3d3d3d;--t-800:#2a2724;--t-900:#161616}
@@ -3186,6 +3196,29 @@
           </dl>
           <p class="compte-note">Ces informations viennent de votre fiche Freelance.com. Pour les corriger, contactez <a class="lien" href="#" id="compte-contact">Camille Moreau</a>.</p>
         </section>
+        <section class="card compte-mfa">
+          <h2 class="h-vue" style="font-size:19px">Vérification en deux étapes</h2>
+          <p class="card-sub">Une seconde preuve d'identité vous est demandée à chaque connexion.</p>
+          <div class="compte-mfa-actuel">
+            <span class="badge ok">Activée</span>
+            <b id="compte-mfa-etat">Par email</b>
+            <span class="compte-mfa-cible" id="compte-mfa-cible">robert.duris@yopmail.com</span>
+          </div>
+          <div class="compte-mfa-choix" role="radiogroup" aria-label="Méthode de vérification">
+            <label class="compte-mfa-option">
+              <input type="radio" name="compte-mfa" value="email" checked>
+              <span><b>Par email</b><small>Un code à 6 chiffres est envoyé à votre adresse de connexion.</small></span>
+            </label>
+            <label class="compte-mfa-option">
+              <input type="radio" name="compte-mfa" value="app">
+              <span><b>Application d'authentification</b><small>Google Authenticator, Authy, Microsoft Authenticator. Le code est généré hors ligne, sur votre téléphone.</small></span>
+            </label>
+          </div>
+          <div class="compte-mfa-actions">
+            <button class="btn" id="compte-mfa-configurer" type="button" disabled>Configurer</button>
+            <p class="compte-mfa-statut" id="compte-mfa-statut" role="status"></p>
+          </div>
+        </section>
       </section>
 
       <footer class="portal-footer" aria-label="Liens utiles"><a href="file:///Users/walid/Downloads/CGU.html">CGU</a><a href="#">Cookies</a><a href="#">Besoin d’aide&nbsp;?</a><a class="portal-guide" href="#"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Télécharger le guide du portail</a></footer>
@@ -3519,6 +3552,23 @@
     document.addEventListener('keydown',function(e){if(e.key==='Escape')fermerCompte();});
     document.getElementById('profile-link').addEventListener('click',function(e){e.preventDefault();fermerCompte();afficher('profil');});
     document.querySelectorAll('#side-account-menu a[aria-disabled="true"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();});});
+  });
+
+  garde('compte-mfa-etat',function(){
+    var etat=document.getElementById('compte-mfa-etat'),configurer=document.getElementById('compte-mfa-configurer');
+    if(!etat||!configurer)return;
+    var radios=[].slice.call(document.querySelectorAll('input[name="compte-mfa"]'));
+    /* Le bouton n'a de sens que pour une methode qui n'est pas deja active :
+       on n'active rien qu'on n'ait pas prouve savoir utiliser. */
+    function majBouton(){
+      var choisi=(radios.filter(function(r){return r.checked;})[0]||{}).value;
+      var actif=etat.textContent.trim()==='Par email'?'email':'app';
+      configurer.disabled=(choisi===actif);
+      configurer.textContent=choisi==='app'?'Configurer':'Revenir a l\'email';
+    }
+    radios.forEach(function(r){r.addEventListener('change',majBouton);});
+    majBouton();
+    window.__compteMfaMajBouton=majBouton;
   });
 
   garde('partenaires-supplier-search',function(){
