@@ -3198,7 +3198,7 @@
         </section>
         <section class="card compte-mfa">
           <h2 class="h-vue" style="font-size:19px">Vérification en deux étapes</h2>
-          <p class="card-sub">Une seconde preuve d'identité vous est demandée à chaque connexion.</p>
+          <p class="card-sub">Une seconde preuve d’identité vous est demandée à chaque connexion.</p>
           <div class="compte-mfa-actuel">
             <span class="badge ok">Activée</span>
             <b id="compte-mfa-etat">Par email</b>
@@ -3211,7 +3211,7 @@
             </label>
             <label class="compte-mfa-option">
               <input type="radio" name="compte-mfa" value="app">
-              <span><b>Application d'authentification</b><small>Google Authenticator, Authy, Microsoft Authenticator. Le code est généré hors ligne, sur votre téléphone.</small></span>
+              <span><b>Application d’authentification</b><small>Google Authenticator, Authy, Microsoft Authenticator. Le code est généré hors ligne, sur votre téléphone.</small></span>
             </label>
           </div>
           <div class="compte-mfa-actions">
@@ -3564,7 +3564,7 @@
       var choisi=(radios.filter(function(r){return r.checked;})[0]||{}).value;
       var actif=etat.textContent.trim()==='Par email'?'email':'app';
       configurer.disabled=(choisi===actif);
-      configurer.textContent=choisi==='app'?'Configurer':'Revenir a l\'email';
+      configurer.textContent=choisi==='app'?'Configurer':'Revenir à l\'email';
     }
     radios.forEach(function(r){r.addEventListener('change',majBouton);});
     majBouton();
