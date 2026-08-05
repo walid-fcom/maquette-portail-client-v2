@@ -1548,6 +1548,16 @@
   #v-factures .presta-table table{min-width:1320px;margin:0;border:0;border-radius:0}
   #v-factures .presta-table th{color:#66665f}
   #v-factures .presta-filtre-label{color:#66665f}
+  /* ── Page Profil (#v-profil) ── */
+  #v-profil .card+.card{margin-top:18px}
+  #v-profil h2.h-vue{font-size:30px;font-weight:800;letter-spacing:-.03em;color:#161616}
+  .compte-identite-head{display:flex;align-items:center;gap:16px}
+  .compte-identite-head h2{font-size:19px;font-weight:800;letter-spacing:-.02em;color:var(--t-900)}
+  .compte-avatar{display:grid;place-items:center;width:56px;height:56px;flex:none;border-radius:16px;background:#173fc1;color:#fff;font:800 20px Montserrat,system-ui,sans-serif}
+  .compte-champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px 26px;margin-top:24px}
+  .compte-champs dt{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t-600)}
+  .compte-champs dd{margin-top:6px;font-size:14px;font-weight:600;color:var(--t-900)}
+  .compte-note{margin-top:22px;padding-top:18px;border-top:1px solid var(--t-200);color:var(--t-600);font-size:12.5px;line-height:1.6}
   /* ═══ Détail prestation AT (#v-activite-detail) · refonte charte crème (aligné sur la liste + la maquette de référence) ═══ */
   .cont:has(#v-activite-detail:not([hidden])){background:#f6f5f0}
   #v-activite-detail{--t-50:#faf9f6;--t-100:#efeee9;--t-200:#e8e6e0;--t-300:#d8d6cf;--t-400:#8f8e87;--t-500:#66665f;--t-600:#565650;--t-700:#3d3d3d;--t-800:#2a2724;--t-900:#161616}
@@ -3156,6 +3166,28 @@
         </section>
       </section>
 
+      <section class="vue" id="v-profil" tabindex="-1" hidden>
+        <section class="card">
+          <h2 class="h-vue">Mon profil</h2>
+        </section>
+        <section class="card compte-identite">
+          <div class="compte-identite-head">
+            <span class="compte-avatar" aria-hidden="true">RD</span>
+            <div>
+              <h2>Robert DURIS</h2>
+              <p class="card-sub">Compte client · portail Freelance.com</p>
+            </div>
+          </div>
+          <dl class="compte-champs">
+            <div><dt>Email de connexion</dt><dd>robert.duris@yopmail.com</dd></div>
+            <div><dt>Fonction</dt><dd>Responsable achats IT</dd></div>
+            <div><dt>Société</dt><dd>ELECTRICITE DE FRANCE — EDF</dd></div>
+            <div><dt>Rôle portail</dt><dd><span class="badge b-neutre">Contract manager</span></dd></div>
+          </dl>
+          <p class="compte-note">Ces informations viennent de votre fiche Freelance.com. Pour les corriger, contactez <a class="lien" href="#" id="compte-contact">Camille Moreau</a>.</p>
+        </section>
+      </section>
+
       <footer class="portal-footer" aria-label="Liens utiles"><a href="file:///Users/walid/Downloads/CGU.html">CGU</a><a href="#">Cookies</a><a href="#">Besoin d’aide&nbsp;?</a><a class="portal-guide" href="#"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Télécharger le guide du portail</a></footer>
   </main>
 </div>
@@ -3485,7 +3517,7 @@
     declencheur.addEventListener('click',function(){var ouvert=compte.classList.toggle('is-open');declencheur.setAttribute('aria-expanded',ouvert?'true':'false');});
     document.addEventListener('click',function(e){if(!compte.contains(e.target))fermerCompte();});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')fermerCompte();});
-    document.getElementById('profile-link').addEventListener('click',function(e){e.preventDefault();fermerCompte();});
+    document.getElementById('profile-link').addEventListener('click',function(e){e.preventDefault();fermerCompte();afficher('profil');});
     document.querySelectorAll('#side-account-menu a[aria-disabled="true"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();});});
   });
 
@@ -3508,7 +3540,7 @@
   });
 
   var titres={accueil:'Vos marchés',tdb:'Tableau de bord',besoins:'Besoins','besoin-detail':'Besoins','forfait-detail':'Prestations','forfait-affaire':'Prestations','portage-detail':'Besoins','portage-prestation-detail':'Prestations',prestations:'Prestations',factures:'Factures',marches:'Marchés','marche-detail':'Marchés','activite-detail':'Prestations',partenaires:'Partenaires',
-    conformite:'Conformité','conformite-detail':'Conformité','dc4-detail':'Conformité',documents:'Documents',activites:'Activités'};
+    conformite:'Conformité','conformite-detail':'Conformité','dc4-detail':'Conformité',documents:'Documents',activites:'Activités',profil:'Mon profil'};
   function vueDepuisHash(){
     var nom=location.hash.slice(1);
     return Object.prototype.hasOwnProperty.call(titres,nom)?nom:'';
