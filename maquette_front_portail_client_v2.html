@@ -3564,7 +3564,7 @@
       var choisi=(radios.filter(function(r){return r.checked;})[0]||{}).value;
       var actif=etat.textContent.trim()==='Par email'?'email':'app';
       configurer.disabled=(choisi===actif);
-      configurer.textContent=choisi==='app'?'Configurer':'Revenir à l\'email';
+      configurer.textContent=choisi==='app'?'Configurer':'Revenir à l’email';
     }
     radios.forEach(function(r){r.addEventListener('change',majBouton);});
     majBouton();
