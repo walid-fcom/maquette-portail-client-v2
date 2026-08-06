@@ -54,28 +54,34 @@ const CONTROLES=[
   }},
   {nom:'les champs sont pre-remplis a partir de la description',fn:async page=>{
     await ouvrirModale(page);
-    egal(await page.$eval('#m-poste',e=>e.value),'Consultant en systèmes d’information','intitulé');
+    egal(await page.$eval('#m-poste',e=>e.value),'Développeur·euse front-end (JavaScript, Node, React, Angular, Vue...)','intitulé');
     egal(await page.$eval('#m-seniorite',e=>e.value),'Sénior','séniorité');
     egal(await page.$eval('#m-loc',e=>e.value),'Paris · 2 j de télétravail / semaine','localisation');
     egal(await page.$eval('#m-date',e=>e.value),'01/09/2026','date');
     egal(await page.$eval('#m-tjm',e=>e.value),'500 – 700 € / jour','TJM');
-    egal((await competences(page)).join(' | '),
-      'A.1 Systèmes d’information et alignement stratégique métier | D.11 Identification des besoins',
-      'compétences');
+    egal((await competences(page)).join(' | '),'Node.js | TypeScript','compétences');
   }},
-  {nom:'le referentiel CIGREF alimente les deux listes',fn:async page=>{
+  {nom:'les referentiels FreeWork alimentent les deux listes',fn:async page=>{
     await ouvrirModale(page);
-    const postes=await page.$$eval('#m-postes option',o=>o.map(x=>x.value));
-    egal(postes.length,6,'métiers proposés');
-    egal(postes[0],'Consultant en systèmes d’information','premier métier');
-    /* Le CSV est une table metier -> competences : le poste restreint donc
-       les suggestions aux siennes. */
-    egal(await page.$$eval('#m-competences-liste option',o=>o.length),9,'compétences du consultant SI');
-    await page.fill('#m-poste','Architecte d’entreprise');
-    egal(await page.$$eval('#m-competences-liste option',o=>o.length),10,'compétences de l’architecte');
-    /* Un intitule libre ne dit rien du metier : on propose alors tout. */
-    await page.fill('#m-poste','Poste hors référentiel');
-    egal(await page.$$eval('#m-competences-liste option',o=>o.length),27,'compétences pour un intitulé libre');
+    egal(await page.$$eval('#m-postes option',o=>o.length),137,'métiers proposés');
+    egal(await page.$$eval('#m-competences-liste option',o=>o.length),1569,'compétences proposées');
+    /* Deux listes independantes : changer de poste ne restreint plus rien. */
+    await page.fill('#m-poste','Architecte Cloud');
+    egal(await page.$$eval('#m-competences-liste option',o=>o.length),1569,'compétences après changement de poste');
+  }},
+  {nom:'les valeurs pre-remplies appartiennent au referentiel',fn:async page=>{
+    await ouvrirModale(page);
+    const dansListe=await page.evaluate(()=>{
+      const options=l=>[].slice.call(document.querySelectorAll('#'+l+' option')).map(o=>o.value);
+      const postes=options('m-postes'),comps=options('m-competences-liste');
+      return {
+        poste:postes.indexOf(document.getElementById('m-poste').value)>-1,
+        competences:[].slice.call(document.querySelectorAll('#m-competences .m-competence b'))
+          .every(b=>comps.indexOf(b.textContent.trim())>-1)
+      };
+    });
+    egal(dansListe.poste,true,'intitulé pré-rempli présent dans le référentiel');
+    egal(dansListe.competences,true,'compétences pré-remplies présentes dans le référentiel');
   }},
   {nom:'le bloc Type de prestation a disparu',fn:async page=>{
     await ouvrirModale(page);
@@ -84,20 +90,20 @@ const CONTROLES=[
   }},
   {nom:'une competence saisie devient une pastille',fn:async page=>{
     await ouvrirModale(page);
-    await page.fill('#m-competence-saisie','B.3 Tests');
+    await page.fill('#m-competence-saisie','PostgreSQL');
     await page.press('#m-competence-saisie','Enter');
-    egal((await competences(page)).slice(-1)[0],'B.3 Tests','dernière compétence');
+    egal((await competences(page)).slice(-1)[0],'PostgreSQL','dernière compétence');
     egal((await competences(page)).length,3,'nombre de compétences');
     egal(await page.$eval('#m-competence-saisie',e=>e.value),'','champ vidé');
   }},
   {nom:'la croix d une pastille la retire',fn:async page=>{
     await ouvrirModale(page);
     await page.click('#m-competences .m-competence:first-child button');
-    egal((await competences(page)).join(' | '),'D.11 Identification des besoins','compétences restantes');
+    egal((await competences(page)).join(' | '),'TypeScript','compétences restantes');
   }},
   {nom:'une competence deja retenue ne se duplique pas',fn:async page=>{
     await ouvrirModale(page);
-    await page.fill('#m-competence-saisie','d.11 identification des besoins');
+    await page.fill('#m-competence-saisie','node.js');
     await page.press('#m-competence-saisie','Enter');
     egal((await competences(page)).length,2,'compétences après un doublon de casse différente');
   }},
@@ -105,7 +111,7 @@ const CONTROLES=[
     await ouvrirModale(page);
     egal((await competences(page)).length,2,'avant retour arrière');
     await page.press('#m-competence-saisie','Backspace');
-    egal((await competences(page)).join(' | '),'A.1 Systèmes d’information et alignement stratégique métier','après retour arrière');
+    egal((await competences(page)).join(' | '),'Node.js','après retour arrière');
   }},
   {nom:'la regle qui masque le marqueur de liste natif est en place',fn:async page=>{
     await ouvrirModale(page);

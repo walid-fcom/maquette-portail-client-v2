@@ -44,38 +44,36 @@ duplique pas, quelle que soit la casse.
 
 **Séniorité** est une liste fermée : Junior, Confirmé, Sénior, Expert.
 
-### Le référentiel CIGREF
+### Le référentiel FreeWork
 
-Les valeurs des deux listes viennent de `cigref_metier_competence.csv` : six
-métiers, et les compétences e-CF associées à chacun.
+Les valeurs des deux listes viennent de `docs/freework_metiers.csv` et
+`docs/freework_skills.csv` : 137 métiers et 1569 compétences. Les deux fichiers
+sont fournis en Windows-1252 et versionnés ici convertis en UTF-8 ; les
+apostrophes droites sont passées en typographiques, comme partout ailleurs dans
+le portail.
 
-Le niveau accolé à chaque compétence (`niv. 3`, `niv. 4`…) est retiré. Le CSV
-en compte 38 entrées, mais la même compétence y revient à plusieurs niveaux —
-A.1 y figure trois fois. Il en reste 27 distinctes. Le client exprime un
-besoin, pas une fiche de poste : lui faire arbitrer entre « Gestion des risques
-(niv. 2) » et « (niv. 3) » dépasse ce qu'il sait dire, et le niveau reste dans
-le CSV côté Freelance.com.
+Ce sont **deux listes indépendantes**. Un premier essai s'était appuyé sur
+`cigref_metier_competence.csv`, qui associait chaque compétence e-CF à un
+métier : le poste choisi restreignait alors les suggestions aux siennes. Les
+référentiels FreeWork n'ont pas ce lien, ce filtrage disparaît donc — le poste
+et les compétences se choisissent séparément.
 
-Le CSV n'est pas une liste plate mais une table métier → compétences : choisir
-un poste du référentiel restreint donc les suggestions aux siennes — neuf pour
-le consultant SI, dix pour l'architecte d'entreprise. Un intitulé libre ne dit
-rien du métier : les vingt-sept sont alors proposées.
+Les deux champs restent ouverts : on pioche dans la liste ou on saisit sa
+propre valeur. La liste native filtre à la frappe, ce qui rend les 1569
+compétences praticables.
 
-Les apostrophes du CSV sont converties en apostrophes typographiques, comme
-partout ailleurs dans le fichier. Sans cela la clé du métier saisi ne
-correspondait pas à celle du référentiel, et le filtrage tombait à côté.
-
-Les libellés e-CF vont jusqu'à soixante caractères : la pastille est donc
-plafonnée à 250 px et tronquée, le libellé entier restant accessible au survol.
-Sans ce plafond, une seule compétence occupait deux lignes.
+Les métiers montent à 123 caractères — « Développeur·euse / Intégrateur·rice de
+progiciel (ERP, CRM, Dynamics…) » —, et l'écriture inclusive du référentiel est
+reprise telle quelle. La pastille de compétence reste plafonnée à 250 px et
+tronquée, le libellé entier revenant au survol.
 
 ### Le scénario de démonstration
 
-Il passe du développeur Node.js au **consultant en systèmes d'information**, un
-métier du référentiel, avec deux de ses compétences pré-remplies. L'ancien
-scénario restait valide — le champ est ouvert — mais aucune de ses valeurs ne
-figurait dans les listes, ce qui donnait une démonstration en porte-à-faux avec
-le référentiel qu'elle est censée illustrer.
+Le développeur Node.js de la maquette d'origine, cette fois entièrement pris
+dans le référentiel : le métier « Développeur·euse front-end (JavaScript, Node,
+React, Angular, Vue...) », et les compétences `Node.js` et `TypeScript`. Un
+contrôle vérifie que chaque valeur pré-remplie figure bien dans sa liste — une
+démonstration qui illustre un référentiel ne doit pas en sortir.
 
 ### Le pied
 
@@ -112,12 +110,13 @@ de la règle, le rendu ayant été contrôlé à l'œil.
 - Les champs sont pré-remplis à partir de la description.
 - Le bloc *Type de prestation*, les badges *détecté* et *Assistance IA* ont
   disparu.
-- Le référentiel CIGREF alimente les deux listes, et le poste restreint les
-  compétences proposées aux siennes.
+- Les référentiels FreeWork alimentent les deux listes : 137 métiers, 1569
+  compétences, sans lien de l'un vers l'autre.
+- Chaque valeur pré-remplie figure dans son référentiel.
 - Une compétence saisie devient une pastille ; la croix la retire ; le retour
   arrière retire la dernière ; un doublon ne s'ajoute pas.
 - Aucune pastille ne dépasse une ligne, et porte son libellé entier en titre.
 - Le pied ne montre aucune note au repos.
 - Annuler et Échap ferment la modale.
 
-Le harnais `tests/verifier-modale-besoin.js` couvre ces douze points.
+Le harnais `tests/verifier-modale-besoin.js` couvre ces treize points.
