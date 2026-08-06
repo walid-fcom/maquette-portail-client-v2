@@ -62,9 +62,9 @@ métier : le poste choisi restreignait alors les suggestions aux siennes. Les
 référentiels FreeWork n'ont pas ce lien, ce filtrage disparaît donc — le poste
 et les compétences se choisissent séparément.
 
-Les deux champs restent ouverts : on pioche dans la liste ou on saisit sa
-propre valeur. La liste native filtre à la frappe, ce qui rend les 1569
-compétences praticables.
+Les champs restent ouverts : on pioche dans la liste ou on saisit sa propre
+valeur, auquel cas la liste le dit — « Aucun résultat. Votre saisie sera
+conservée telle quelle. »
 
 Aucune ligne d'aide sous les champs. « Sélectionnez un poste ou saisissez un
 nouvel intitulé » et « Vous pouvez sélectionner plusieurs compétences » ont été
@@ -127,11 +127,32 @@ Les cellules de la grille ne sont plus solidaires en hauteur — le champ
 Compétences, plus haut que son voisin, creusait un vide sous *Intitulé du
 poste*.
 
-Le marqueur de liste natif est masqué sur tout champ à liste : il doublait le
-chevron dessiné sur le cadre, et cela se voyait surtout en dessous de 780 px.
-`getComputedStyle` ne sait pas lire ce pseudo-élément — il retombe sur l'hôte —,
-le harnais vérifie donc la présence de la règle, le rendu ayant été contrôlé à
-l'œil, en large comme en étroit.
+### Les listes déroulantes
+
+Les trois listes — métier, compétence, ville — sont maison, pas natives. La
+liste native du navigateur ignore toute mise en forme : sous macOS en thème
+sombre elle s'ouvrait en noir, sur toute la hauteur de l'écran, par-dessus la
+fenêtre qu'elle était censée servir. *(Constaté le 6 août 2026.)*
+
+Le composant filtre à la frappe, se pilote au clavier (↑ ↓ pour parcourir,
+Entrée pour retenir, Échap pour refermer sans fermer la fenêtre) et à la
+souris. Il ne peint jamais plus de 60 lignes : sur 1569 compétences, le reste
+est annoncé — « 1509 autres résultats, précisez votre recherche » — plutôt que
+rendu en pure perte.
+
+La boîte a donc perdu son `overflow:hidden`, qui aurait rogné les listes ; les
+coins arrondis sont repris sur l'en-tête et le pied.
+
+### La date de démarrage
+
+Champ daté natif : le calendrier du navigateur, que tout le monde sait
+utiliser. C'est le seul endroit où le contrôle natif fait mieux qu'un composant
+maison, et le seul qui garde donc son marqueur.
+
+### La localisation
+
+Une liste des 108 villes françaises les plus peuplées, DOM-TOM compris. Le
+champ reste ouvert : une commune absente se saisit librement.
 
 Sous 780 px les deux colonnes s'empilent et les boutons prennent toute la
 largeur ; le point de rupture général du portail, à 620 px, arrivait trop tard

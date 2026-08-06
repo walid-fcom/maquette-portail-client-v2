@@ -61,8 +61,9 @@ const CONTROLES=[
   }},
   {nom:'chaque champ porte un exemple ou une invite',fn:async page=>{
     await ouvrirModale(page);
+    /* Le champ date porte le format du navigateur, pas un placeholder. */
     const sansInvite=await page.$$eval('#modale .m-corps input,#modale textarea',
-      e=>e.filter(x=>!x.placeholder).map(x=>x.id));
+      e=>e.filter(x=>x.type!=='date'&&!x.placeholder).map(x=>x.id));
     egal(sansInvite.join(', '),'','champs sans placeholder');
     egal(await page.$eval('#m-seniorite option',o=>o.textContent.trim()),'Sélectionner','1re option de séniorité');
   }},
@@ -87,13 +88,61 @@ const CONTROLES=[
     egal((await competences(page)).length,0,'pastilles de compétence');
     egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'bouton de nouveau inerte');
   }},
-  {nom:'les referentiels FreeWork alimentent les deux listes',fn:async page=>{
+  {nom:'les trois listes s ouvrent et se filtrent',fn:async page=>{
     await ouvrirModale(page);
-    egal(await page.$$eval('#m-postes option',o=>o.length),137,'métiers proposés');
-    egal(await page.$$eval('#m-competences-liste option',o=>o.length),1569,'compétences proposées');
-    /* Deux listes independantes : changer de poste ne restreint plus rien. */
-    await page.fill('#m-poste','Architecte Cloud');
-    egal(await page.$$eval('#m-competences-liste option',o=>o.length),1569,'compétences après changement de poste');
+    await page.click('#m-poste');
+    egal(await page.$$eval('#m-postes li[data-valeur]',l=>l.length),60,'métiers peints au repos');
+    egal(await page.$eval('#m-postes .m-liste-note',e=>e.textContent.trim()),
+      '77 autres résultats — précisez votre recherche.','note de plafond');
+    await page.fill('#m-poste','archi');
+    egal((await page.$$eval('#m-postes li[data-valeur]',l=>l.map(x=>x.textContent))).join(' | '),
+      'Architecte Cloud | Architecte d’entreprise / urbaniste SI | Architecte de base de données | Architecte réseaux | Architecte solutions | Architecte système d’information | Architecte technique | Consultant·e en architecture',
+      'métiers filtrés');
+    await page.click('#m-loc');
+    await page.fill('#m-loc','bord');
+    egal((await page.$$eval('#m-villes li[data-valeur]',l=>l.map(x=>x.textContent))).join(', '),'Bordeaux','villes filtrées');
+    await page.click('#m-competence-saisie');
+    await page.fill('#m-competence-saisie','postgres');
+    egal((await page.$$eval('#m-competences-liste li[data-valeur]',l=>l.map(x=>x.textContent))).join(', '),
+      'PostgreSQL','compétences filtrées');
+  }},
+  {nom:'la liste se choisit au clavier comme a la souris',fn:async page=>{
+    await ouvrirModale(page);
+    await page.click('#m-poste');
+    await page.fill('#m-poste','archi');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    egal(await page.$eval('#m-poste',e=>e.value),'Architecte d’entreprise / urbaniste SI','choix au clavier');
+    egal(await page.$eval('#m-postes',e=>e.hidden),true,'liste refermée après choix');
+    await page.click('#m-loc');
+    await page.fill('#m-loc','lyo');
+    await page.click('#m-villes li[data-valeur]');
+    egal(await page.$eval('#m-loc',e=>e.value),'Lyon','choix à la souris');
+  }},
+  {nom:'une saisie hors referentiel est conservee',fn:async page=>{
+    await ouvrirModale(page);
+    await page.click('#m-poste');
+    await page.fill('#m-poste','Pilote de drone');
+    egal(await page.$$eval('#m-postes li[data-valeur]',l=>l.length),0,'aucun résultat');
+    egal(await page.$eval('#m-postes .m-liste-note',e=>e.textContent.trim()),
+      'Aucun résultat. Votre saisie sera conservée telle quelle.','message d’absence');
+    await page.keyboard.press('Escape');
+    egal(await page.$eval('#m-poste',e=>e.value),'Pilote de drone','saisie conservée');
+  }},
+  {nom:'Echap referme la liste sans fermer la modale',fn:async page=>{
+    await ouvrirModale(page);
+    await page.click('#m-poste');
+    await page.fill('#m-poste','archi');
+    await page.keyboard.press('Escape');
+    egal(await page.$eval('#m-postes',e=>e.hidden),true,'liste refermée');
+    egal(await page.evaluate(()=>document.body.classList.contains('modal-open')),true,'modale encore ouverte');
+  }},
+  {nom:'la date de demarrage porte un calendrier natif',fn:async page=>{
+    await ouvrirModale(page);
+    egal(await page.$eval('#m-date',e=>e.type),'date','type du champ');
+    await page.fill('#m-date','2026-09-01');
+    egal(await page.$eval('#m-date',e=>e.value),'2026-09-01','valeur saisie');
   }},
   {nom:'le bloc Type de prestation a disparu',fn:async page=>{
     await ouvrirModale(page);
@@ -134,25 +183,18 @@ const CONTROLES=[
     await page.press('#m-competence-saisie','Backspace');
     egal((await competences(page)).join(' | '),'Node.js','après retour arrière');
   }},
-  {nom:'la regle qui masque le marqueur de liste natif est en place',fn:async page=>{
+  {nom:'plus aucun champ ne s en remet a la liste native',fn:async page=>{
     await ouvrirModale(page);
-    /* La liste native ajoutait son propre marqueur par-dessus le chevron dessine
-       sur le cadre : deux chevrons cote a cote. getComputedStyle ne sait pas
-       lire ce pseudo-element — il retombe sur l'hote —, on verifie donc la
-       presence de la regle. Le rendu, lui, a ete controle a l'oeil. */
-    const presente=await page.evaluate(()=>[].slice.call(document.styleSheets)
-      .some(f=>{try{return [].slice.call(f.cssRules).some(r=>
-        r.selectorText&&r.selectorText.indexOf('calendar-picker-indicator')>-1
-        &&r.selectorText.indexOf('m-box')>-1);}catch(e){return false;}}));
-    egal(presente,true,'règle de masquage du marqueur natif');
-    egal(await page.$eval('#m-competence-saisie',i=>getComputedStyle(i).appearance),'none','appearance du champ compétences');
-    egal(await page.$eval('#m-poste',i=>getComputedStyle(i).appearance),'none','appearance du champ poste');
+    /* La liste native ignorait toute mise en forme : sous macOS elle s'ouvrait
+       en noir, plein ecran, par-dessus la fenetre. */
+    egal(await page.$$eval('#modale [list],#modale datalist',e=>e.length),0,'attributs list et datalist');
+    egal(await page.$$eval('#modale .m-liste',e=>e.length),3,'listes maison');
   }},
   {nom:'aucune pastille ne depasse une ligne',fn:async page=>{
     await ouvrirModale(page);
     /* Les libelles e-CF vont jusqu'a soixante caracteres : sans plafond, une
        pastille occupait deux lignes a elle seule. */
-    await page.fill('#m-competence-saisie','Développeur·euse / Intégrateur·rice de progiciel');
+    await page.fill('#m-competence-saisie','Technologies de l’information et de la communication (TIC)');
     await page.press('#m-competence-saisie','Enter');
     const hautes=await page.$$eval('#m-competences .m-competence',ps=>ps
       .map(p=>({t:p.textContent.trim(),h:Math.round(p.getBoundingClientRect().height)}))
