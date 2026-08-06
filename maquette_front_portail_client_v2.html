@@ -4203,10 +4203,11 @@
      paraissent jamais ici : une candidature que le client n'a jamais recue
      n'existe pas pour lui. */
   var STATUTS_CANDIDATURE={
-    /* Le seul des six statuts ou le client doit agir : c'est le seul libelle
-       qui le lui dit. */
+    /* Deux etats attendent une decision du client, et ce sont deux decisions
+       differentes : accepter ou refuser le CV recu par mail, puis valider la
+       soutenance du profil retenu. */
     'a-etudier':{libelle:'En attente de votre retour',badge:'b-bleu',sf:'Proposition au client'},
-    'soutenance':{libelle:'Soutenance planifiée',badge:'b-violet',sf:'Soutenance'},
+    'soutenance':{libelle:'À valider pour soutenance',badge:'b-violet',sf:'Soutenance'},
     'demarrage':{libelle:'Démarrage',badge:'ok',sf:'Démarrage'},
     'rejet-cv':{libelle:'Rejet client sur CV',badge:'bad',sf:'Rejet Client sur CV'},
     'rejet-soutenance':{libelle:'Rejet client après soutenance',badge:'bad',sf:'Rejet Client après soutenance'},

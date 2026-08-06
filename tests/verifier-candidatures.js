@@ -21,7 +21,7 @@ const CODE_ACCES='Azerty1234.Azerty1234.@sdkzap';
    Propose au commerce, Rejet Commerce — ne doivent jamais paraitre. */
 const ATTENDUS={
   'En attente de votre retour':'Proposition au client',
-  'Soutenance planifiée':'Soutenance',
+  'À valider pour soutenance':'Soutenance',
   'Démarrage':'Démarrage',
   'Rejet client sur CV':'Rejet Client sur CV',
   'Rejet client après soutenance':'Rejet Client après soutenance',
@@ -89,10 +89,10 @@ const CONTROLES=[
       'Rejet client après soutenance | Rejet client sur CV','libellés');
     egal(b.every(x=>x.couleur==='bad'),true,'badges rouges');
   }},
-  {nom:'une soutenance planifiee se lit sur la candidature',fn:async page=>{
+  {nom:'un profil retenu passe a la validation de soutenance',fn:async page=>{
     await ouvrirCandidatures(page,'Chef de projet migration SI finance');
     const b=await badges(page);
-    egal(b.map(x=>x.libelle).join(', '),'Soutenance planifiée','libellé');
+    egal(b.map(x=>x.libelle).join(', '),'À valider pour soutenance','libellé');
     egal(b[0].couleur,'b-violet','badge violet');
   }},
   {nom:'un desistement candidat se lit No Go Candidat',fn:async page=>{

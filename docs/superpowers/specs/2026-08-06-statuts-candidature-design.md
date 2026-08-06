@@ -36,7 +36,7 @@ l'existence même ne le regarde pas.
 | *non affiché* | `Rejet Commerce` | — |
 | En attente de votre retour | `Proposition au client` | bleu |
 | Rejet client sur CV | `Rejet Client sur CV` | rouge |
-| Soutenance planifiée | `Soutenance` | violet |
+| À valider pour soutenance | `Soutenance` | violet |
 | Rejet client après soutenance | `Rejet Client après soutenance` | rouge |
 | No Go Candidat | `No Go Candidat` | neutre |
 | Démarrage | `Démarrage` | vert |
@@ -50,11 +50,12 @@ fera le filtrage.
 
 Trois libellés ont été arbitrés le 6 août 2026 :
 
-- **En attente de votre retour** : c'est le seul des six statuts où le client
-  doit agir, et le seul libellé qui le lui dit. Les cinq autres décrivent un
-  état acquis. *(Arbitré le 6 août 2026, après « Proposée » puis « À étudier ».)*
-- **Soutenance planifiée**, repris tel quel du statut de besoin homonyme, pour
-  ne pas entretenir deux vocabulaires pour la même chose.
+- **En attente de votre retour** : le CV est parti par mail, le client accepte
+  ou refuse de rencontrer le profil. *(Arbitré le 6 août 2026, après
+  « Proposée » puis « À étudier ».)*
+- **À valider pour soutenance** : le client a accepté le CV, reste à arrêter
+  la soutenance elle-même. C'est la seconde des deux décisions qu'on lui
+  demande, et elle porte sur l'entretien, non sur le profil.
 - **No Go Candidat** conservé tel quel, malgré son air de jargon : aucun écart
   de vocabulaire à maintenir entre le portail et le CRM.
 
@@ -67,7 +68,7 @@ Les six statuts visibles sont tous représentés au moins une fois :
 | Candidat | Besoin | Statut |
 |---|---|---|
 | Léa Morel | Développeur mobile Flutter | Démarrage |
-| Julien Berthier | Chef de projet migration SI finance | Soutenance planifiée |
+| Julien Berthier | Chef de projet migration SI finance | À valider pour soutenance |
 | Elsa Weber | Consultant cybersécurité | Rejet client après soutenance |
 | Marc Delon | Consultant cybersécurité | Rejet client sur CV |
 | Inès Martin | Architecte cloud AWS | No Go Candidat |
@@ -88,7 +89,7 @@ pastille contre celui de sa cellule.
 - Un besoin en recherche affiche des candidatures « En attente de votre retour ».
 - Un besoin démarré affiche un candidat « Démarrage », badge vert.
 - Un besoin rejeté distingue le rejet sur CV du rejet après soutenance.
-- Une soutenance planifiée se lit sur la candidature, badge violet.
+- Un profil retenu passe à « À valider pour soutenance », badge violet.
 - Un désistement se lit « No Go Candidat », badge neutre.
 - Les six statuts client sont tous représentés, et eux seuls.
 - Aucun des quatre statuts internes ne paraît, ni en libellé ni en valeur.
