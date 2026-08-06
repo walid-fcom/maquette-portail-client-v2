@@ -385,6 +385,22 @@
     transition:background .15s,border-color .15s}
   #modale .m-fermer:hover{background:#f6f5f0;border-color:#c9c6bd;color:#161616}
   .m-corps{padding:26px 32px 28px}
+  .m-types{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 24px}
+  .m-type-carte{display:flex;align-items:flex-start;gap:11px;padding:14px 16px;border:1.5px solid var(--t-200);
+    border-radius:12px;cursor:pointer;transition:border-color .15s,background .15s}
+  .m-type-carte:hover{border-color:#c9c6bd;background:#faf9f6}
+  .m-type-carte input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--brand);flex:none}
+  .m-type-carte b{display:block;font-size:13.5px;color:#253147}
+  .m-type-carte small{display:block;margin-top:3px;font-size:12px;line-height:1.45;color:var(--t-600)}
+  .m-type-carte:has(input:checked){border-color:var(--brand);background:var(--blue-50)}
+  .toast{position:fixed;z-index:200;left:50%;bottom:32px;transform:translate(-50%,14px);max-width:min(560px,calc(100vw - 32px));
+    display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-radius:14px;background:#161616;color:#fff;
+    box-shadow:0 18px 46px rgba(15,23,42,.34);font-size:13.5px;line-height:1.5;opacity:0;pointer-events:none;
+    transition:opacity .2s,transform .2s}
+  .toast[data-visible="oui"]{opacity:1;transform:translate(-50%,0)}
+  .toast b{display:block;margin-bottom:3px;font-size:14px}
+  @media(prefers-reduced-motion:reduce){.toast{transition:none}}
+  .besoins-mention{margin-top:12px;font-size:12px;color:var(--t-600)}
   #modale .m-box label{font-size:13px;color:#253147;margin:0 0 8px}
   #modale .m-box textarea,#modale .m-box input,#modale .m-box select{border-color:var(--t-200);border-radius:12px;
     padding:13px 15px;font-size:14px;color:#253147;background:#fff;transition:border-color .15s,box-shadow .15s}
@@ -2501,6 +2517,7 @@
               <details class="presta-colonnes f-config"><summary>Configurer les colonnes</summary><div class="presta-colonnes-menu"><b>Colonnes à afficher</b><label class="colonne-verrouillee"><input type="checkbox" data-besoin-col="besoin" checked disabled title="Colonne structurante, toujours affichée"> Besoin</label><label><input type="checkbox" data-besoin-col="ref" checked> Référence client</label><label><input type="checkbox" data-besoin-col="statut" checked> Statut</label><label><input type="checkbox" data-besoin-col="marche" checked> Marché</label><label><input type="checkbox" data-besoin-col="op" checked> Opérationnel</label><label><input type="checkbox" data-besoin-col="lieu" checked> Localisation</label><label><input type="checkbox" data-besoin-col="candidatures" checked> Candidatures</label><label><input type="checkbox" data-besoin-col="ressource" checked> Ressource</label><label><input type="checkbox" data-besoin-col="partenaire" checked> Partenaire pressenti</label><label><input type="checkbox" data-besoin-col="date" checked> Publiée le</label><label><input type="checkbox" data-besoin-col="tjm" checked> TJM</label><label><input type="checkbox" data-besoin-col="montant" checked> Montant total</label><label class="colonne-verrouillee"><input type="checkbox" data-besoin-col="detail" checked disabled title="Colonne structurante, toujours affichée"> Détail</label></div></details>
             </div>
           </div>
+          <p class="besoins-mention">Les besoins créés depuis le portail apparaissent ici une fois traités par nos équipes commerciales.</p>
           <div class="twrap" role="region" aria-label="Tableau des besoins" tabindex="0">
             <table class="besoin-table">
               <thead><tr><th data-col="besoin">Besoin</th><th data-col="ref">Référence client</th><th data-col="statut">Statut</th><th data-col="marche">Marché</th><th data-col="op">Opérationnel</th><th data-col="lieu">Localisation</th><th class="num" data-col="candidatures">Candidatures</th><th data-col="ressource">Ressource</th><th data-col="partenaire">Partenaire pressenti</th><th class="num" data-col="date">Publiée le</th><th class="num" data-col="tjm">TJM</th><th class="num" data-col="montant">Montant total</th><th class="num" data-col="detail">Détail</th></tr></thead>
@@ -3437,6 +3454,7 @@
   </section>
 </div>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="mscrim" id="mscrim"></div>
 <div class="modale" id="modale" role="dialog" aria-modal="true" aria-labelledby="m-titre" aria-describedby="m-dpo">
   <div class="m-box">
@@ -3445,6 +3463,17 @@
       <button class="m-fermer" id="m-fermer" aria-label="Fermer la fenêtre"><svg class="ic"><use href="#i-croix"/></svg></button>
     </div>
     <div class="m-corps">
+    <fieldset class="m-types">
+      <legend class="sr-only">Type de besoin</legend>
+      <label class="m-type-carte"><input type="radio" name="m-type" value="AT">
+        <span><b>Renforcer mon équipe</b><small>Une personne intégrée à mon équipe, facturée au temps passé.</small></span></label>
+      <label class="m-type-carte"><input type="radio" name="m-type" value="FORFAIT">
+        <span><b>Confier une prestation</b><small>Un résultat livré, un prix ferme, des jalons.</small></span></label>
+      <label class="m-type-carte"><input type="radio" name="m-type" value="ATF">
+        <span><b>Engager une équipe</b><small>Un périmètre défini, à volume et prix engagés.</small></span></label>
+      <label class="m-type-carte"><input type="radio" name="m-type" value="RM">
+        <span><b>Contractualiser un intervenant</b><small>J’ai déjà identifié la personne.</small></span></label>
+    </fieldset>
     <div class="m-description">
       <label for="m-texte">Décrivez votre besoin</label>
       <textarea id="m-texte" rows="4" placeholder="Ex. : un développeur Node.js senior à Paris, à partir de septembre, entre 500 et 700 € par jour, deux jours de télétravail par semaine."></textarea>
@@ -3484,14 +3513,13 @@
           <ul class="m-liste" id="m-villes" role="listbox" aria-label="Villes" hidden></ul>
         </div>
       </div>
-      <div><label for="m-date">Date de démarrage</label>
+      <div><label for="m-date" id="m-date-label">Date de démarrage</label>
         <input id="m-date" type="date" aria-label="Date de démarrage"></div>
-      <div><label for="m-tjm">TJM ou budget cible</label>
+      <div><label for="m-tjm" id="m-tjm-label">TJM ou budget cible</label>
         <input id="m-tjm" type="text" inputmode="numeric" placeholder="Ex. : 500 – 700 € / jour"></div>
     </div>
     </div>
     <div class="m-pied">
-      <p class="note" id="m-note" aria-live="polite"></p>
       <button class="btn ghost" id="m-annuler">Annuler</button>
       <button class="btn" id="m-envoyer">Transmettre la demande</button>
     </div>
@@ -3697,6 +3725,7 @@
   function viderModale(){
     ['m-texte','m-poste','m-seniorite','m-loc','m-date','m-tjm'].forEach(function(id){
       var champ=document.getElementById(id);if(champ)champ.value='';});
+    document.querySelectorAll('input[name="m-type"]').forEach(function(r){r.checked=false;});
     if(window.__viderCompetencesBesoin)window.__viderCompetencesBesoin();
     var note=document.getElementById('m-note');if(note)note.textContent='';
     if(window.__majEnvoiBesoin)window.__majEnvoiBesoin();
@@ -3861,51 +3890,41 @@
   });
 
   garde('m-envoyer',function(){
-    var envoyer=document.getElementById('m-envoyer'),note=document.getElementById('m-note'),
-        texte=document.getElementById('m-texte');
-    if(!envoyer||!note)return;
-    var noteOrigine=note.innerHTML;
-    /* Le formulaire s'ouvre vide : transmettre une demande sans un mot de
-       description ne dit rien a personne. */
-    function majEnvoi(){envoyer.disabled=!(texte&&texte.value.trim());}
-    window.__majEnvoiBesoin=majEnvoi;
+    var envoyer=document.getElementById('m-envoyer'),texte=document.getElementById('m-texte'),
+        toast=document.getElementById('toast'),
+        libelleDate=document.getElementById('m-date-label'),libelleTjm=document.getElementById('m-tjm-label'),
+        types=[].slice.call(document.querySelectorAll('input[name="m-type"]'));
+    if(!envoyer)return;
+    function typeChoisi(){var t=types.filter(function(r){return r.checked;})[0];return t?t.value:'';}
+    /* Un forfait ne se commande pas comme une regie : deux libelles suivent le
+       type retenu, sans changer de champ. */
+    function majLibelles(){
+      var forfait=(typeChoisi()==='FORFAIT'||typeChoisi()==='ATF');
+      libelleDate.textContent=forfait?'Date de livraison souhaitée':'Date de démarrage';
+      libelleTjm.textContent=forfait?'Budget cible':'TJM ou budget cible';
+    }
+    /* Le type et la description sont le minimum pour qu'un commercial sache
+       quoi faire de la demande. Le reste accelere sans conditionner. */
+    function majEnvoi(){envoyer.disabled=!(typeChoisi()&&texte&&texte.value.trim());}
+    window.__majEnvoiBesoin=function(){majLibelles();majEnvoi();};
+    types.forEach(function(r){r.addEventListener('change',function(){majLibelles();majEnvoi();});});
     if(texte)texte.addEventListener('input',majEnvoi);
-    majEnvoi();
+    var minuterie=null;
+    function annoncer(html){
+      toast.innerHTML=html;toast.dataset.visible='oui';
+      clearTimeout(minuterie);minuterie=setTimeout(function(){toast.dataset.visible='non';},7000);
+    }
     envoyer.addEventListener('click',function(){
-      /* Le choix Assistance Technique / Portage a disparu du formulaire : le
-         lead part donc en AT, cas de tres loin le plus frequent. */
-      var libelleType='Assistance Technique';
-      envoyer.disabled=true;
-      note.textContent='Transmission en cours…';
-      fetch('/api/salesforce-lead',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          contactNom:'DURIS',contactPrenom:'Robert',contactEmail:'robert.duris@yopmail.com',
-          societe:'ELECTRICITE DE FRANCE_EDF',
-          type:libelleType||'',
-          poste:(document.getElementById('m-poste')||{}).value||'',
-          seniorite:(document.getElementById('m-seniorite')||{}).value||'',
-          competences:(window.__competencesBesoin?window.__competencesBesoin():[]).join(', '),
-          localisation:(document.getElementById('m-loc')||{}).value||'',
-          tjm:(document.getElementById('m-tjm')||{}).value||'',
-          dateDemarrage:(document.getElementById('m-date')||{}).value||'',
-          description:(document.getElementById('m-texte')||{}).value||''
-        })
-      })
-      .then(function(r){return r.json().then(function(d){return {ok:r.ok,corps:d};});})
-      .then(function(res){
-        if(!res.ok)throw new Error((res.corps&&res.corps.error)||'création refusée');
-        note.textContent='Demande transmise — lead '+(res.corps.id||'')+' créé dans Salesforce.';
-        setTimeout(function(){fermerModale();note.innerHTML=noteOrigine;majEnvoi();},2500);
-      })
-      .catch(function(erreur){
-        console.error('Création du lead :',erreur);
-        note.textContent='La demande n’a pas pu être transmise. Réessayez ou contactez votre interlocuteur.';
-        majEnvoi();
-      });
+      /* Rien ne part vers Salesforce : la demande est un email au commercial du
+         compte, qui cree l'opportunite a la main. La maquette s'arrete au
+         retour visible pour le client. */
+      annoncer('<span><b>Votre demande a bien été envoyée à Camille Moreau.</b>'
+        +'Elle sera créée dans votre interface dès qu’elle aura été traitée par nos équipes.</span>');
+      fermerModale();
     });
+    majLibelles();majEnvoi();
   });
+
   document.getElementById('mscrim').addEventListener('click',fermerModale);
   modale.addEventListener('click',function(e){if(e.target===modale)fermerModale();});
   modale.addEventListener('keydown',function(e){

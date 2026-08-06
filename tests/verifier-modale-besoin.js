@@ -54,29 +54,65 @@ const CONTROLES=[
   }},
   {nom:'la modale s ouvre entierement vide',fn:async page=>{
     await ouvrirModale(page);
-    const vides=await page.$$eval('#modale .m-corps input,#modale textarea',
+    const vides=await page.$$eval('#modale .m-corps input:not([type=radio]),#modale textarea',
       e=>e.map(x=>x.id+'='+x.value).filter(v=>v.split('=')[1]!==''));
     egal(vides.join(', '),'','champs non vides');
+    egal(await page.$$eval('input[name="m-type"]:checked',e=>e.length),0,'type pré-sélectionné');
     egal((await competences(page)).length,0,'pastilles de compétence');
   }},
   {nom:'chaque champ porte un exemple ou une invite',fn:async page=>{
     await ouvrirModale(page);
     /* Le champ date porte le format du navigateur, pas un placeholder. */
     const sansInvite=await page.$$eval('#modale .m-corps input,#modale textarea',
-      e=>e.filter(x=>x.type!=='date'&&!x.placeholder).map(x=>x.id));
+      e=>e.filter(x=>x.type!=='date'&&x.type!=='radio'&&!x.placeholder).map(x=>x.id));
     egal(sansInvite.join(', '),'','champs sans placeholder');
     egal(await page.$eval('#m-seniorite',e=>e.placeholder),'Sélectionner','invite de séniorité');
   }},
-  {nom:'Transmettre reste inerte tant que la description est vide',fn:async page=>{
+  {nom:'Transmettre exige le type et la description',fn:async page=>{
     await ouvrirModale(page);
     egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'bouton au repos');
     await page.fill('#m-texte','Un développeur Node.js senior à Paris.');
-    egal(await page.$eval('#m-envoyer',e=>e.disabled),false,'bouton après saisie');
+    egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'description seule');
+    await page.check('input[name="m-type"][value="AT"]');
+    egal(await page.$eval('#m-envoyer',e=>e.disabled),false,'type et description');
     await page.fill('#m-texte','   ');
-    egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'bouton avec des espaces seulement');
+    egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'espaces seulement');
+  }},
+  {nom:'les quatre types sont proposes et pilotent deux libelles',fn:async page=>{
+    await ouvrirModale(page);
+    egal((await page.$$eval('input[name="m-type"]',e=>e.map(x=>x.value))).join(','),
+      'AT,FORFAIT,ATF,RM','types proposés');
+    await page.check('input[name="m-type"][value="FORFAIT"]');
+    egal(await page.$eval('#m-date-label',e=>e.textContent),'Date de livraison souhaitée','libellé date en forfait');
+    egal(await page.$eval('#m-tjm-label',e=>e.textContent),'Budget cible','libellé budget en forfait');
+    await page.check('input[name="m-type"][value="AT"]');
+    egal(await page.$eval('#m-date-label',e=>e.textContent),'Date de démarrage','libellé date en AT');
+    egal(await page.$eval('#m-tjm-label',e=>e.textContent),'TJM ou budget cible','libellé budget en AT');
+  }},
+  {nom:'la transmission annonce l envoi au commercial et ferme',fn:async page=>{
+    await ouvrirModale(page);
+    await page.check('input[name="m-type"][value="AT"]');
+    await page.fill('#m-texte','Un développeur Node.js senior à Paris.');
+    await page.click('#m-envoyer');
+    egal(await page.evaluate(()=>document.body.classList.contains('modal-open')),false,'modale fermée');
+    egal(await page.$eval('#toast',e=>e.dataset.visible),'oui','toast visible');
+    const t=await page.$eval('#toast',e=>e.textContent);
+    egal(t.indexOf('Camille Moreau')>-1,true,'nom de l’interlocuteur');
+    egal(t.indexOf('traitée par nos équipes')>-1,true,'message d’attente');
+  }},
+  {nom:'rien ne part vers Salesforce',fn:async page=>{
+    const appels=[];
+    page.on('request',r=>{if(r.url().indexOf('salesforce')>-1)appels.push(r.url());});
+    await ouvrirModale(page);
+    await page.check('input[name="m-type"][value="RM"]');
+    await page.fill('#m-texte','Contractualiser Pierre Morel.');
+    await page.click('#m-envoyer');
+    await page.waitForTimeout(400);
+    egal(appels.join(', '),'','appels vers Salesforce');
   }},
   {nom:'une saisie abandonnee ne revient pas a l ouverture suivante',fn:async page=>{
     await ouvrirModale(page);
+    await page.check('input[name="m-type"][value="AT"]');
     await page.fill('#m-texte','Besoin abandonné');
     await page.fill('#m-loc','Lyon');
     await page.fill('#m-competence-saisie','Node.js');
@@ -86,6 +122,7 @@ const CONTROLES=[
     egal(await page.$eval('#m-texte',e=>e.value),'','description');
     egal(await page.$eval('#m-loc',e=>e.value),'','localisation');
     egal((await competences(page)).length,0,'pastilles de compétence');
+    egal(await page.$$eval('input[name="m-type"]:checked',e=>e.length),0,'type décoché');
     egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'bouton de nouveau inerte');
   }},
   {nom:'les trois listes s ouvrent et se filtrent',fn:async page=>{
@@ -218,10 +255,9 @@ const CONTROLES=[
     egal(hautes.map(x=>x.t+' ('+x.h+'px)').join(', '),'','pastilles sur deux lignes');
     egal(await page.$$eval('#m-competences .m-competence',ps=>ps.every(p=>!!p.title)),true,'libellé entier en titre');
   }},
-  {nom:'le pied ne montre aucune note au repos',fn:async page=>{
+  {nom:'le pied ne porte que les deux boutons',fn:async page=>{
     await ouvrirModale(page);
-    egal(await page.$eval('#m-note',e=>e.textContent.trim()),'','note');
-    egal(await page.$eval('#m-note',e=>e.offsetParent===null),true,'note masquée');
+    egal(await page.$$eval('#modale .m-pied .note',e=>e.length),0,'note de pied');
     egal(await page.$eval('#m-envoyer',e=>e.textContent.trim()),'Transmettre la demande','bouton d’envoi');
   }},
   {nom:'Annuler et Echap ferment la modale',fn:async page=>{
