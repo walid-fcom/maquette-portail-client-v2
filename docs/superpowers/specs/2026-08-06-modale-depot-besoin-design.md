@@ -62,6 +62,11 @@ Les deux champs restent ouverts : on pioche dans la liste ou on saisit sa
 propre valeur. La liste native filtre à la frappe, ce qui rend les 1569
 compétences praticables.
 
+Aucune ligne d'aide sous les champs. « Sélectionnez un poste ou saisissez un
+nouvel intitulé » et « Vous pouvez sélectionner plusieurs compétences » ont été
+retirées le 6 août 2026 : le chevron dit qu'il y a une liste, les pastilles
+disent qu'on peut en retenir plusieurs.
+
 Les métiers montent à 123 caractères — « Développeur·euse / Intégrateur·rice de
 progiciel (ERP, CRM, Dynamics…) » —, et l'écriture inclusive du référentiel est
 reprise telle quelle. La pastille de compétence reste plafonnée à 250 px et

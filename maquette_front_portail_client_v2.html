@@ -389,7 +389,6 @@
   .m-pied .note:empty{display:none;min-width:0}
   .m-pied .note:empty+.btn{margin-left:auto}
   .m-separateur{margin:22px 0 4px;border:0;border-top:1px solid var(--t-200)}
-  .m-aide{margin:7px 0 0;font-size:11.5px;line-height:1.45;color:var(--t-600)}
   .m-select{appearance:none;cursor:pointer;
     background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23354052' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 13px center;
     padding-right:40px!important}
@@ -3419,16 +3418,14 @@
         <label for="m-poste">Intitulé du poste</label>
         <input id="m-poste" class="m-select" type="text" list="m-postes" value="Développeur·euse front-end (JavaScript, Node, React, Angular, Vue...)" autocomplete="off">
         <datalist id="m-postes"></datalist>
-        <p class="m-aide">Sélectionnez un poste ou saisissez un nouvel intitulé.</p>
       </div>
       <div>
         <label for="m-competence-saisie">Compétences</label>
         <div class="m-competences" id="m-competences">
           <input id="m-competence-saisie" type="text" list="m-competences-liste" placeholder="Ajouter une compétence"
-                 autocomplete="off" aria-describedby="m-competences-aide">
+                 autocomplete="off">
         </div>
         <datalist id="m-competences-liste"></datalist>
-        <p class="m-aide" id="m-competences-aide">Vous pouvez sélectionner plusieurs compétences.</p>
       </div>
       <div>
         <label for="m-seniorite">Séniorité</label>
