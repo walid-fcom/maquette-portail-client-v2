@@ -132,6 +132,34 @@ const CONTROLES=[
     egal(gabarits[1],gabarits[0],'gabarit du 2e groupe');
     egal(gabarits[2],gabarits[0],'gabarit du 3e groupe');
   }},
+  {nom:'aucun libelle d en-tete ne deborde sur la colonne voisine',fn:async page=>{
+    await ouvrirActivites(page);
+    await page.click('#prestations-tout-ouvrir');
+    /* En largeur fixe, un libelle trop long deborde silencieusement sur la
+       colonne voisine. Le retour a la ligne coupe aux espaces : ce qui doit
+       tenir, c'est donc le mot le plus long, poignee de reordonnancement
+       comprise. */
+    const debordements=await page.$$eval('.marche-groupe thead th',entetes=>{
+      const mesure=document.createElement('span');
+      mesure.style.cssText='position:absolute;visibility:hidden;white-space:nowrap';
+      document.body.appendChild(mesure);
+      const fautifs=[];
+      entetes.filter(h=>!h.classList.contains('masque')).forEach(h=>{
+        const style=getComputedStyle(h);
+        mesure.style.font=style.font;mesure.style.letterSpacing=style.letterSpacing;
+        const libelle=h.textContent.trim();
+        const mots=style.whiteSpace==='nowrap'?[libelle]:libelle.split(/\s+/);
+        let plusLong=0;
+        mots.forEach(mot=>{mesure.textContent=mot;plusLong=Math.max(plusLong,mesure.getBoundingClientRect().width);});
+        const dispo=h.getBoundingClientRect().width-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight);
+        /* La poignee ::after prend une vingtaine de pixels, marge comprise. */
+        if(plusLong+27>dispo)fautifs.push(libelle+' ('+Math.round(plusLong+27)+'px pour '+Math.round(dispo)+')');
+      });
+      mesure.remove();
+      return fautifs;
+    });
+    egal(debordements.join(' ; '),'','en-têtes qui débordent');
+  }},
 ];
 
 (async()=>{

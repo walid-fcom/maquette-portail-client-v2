@@ -1191,11 +1191,15 @@
   #v-prestations .marche-groupe .presta-table{border:0;border-radius:0 0 14px 14px}
   /* Trois tables distinctes se dimensionnent chacune sur son contenu et leurs
      colonnes ne tombent plus en face. En largeur fixe, l'en-tete — identique
-     partout — impose le meme gabarit aux trois. La largeur totale est prise
-     large : en deca, la repartition ecrase les colonnes et les libelles se
-     chevauchent. */
-  #v-prestations .marche-groupe table{table-layout:fixed;width:100%;min-width:3000px}
+     partout — impose le meme gabarit aux trois. La largeur totale est calee sur
+     ce que reclament les vingt et une colonnes affichees : en deca, la
+     repartition les ecrase et les libelles debordent sur la voisine. */
+  #v-prestations .marche-groupe table{table-layout:fixed;width:100%;min-width:3700px}
   #v-prestations .marche-groupe th[data-col="affaire"]{width:340px}
+  /* En largeur fixe, un libelle plus long que sa colonne ne la pousse pas : il
+     deborde sur la voisine. Les en-tetes passent donc a la ligne — la seule
+     alternative etait d'elargir sans fin au gre du libelle le plus long. */
+  #v-prestations .marche-groupe th{height:auto;min-height:48px;padding:12px 18px;white-space:normal;vertical-align:bottom}
   @media(max-width:620px){.marche-groupe>summary{flex-wrap:wrap;gap:9px;padding:16px}.marche-groupe-chev{margin-left:auto}}
   #v-prestations .f-config,#v-besoins .f-config{flex:0 0 auto;margin-left:auto;position:relative}
   #v-prestations .f-config>summary,#v-besoins .f-config>summary{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:70px;height:42px;padding:0;border:1px solid #d8d6cf;border-radius:10px;background:#fff;color:#161616;font-weight:700;font-size:12.5px;white-space:nowrap;cursor:pointer;list-style:none}
@@ -2811,7 +2815,6 @@
         <div class="activites-tete"><h2 class="h-vue">Mon activité</h2><p>Suivez vos prestations, leur avancement et les informations associées.</p></div>
         <div class="activites-tabs" role="tablist" aria-label="Domaines d'activité">
           <button class="tab" role="tab" id="ta-prestations" aria-selected="true" aria-controls="v-prestations" data-vue="prestations">Prestations</button>
-          <button class="tab" role="tab" id="ta-marches" aria-selected="false" aria-controls="v-marches" data-vue="marches">Marchés</button>
         </div>
         <div class="activites-panneau" id="v-prestations" role="tabpanel" aria-labelledby="ta-prestations">
         <section class="card presta-page">
@@ -3845,6 +3848,9 @@
     });
   });
   garde('onglets-activite',function(){
+    /* L'onglet Marches a ete retire de la barre, mais son panneau reste : on y
+       arrive par « Voir le marche » et « Consulter les marches ». La bascule de
+       panneau doit donc continuer a le connaitre. */
     var map={prestations:'ta-prestations',marches:'ta-marches'};
     window.__afficherOngletActivite=function(nom){
       Object.keys(map).forEach(function(k){

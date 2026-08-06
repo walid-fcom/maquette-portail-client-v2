@@ -57,14 +57,29 @@ et un compteur global posé sur trois tables ne saurait pas laquelle décrire.
 Avec des groupes de deux à quatre lignes, elle n'a plus d'objet. Les vues
 *Mes besoins* et *Factures* la gardent.
 
+### L'onglet Marchés
+
+Retiré de la barre d'onglets, qui ne porte donc plus que *Prestations*. Le
+panneau `#v-marches` reste en place et atteignable par « Voir le marché » et
+« Consulter les marchés » — c'est l'entrée d'onglet qui disparaît, pas la vue.
+La bascule de panneau continue de connaître les deux noms.
+
 ### L'alignement des colonnes
 
 Trois tables distinctes se dimensionnent chacune sur son contenu, et les
 colonnes ne tombaient plus en face d'un groupe à l'autre. Elles passent donc en
 largeur fixe : l'en-tête, identique partout, impose le même gabarit aux trois.
-La largeur totale est prise large (3000 px) — en deçà, la répartition écrase
-les colonnes et les libellés se chevauchent. Chaque groupe défile
-horizontalement dans son propre cadre, comme le tableau le faisait déjà.
+
+En largeur fixe, un libellé plus long que sa colonne ne l'élargit pas — il
+déborde sur la voisine. Deux réglages tiennent ce risque : les en-têtes passent
+à la ligne (coupure aux espaces seulement, sinon les mots se brisent en plein
+milieu), et la largeur totale est calée sur ce que réclament les vingt et une
+colonnes affichées, soit 3700 px. Chaque groupe défile horizontalement dans son
+propre cadre, comme le tableau le faisait déjà.
+
+Le harnais mesure le mot le plus long de chaque en-tête contre la largeur
+disponible : c'est ce chevauchement qui est passé en production le 6 août 2026,
+il ne doit pas repasser en silence.
 
 ## Comment on saura que c'est bon
 
@@ -79,6 +94,7 @@ horizontalement dans son propre cadre, comme le tableau le faisait déjà.
 - Une ligne de groupe ouvre toujours le détail de la prestation.
 - Aucune barre de pagination sur la vue.
 - Les trois groupes ont le même gabarit de colonnes.
+- Aucun libellé d'en-tête ne déborde sur la colonne voisine.
 - Aucune erreur JavaScript, et le reste du portail est intact.
 
-Le harnais `tests/verifier-activites.js` couvre ces douze points.
+Le harnais `tests/verifier-activites.js` couvre ces treize points.
