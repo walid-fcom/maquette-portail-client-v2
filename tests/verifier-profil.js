@@ -116,6 +116,86 @@ const CONTROLES=[
     egal(await page.$eval('#mfa-renvoyer',e=>e.offsetParent===null),true,'bouton Renvoyer masqué');
     egal(await page.$eval('#mfa-validite',e=>e.offsetParent===null),true,'compte à rebours masqué');
   }},
+  {nom:'la carte mot de passe n expose aucun champ, la modale les porte',fn:async page=>{
+    await ouvrirProfil(page);
+    egal(await page.$$eval('#v-profil .compte-mdp input',e=>e.length),0,'champs dans la carte');
+    egal(await page.$eval('#mdp-modale',e=>e.offsetParent===null),true,'modale fermée au repos');
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    egal(await page.$$eval('#mdp-modale input[type=password]',e=>e.length),3,'champs dans la modale');
+  }},
+  {nom:'Enregistrer reste inerte tant que la confirmation ne correspond pas',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),true,'bouton au repos');
+    await page.fill('#compte-mdp-actuel','demo-portail');
+    await page.fill('#compte-mdp-nouveau','Portail2026!xy');
+    await page.fill('#compte-mdp-confirme','Portail2026!xz');
+    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),true,'bouton avec confirmation divergente');
+    await page.fill('#compte-mdp-confirme','Portail2026!xy');
+    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),false,'bouton avec confirmation correcte');
+  }},
+  {nom:'un nouveau mot de passe hors regles laisse Enregistrer inerte',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    await page.fill('#compte-mdp-actuel','demo-portail');
+    await page.fill('#compte-mdp-nouveau','motdepassefaible');
+    await page.fill('#compte-mdp-confirme','motdepassefaible');
+    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),true,'bouton avec un mot de passe incomplet');
+  }},
+  {nom:'la jauge et les regles suivent la frappe',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    await page.fill('#compte-mdp-nouveau','motdepassefaible');
+    egal(await page.$eval('#compte-mdp-jauge',e=>e.dataset.niveau),'faible','une règle sur quatre');
+    await page.fill('#compte-mdp-nouveau','Motdepasse123');
+    egal(await page.$eval('#compte-mdp-jauge',e=>e.dataset.niveau),'moyen','trois règles sur quatre');
+    await page.fill('#compte-mdp-nouveau','Motdepasse123!');
+    egal(await page.$eval('#compte-mdp-jauge',e=>e.dataset.niveau),'fort','quatre règles sur quatre');
+    egal(await page.$$eval('#mdp-modale .compte-mdp-regles li[data-ok="oui"]',e=>e.length),4,'règles cochées');
+  }},
+  {nom:'la validation ferme la modale, met la date a jour et vide les champs',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    await page.fill('#compte-mdp-actuel','demo-portail');
+    await page.fill('#compte-mdp-nouveau','Portail2026!xy');
+    await page.fill('#compte-mdp-confirme','Portail2026!xy');
+    await page.click('#compte-mdp-valider');
+    await page.waitForSelector('#mdp-modale',{state:'hidden'});
+    egal(await page.$eval('#compte-mdp-statut',e=>e.textContent.trim()),'Mot de passe modifié.','message de confirmation');
+    const attendue=await page.evaluate(()=>new Date().toLocaleDateString('fr-FR'));
+    egal(await page.$eval('#compte-mdp-date',e=>e.textContent.trim()),'Dernière modification le '+attendue,'date d’état');
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    egal(await page.$eval('#compte-mdp-nouveau',e=>e.value),'','champ vidé à la réouverture');
+    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),true,'bouton de nouveau inerte');
+  }},
+  {nom:'Annuler et Echap ferment la modale sans rien changer',fn:async page=>{
+    await ouvrirProfil(page);
+    const dateAvant=await page.$eval('#compte-mdp-date',e=>e.textContent.trim());
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    await page.click('#compte-mdp-annuler');
+    await page.waitForSelector('#mdp-modale',{state:'hidden'});
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    await page.keyboard.press('Escape');
+    await page.waitForSelector('#mdp-modale',{state:'hidden'});
+    egal(await page.$eval('#compte-mdp-date',e=>e.textContent.trim()),dateAvant,'date inchangée');
+    egal(await page.$eval('#compte-mdp-statut',e=>e.textContent.trim()),'','aucun message');
+  }},
+  {nom:'l oeil bascule chaque champ independamment',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.click('#compte-mdp-ouvrir');
+    await page.waitForSelector('#mdp-modale',{state:'visible'});
+    await page.click('#mdp-modale .l-mdp-visibilite[data-cible="compte-mdp-nouveau"]');
+    egal(await page.$eval('#compte-mdp-nouveau',e=>e.type),'text','champ dévoilé');
+    egal(await page.$eval('#compte-mdp-actuel',e=>e.type),'password','champ voisin intact');
+  }},
 ];
 
 (async()=>{

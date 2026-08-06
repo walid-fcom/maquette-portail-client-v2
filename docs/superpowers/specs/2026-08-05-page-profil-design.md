@@ -114,22 +114,42 @@ partie de ce travail qui touche du code existant.
 
 ### Bloc 3 — Mot de passe
 
-Une ligne d'état — « Dernière modification le 12/05/2026 » — puis trois
-champs : mot de passe actuel, nouveau mot de passe, confirmation.
+La carte ne porte aucun champ : une ligne d'état — « Dernière modification le
+12/05/2026 » —, un masque décoratif, et un bouton **Modifier le mot de passe**
+qui ouvre une modale. *(Décision du 6 août 2026 : la spec initiale posait les
+trois champs à même la carte. Un formulaire vide en permanence sur un écran
+qu'on ouvre pour lire son rôle et sa société pèse pour rien ; la saisie ne
+paraît qu'à la demande.)*
 
-Les deux champs de saisie portent le bouton œil déjà utilisé sur l'écran de
-login (`.l-mdp-champ`, `.l-mdp-visibilite`), avec son `aria-pressed` et son
-libellé qui bascule.
+#### La modale de changement
+
+Trois champs : mot de passe actuel, nouveau mot de passe, confirmation. Chacun
+porte le bouton œil déjà utilisé sur l'écran de login (`.l-mdp-champ`,
+`.l-mdp-visibilite`), avec son `aria-pressed` et son libellé qui bascule. Les
+trois basculent indépendamment.
 
 Les règles sont affichées en clair sous le champ plutôt que devinées : 12
-caractères minimum, une majuscule, un chiffre, un caractère spécial. Une jauge
-se met à jour à la frappe et compte simplement les règles satisfaites — une ou
-deux : faible, trois : moyen, les quatre : fort.
+caractères minimum, une majuscule, un chiffre, un caractère spécial. Chacune se
+coche en vert dès qu'elle est satisfaite. Une jauge les compte — une ou deux :
+faible, trois : moyen, les quatre : fort.
 
-Le bouton **Modifier le mot de passe** reste désactivé tant que les trois
-champs ne sont pas remplis et que la confirmation ne correspond pas au nouveau
-mot de passe. À la validation : message de confirmation en place, champs
-vidés, date d'état mise à jour. On reste sur la page.
+Le bouton **Enregistrer** reste désactivé tant que les quatre règles ne sont
+pas satisfaites, que le mot de passe actuel est vide, ou que la confirmation
+diverge. Les règles sont affichées : les exiger vraiment, sinon elles ne sont
+qu'un décor.
+
+Le mot de passe actuel n'est confronté à aucune valeur : la maquette n'en
+détient pas, et un refus arbitraire ne démontrerait pas le parcours — même
+raisonnement que pour le code d'appairage à six chiffres.
+
+À la validation : la modale se ferme, la date d'état passe au jour même, et un
+message de confirmation paraît sur la carte. On reste sur la page. Annuler, la
+croix, l'Échap et le clic sur le voile ferment sans rien changer ; le focus
+revient au bouton déclencheur. Chaque ouverture repart de champs vides et
+masqués.
+
+Explicitement hors périmètre : demande d'un code de vérification à la
+confirmation, historique des mots de passe, déconnexion des autres sessions.
 
 ## L'intégration au fichier
 
@@ -137,9 +157,10 @@ Le portail est un fichier HTML autonome. Cinq points de contact :
 
 1. **La vue** — `<section class="vue" id="v-profil">` parmi les autres vues,
    avec ses trois cartes.
-2. **La modale d'appairage** — au niveau des autres modales, sur le modèle de
-   `#mfa-modale` : un `.ov`, un `.ov-scrim`, une classe sur `<body>` pour
-   l'ouverture, fermeture à l'Échap et au clic sur le voile.
+2. **Les deux modales** — appairage et mot de passe, au niveau des autres
+   modales, sur le modèle de `#mfa-modale` : un `.ov`, un `.ov-scrim`, une
+   classe sur `<body>` pour l'ouverture, fermeture à l'Échap et au clic sur le
+   voile.
 3. **Le routage** — une entrée `profil:'Mon profil'` dans la table `titres`,
    qui suffit à rendre `#profil` navigable et à titrer la page.
 4. **Le lien du menu compte** — `#profile-link` appelle `afficher('profil')`
@@ -161,8 +182,10 @@ l'écran.
   l'appairage n'est pas confirmé.
 - Après appairage, le bloc affiche la nouvelle méthode, et la modale MFA du
   login parle de l'application, sans bouton de renvoi ni compte à rebours.
-- Le bouton de changement de mot de passe reste inerte tant que la
-  confirmation ne correspond pas.
+- La carte mot de passe n'expose aucun champ ; ils sont dans la modale.
+- Le bouton *Enregistrer* reste inerte tant qu'une règle n'est pas satisfaite
+  ou que la confirmation ne correspond pas.
+- Annuler et Échap ferment la modale sans toucher à la date d'état.
 - Aucune erreur JavaScript à l'ouverture de la page ni pendant les deux
   parcours.
 - Le reste du portail est intact : navigation, besoins, MFA du login quand la

@@ -637,187 +637,82 @@ git commit -m "Fait suivre la modale de connexion a la methode de verification c
 
 ---
 
-### Task 5 : bloc mot de passe
+### Task 5 : bloc mot de passe — fait le 6 août 2026
+
+La spec a changé entre-temps : la saisie passe dans une modale au lieu de
+tenir dans la carte. Les étapes ci-dessous décrivent ce qui a été livré.
 
 **Files:**
-- Modify: `maquette_front_portail_client_v2.html` (CSS `#v-profil`, vue `#v-profil`, bloc `garde('compte-mdp-valider', …)`)
-- Modify: `tests/verifier-profil.js` (trois contrôles de plus)
+- Modify: `maquette_front_portail_client_v2.html` (CSS `#v-profil`, carte dans
+  `#v-profil`, modale `#mdp-modale`, bloc `garde('mdp-modale', …)`)
+- Modify: `tests/verifier-profil.js` (sept contrôles de plus)
 
 **Interfaces:**
-- Consumes : la vue `#v-profil` de la tâche 1.
+- Consumes : la vue `#v-profil` de la tâche 1, la modale `#appairage-modale`
+  de la tâche 3 comme patron.
 - Produces : rien que d'autres tâches consomment. Dernière tâche du plan.
 
-- [ ] **Step 1 : écrire les contrôles**
+- [x] **Step 1 : écrire les sept contrôles**
 
-Ajouter au tableau `CONTROLES` :
+Ils couvrent, dans l'ordre : l'absence de champ dans la carte et leur présence
+dans la modale, le bouton inerte tant que la confirmation diverge, le bouton
+inerte tant qu'une règle manque, la jauge et les règles qui suivent la frappe,
+la validation qui ferme la modale et met la date à jour, Annuler et Échap qui
+ne changent rien, et l'œil qui bascule chaque champ indépendamment.
 
-```js
-  {nom:'le bouton reste inerte tant que la confirmation ne correspond pas',fn:async page=>{
-    await ouvrirProfil(page);
-    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),true,'bouton au repos');
-    await page.fill('#compte-mdp-actuel','demo-portail');
-    await page.fill('#compte-mdp-nouveau','Portail2026!xy');
-    await page.fill('#compte-mdp-confirme','Portail2026!xz');
-    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),true,'bouton avec confirmation divergente');
-    await page.fill('#compte-mdp-confirme','Portail2026!xy');
-    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),false,'bouton avec confirmation correcte');
-  }},
-  {nom:'la jauge compte les regles satisfaites',fn:async page=>{
-    await ouvrirProfil(page);
-    await page.fill('#compte-mdp-nouveau','motdepassefaible');
-    egal(await page.$eval('#compte-mdp-jauge',e=>e.dataset.niveau),'faible','une règle sur quatre');
-    await page.fill('#compte-mdp-nouveau','Motdepasse123');
-    egal(await page.$eval('#compte-mdp-jauge',e=>e.dataset.niveau),'moyen','trois règles sur quatre');
-    await page.fill('#compte-mdp-nouveau','Motdepasse123!');
-    egal(await page.$eval('#compte-mdp-jauge',e=>e.dataset.niveau),'fort','quatre règles sur quatre');
-  }},
-  {nom:'la validation confirme, vide les champs et met la date a jour',fn:async page=>{
-    await ouvrirProfil(page);
-    await page.fill('#compte-mdp-actuel','demo-portail');
-    await page.fill('#compte-mdp-nouveau','Portail2026!xy');
-    await page.fill('#compte-mdp-confirme','Portail2026!xy');
-    await page.click('#compte-mdp-valider');
-    egal(await page.$eval('#compte-mdp-statut',e=>e.textContent.trim()),'Mot de passe modifié.','message de confirmation');
-    egal(await page.$eval('#compte-mdp-nouveau',e=>e.value),'','champ vidé');
-    egal(await page.$eval('#compte-mdp-valider',e=>e.disabled),true,'bouton de nouveau inerte');
-    const attendue=await page.evaluate(()=>new Date().toLocaleDateString('fr-FR'));
-    egal(await page.$eval('#compte-mdp-date',e=>e.textContent.trim()),'Dernière modification le '+attendue,'date d’état');
-  }},
-```
-
-- [ ] **Step 2 : lancer le harnais pour voir les trois nouveaux contrôles échouer**
+- [x] **Step 2 : lancer le harnais pour les voir échouer**
 
 ```bash
 node tests/verifier-profil.js
 ```
 
-Attendu : les neuf premiers `OK`, les trois nouveaux en `ECHEC` (`#compte-mdp-valider` introuvable).
+Obtenu : les neuf premiers `OK`, les sept nouveaux en `ECHEC`
+(`#compte-mdp-ouvrir` introuvable).
 
-- [ ] **Step 3 : ajouter le CSS du bloc**
+- [x] **Step 3 : ajouter le CSS**
 
-À la suite du bloc CSS `#v-profil` :
+À la suite du bloc `#v-profil` : la carte (`.compte-mdp-date`,
+`.compte-mdp-masque`, `.compte-mdp-actions`, `.compte-mdp-statut`), la modale
+sur le patron `.ov` / `.ov-scrim` (`body.mdp-open`, `.mdp-box`, `.mdp-champs`,
+`.mdp-actions`), la jauge et les règles cochables.
 
-```css
-  .compte-mdp-date{margin-top:4px;color:var(--t-600);font-size:12.5px}
-  .compte-mdp-champs{display:grid;gap:16px;max-width:420px;margin-top:22px}
-  .compte-mdp-champs label{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--t-500);margin-bottom:7px}
-  .compte-mdp-champs input{width:100%;min-height:44px;border:1px solid var(--t-300);border-radius:10px;padding:11px 44px 11px 12px;color:var(--t-800);font:600 13px Montserrat,system-ui,sans-serif}
-  .compte-mdp-jauge{display:flex;gap:6px;margin-top:10px}
-  .compte-mdp-jauge i{flex:1;height:5px;border-radius:999px;background:var(--t-200)}
-  .compte-mdp-jauge[data-niveau="faible"] i:nth-child(1){background:#d92d20}
-  .compte-mdp-jauge[data-niveau="moyen"] i:nth-child(-n+2){background:#e8871e}
-  .compte-mdp-jauge[data-niveau="fort"] i{background:#16a34a}
-  .compte-mdp-regles{margin-top:10px;padding-left:18px;color:var(--t-600);font-size:12px;line-height:1.7}
-  .compte-mdp-statut{margin-top:14px;color:var(--ok-800);font-size:12.5px;font-weight:700}
-```
+- [x] **Step 4 : ajouter la carte dans la vue**
 
-- [ ] **Step 4 : ajouter la carte dans la vue**
+Après la carte `.compte-mfa` : titre, date d'état, masque décoratif, bouton
+`#compte-mdp-ouvrir`, message `#compte-mdp-statut` en `role="status"`. Aucun
+champ.
 
-Après la carte `.compte-mfa`, dans `#v-profil` :
+- [x] **Step 5 : ajouter la modale**
 
-```html
-        <section class="card compte-mdp">
-          <h2 class="h-vue" style="font-size:19px">Mot de passe</h2>
-          <p class="compte-mdp-date" id="compte-mdp-date">Dernière modification le 12/05/2026</p>
-          <div class="compte-mdp-champs">
-            <div>
-              <label for="compte-mdp-actuel">Mot de passe actuel</label>
-              <div class="l-mdp-champ">
-                <input id="compte-mdp-actuel" type="password" autocomplete="current-password">
-                <span class="l-mdp-actions"><button type="button" class="l-mdp-visibilite" data-cible="compte-mdp-actuel" aria-label="Afficher le mot de passe" aria-pressed="false"><svg aria-hidden="true"><use href="#i-oeil"/></svg></button></span>
-              </div>
-            </div>
-            <div>
-              <label for="compte-mdp-nouveau">Nouveau mot de passe</label>
-              <div class="l-mdp-champ">
-                <input id="compte-mdp-nouveau" type="password" autocomplete="new-password">
-                <span class="l-mdp-actions"><button type="button" class="l-mdp-visibilite" data-cible="compte-mdp-nouveau" aria-label="Afficher le mot de passe" aria-pressed="false"><svg aria-hidden="true"><use href="#i-oeil"/></svg></button></span>
-              </div>
-              <div class="compte-mdp-jauge" id="compte-mdp-jauge" data-niveau="" aria-hidden="true"><i></i><i></i><i></i></div>
-              <ul class="compte-mdp-regles">
-                <li>12 caractères minimum</li>
-                <li>une majuscule</li>
-                <li>un chiffre</li>
-                <li>un caractère spécial</li>
-              </ul>
-            </div>
-            <div>
-              <label for="compte-mdp-confirme">Confirmer le nouveau mot de passe</label>
-              <div class="l-mdp-champ">
-                <input id="compte-mdp-confirme" type="password" autocomplete="new-password">
-              </div>
-            </div>
-          </div>
-          <button class="btn" id="compte-mdp-valider" type="button" disabled>Modifier le mot de passe</button>
-          <p class="compte-mdp-statut" id="compte-mdp-statut" role="status"></p>
-        </section>
-```
+Après `#appairage-modale` : en-tête `.m-tete` avec la croix, trois champs avec
+leur bouton œil `data-cible`, la jauge `#compte-mdp-jauge`, les quatre règles
+en `<li data-regle>`, pied `Annuler` / `Enregistrer`.
 
-- [ ] **Step 5 : brancher le bloc**
+- [x] **Step 6 : brancher le bloc**
 
-Ajouter, à la suite de `garde('appairage-modale', …)` :
+Un `garde('mdp-modale', …)` calqué sur `garde('appairage-modale', …)` :
+ouverture, fermeture (Annuler, croix, voile, Échap), focus rendu au
+déclencheur, champs vidés et remasqués à chaque ouverture, jauge et règles
+recalculées à la frappe, `Enregistrer` armé seulement quand les quatre règles
+sont satisfaites et que la confirmation correspond.
 
-```js
-  garde('compte-mdp-valider',function(){
-    var actuel=document.getElementById('compte-mdp-actuel'),nouveau=document.getElementById('compte-mdp-nouveau'),
-        confirme=document.getElementById('compte-mdp-confirme'),valider=document.getElementById('compte-mdp-valider'),
-        jauge=document.getElementById('compte-mdp-jauge'),statut=document.getElementById('compte-mdp-statut'),
-        date=document.getElementById('compte-mdp-date');
-    if(!valider)return;
-    var REGLES=[/.{12,}/,/[A-ZÀ-Þ]/,/\d/,/[^\w\s]/];
-    function niveau(valeur){
-      if(!valeur)return '';
-      var satisfaites=REGLES.filter(function(r){return r.test(valeur);}).length;
-      return satisfaites>=4?'fort':(satisfaites===3?'moyen':'faible');
-    }
-    function maj(){
-      jauge.dataset.niveau=niveau(nouveau.value);
-      valider.disabled=!(actuel.value&&nouveau.value&&confirme.value===nouveau.value);
-    }
-    [actuel,nouveau,confirme].forEach(function(champ){champ.addEventListener('input',maj);});
-    valider.addEventListener('click',function(){
-      statut.textContent='Mot de passe modifié.';
-      date.textContent='Dernière modification le '+new Date().toLocaleDateString('fr-FR');
-      [actuel,nouveau,confirme].forEach(function(champ){champ.value='';});
-      maj();
-    });
-    /* Le bouton oeil du login est cable sur un id unique : ici il y en a deux,
-       chacun designant sa cible. */
-    document.querySelectorAll('#v-profil .l-mdp-visibilite').forEach(function(bouton){
-      bouton.addEventListener('click',function(){
-        var champ=document.getElementById(bouton.dataset.cible);
-        var visible=champ.type==='text';
-        champ.type=visible?'password':'text';
-        bouton.setAttribute('aria-pressed',visible?'false':'true');
-        bouton.setAttribute('aria-label',visible?'Afficher le mot de passe':'Masquer le mot de passe');
-      });
-    });
-    maj();
-  });
-```
-
-- [ ] **Step 6 : relancer le harnais**
+- [x] **Step 7 : relancer le harnais**
 
 ```bash
 node tests/verifier-profil.js
 ```
 
-Attendu : les douze contrôles en `OK`.
+Obtenu : les seize contrôles en `OK`.
 
-- [ ] **Step 7 : vérifier que le build passe toujours**
+- [x] **Step 8 : vérifier que le build passe toujours**
 
 ```bash
 python3 build_netlify_v2.py
 ```
 
-Attendu : le script se termine sans erreur. Il échoue bruyamment si un motif attendu a disparu du HTML — c'est le garde-fou du dépôt.
+Obtenu : le script se termine sans erreur.
 
-- [ ] **Step 8 : commit**
-
-```bash
-git add tests/verifier-profil.js maquette_front_portail_client_v2.html
-git commit -m "Ajoute le changement de mot de passe a la page Profil"
-```
+- [x] **Step 9 : commit**
 
 ---
 
@@ -836,8 +731,10 @@ git commit -m "Ajoute le changement de mot de passe a la page Profil"
 | N'importe quel code accepté, *Confirmer* inerte avant six chiffres | 3 |
 | Bascule de la méthode active, date d'activation, retour possible | 3 |
 | Modale de connexion adaptée, sans renvoi ni compte à rebours | 4 |
-| Mot de passe : date d'état, trois champs, œil, jauge, règles | 5 |
-| Bouton inerte tant que la confirmation diverge | 5 |
-| Confirmation en place, champs vidés, date mise à jour | 5 |
+| Carte mot de passe sans champ, date d'état, bouton d'ouverture | 5 |
+| Modale : trois champs, œil par champ, jauge, règles cochables | 5 |
+| Bouton inerte tant qu'une règle manque ou que la confirmation diverge | 5 |
+| Validation : modale fermée, date mise à jour, message sur la carte | 5 |
+| Annuler, croix, voile et Échap ferment sans rien changer | 5 |
 | Aucune erreur JS | harnais, à chaque contrôle |
 | Reste du portail intact | 1 (aucune entrée allumée), 3 (login non perturbé), 4 (MFA email préservé) |

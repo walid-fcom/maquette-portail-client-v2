@@ -1575,6 +1575,30 @@
   .appairage-qr{display:block;width:158px;height:158px;margin:14px 0 10px;border:1px solid var(--t-200);border-radius:12px;background:#fff;padding:8px}
   .appairage-cle{display:inline-block;padding:8px 12px;border-radius:9px;background:var(--t-50);color:var(--t-800);font:700 13px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
   .appairage-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:26px}
+  .compte-mdp-date{margin-top:4px;color:var(--t-600);font-size:12.5px}
+  .compte-mdp-masque{display:block;margin-top:16px;color:var(--t-400);font-size:20px;letter-spacing:.22em;line-height:1}
+  .compte-mdp-actions{display:flex;align-items:center;gap:14px;margin-top:22px}
+  .compte-mdp-statut{color:var(--ok-800);font-size:12.5px;font-weight:700}
+  .compte-mdp-statut:empty{display:none}
+  body.mdp-open .ov-scrim.s-mdp{display:block}
+  body.mdp-open .ov.o-mdp{display:flex}
+  .mdp-box{width:min(100%,470px);margin:auto;padding:30px;border-radius:20px;background:#fff;box-shadow:0 24px 64px rgba(15,23,42,.24)}
+  .mdp-champs{display:grid;gap:18px;margin-top:24px}
+  .mdp-champs label{display:block;margin-bottom:7px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--t-500)}
+  .mdp-champs input{width:100%;min-height:46px;padding:11px 46px 11px 13px;border:1px solid var(--t-300);border-radius:11px;background:#fff;color:var(--t-800);font:600 13.5px Montserrat,system-ui,sans-serif}
+  .mdp-champs input:focus{border-color:var(--brand);outline:2px solid rgba(0,60,194,.18);outline-offset:0}
+  .mdp-champs .l-mdp-actions button{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;padding:0;color:var(--brand)}
+  .compte-mdp-jauge{display:flex;gap:6px;margin-top:12px}
+  .compte-mdp-jauge i{flex:1;height:5px;border-radius:999px;background:var(--t-200)}
+  .compte-mdp-jauge[data-niveau="faible"] i:nth-child(1){background:#d92d20}
+  .compte-mdp-jauge[data-niveau="moyen"] i:nth-child(-n+2){background:#e8871e}
+  .compte-mdp-jauge[data-niveau="fort"] i{background:#16a34a}
+  .compte-mdp-regles{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:11px;list-style:none}
+  .compte-mdp-regles li{display:flex;align-items:center;gap:6px;color:var(--t-600);font-size:11.5px;font-weight:600}
+  .compte-mdp-regles li::before{content:"○";color:var(--t-400);font-size:12px}
+  .compte-mdp-regles li[data-ok="oui"]{color:var(--ok-800)}
+  .compte-mdp-regles li[data-ok="oui"]::before{content:"✓";color:var(--ok-600);font-weight:900}
+  .mdp-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:28px}
   /* ═══ Détail prestation AT (#v-activite-detail) · refonte charte crème (aligné sur la liste + la maquette de référence) ═══ */
   .cont:has(#v-activite-detail:not([hidden])){background:#f6f5f0}
   #v-activite-detail{--t-50:#faf9f6;--t-100:#efeee9;--t-200:#e8e6e0;--t-300:#d8d6cf;--t-400:#8f8e87;--t-500:#66665f;--t-600:#565650;--t-700:#3d3d3d;--t-800:#2a2724;--t-900:#161616}
@@ -3221,6 +3245,15 @@
             <p class="compte-mfa-statut" id="compte-mfa-statut" role="status"></p>
           </div>
         </section>
+        <section class="card compte-mdp">
+          <h2 class="h-vue" style="font-size:19px">Mot de passe</h2>
+          <p class="compte-mdp-date" id="compte-mdp-date">Dernière modification le 12/05/2026</p>
+          <span class="compte-mdp-masque" aria-hidden="true">••••••••••••</span>
+          <div class="compte-mdp-actions">
+            <button class="btn" id="compte-mdp-ouvrir" type="button">Modifier le mot de passe</button>
+            <p class="compte-mdp-statut" id="compte-mdp-statut" role="status"></p>
+          </div>
+        </section>
       </section>
 
       <footer class="portal-footer" aria-label="Liens utiles"><a href="file:///Users/walid/Downloads/CGU.html">CGU</a><a href="#">Cookies</a><a href="#">Besoin d’aide&nbsp;?</a><a class="portal-guide" href="#"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Télécharger le guide du portail</a></footer>
@@ -3357,6 +3390,50 @@
     <div class="appairage-actions">
       <button class="btn ghost" id="appairage-annuler" type="button">Annuler</button>
       <button class="btn" id="appairage-confirmer" type="button" disabled>Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov-scrim s-mdp" id="mdp-scrim"></div>
+<div class="ov o-mdp" id="mdp-modale" role="dialog" aria-modal="true" aria-labelledby="mdp-titre">
+  <div class="mdp-box">
+    <div class="m-tete">
+      <h2 id="mdp-titre">Modifier le mot de passe</h2>
+      <button class="m-fermer" id="compte-mdp-fermer" type="button" aria-label="Fermer la fenêtre"><svg class="ic"><use href="#i-croix"/></svg></button>
+    </div>
+    <div class="mdp-champs">
+      <div>
+        <label for="compte-mdp-actuel">Mot de passe actuel</label>
+        <div class="l-mdp-champ">
+          <input id="compte-mdp-actuel" type="password" autocomplete="current-password">
+          <span class="l-mdp-actions"><button type="button" class="l-mdp-visibilite" data-cible="compte-mdp-actuel" aria-label="Afficher le mot de passe" aria-pressed="false"><svg aria-hidden="true"><use href="#i-oeil"/></svg></button></span>
+        </div>
+      </div>
+      <div>
+        <label for="compte-mdp-nouveau">Nouveau mot de passe</label>
+        <div class="l-mdp-champ">
+          <input id="compte-mdp-nouveau" type="password" autocomplete="new-password" aria-describedby="compte-mdp-regles">
+          <span class="l-mdp-actions"><button type="button" class="l-mdp-visibilite" data-cible="compte-mdp-nouveau" aria-label="Afficher le mot de passe" aria-pressed="false"><svg aria-hidden="true"><use href="#i-oeil"/></svg></button></span>
+        </div>
+        <div class="compte-mdp-jauge" id="compte-mdp-jauge" data-niveau="" aria-hidden="true"><i></i><i></i><i></i></div>
+        <ul class="compte-mdp-regles" id="compte-mdp-regles">
+          <li data-regle="0">12 caractères</li>
+          <li data-regle="1">une majuscule</li>
+          <li data-regle="2">un chiffre</li>
+          <li data-regle="3">un caractère spécial</li>
+        </ul>
+      </div>
+      <div>
+        <label for="compte-mdp-confirme">Confirmer le nouveau mot de passe</label>
+        <div class="l-mdp-champ">
+          <input id="compte-mdp-confirme" type="password" autocomplete="new-password">
+          <span class="l-mdp-actions"><button type="button" class="l-mdp-visibilite" data-cible="compte-mdp-confirme" aria-label="Afficher le mot de passe" aria-pressed="false"><svg aria-hidden="true"><use href="#i-oeil"/></svg></button></span>
+        </div>
+      </div>
+    </div>
+    <div class="mdp-actions">
+      <button class="btn ghost" id="compte-mdp-annuler" type="button">Annuler</button>
+      <button class="btn" id="compte-mdp-valider" type="button" disabled>Enregistrer</button>
     </div>
   </div>
 </div>
@@ -3650,6 +3727,61 @@
     voile.addEventListener('click',fermer);
     document.addEventListener('keydown',function(e){
       if(e.key==='Escape'&&document.body.classList.contains('appairage-open'))fermer();});
+  });
+
+  garde('mdp-modale',function(){
+    var modale=document.getElementById('mdp-modale'),voile=document.getElementById('mdp-scrim'),
+        ouvrirBouton=document.getElementById('compte-mdp-ouvrir'),valider=document.getElementById('compte-mdp-valider'),
+        actuel=document.getElementById('compte-mdp-actuel'),nouveau=document.getElementById('compte-mdp-nouveau'),
+        confirme=document.getElementById('compte-mdp-confirme'),jauge=document.getElementById('compte-mdp-jauge'),
+        regles=[].slice.call(document.querySelectorAll('#compte-mdp-regles li')),
+        statut=document.getElementById('compte-mdp-statut'),date=document.getElementById('compte-mdp-date'),
+        yeux=[].slice.call(modale.querySelectorAll('.l-mdp-visibilite')),declencheur=null;
+    if(!modale||!ouvrirBouton)return;
+    var REGLES=[/.{12,}/,/[A-ZÀ-Þ]/,/\d/,/[^\w\s]/];
+    var champs=[actuel,nouveau,confirme];
+    function satisfaites(valeur){return REGLES.map(function(r){return !!valeur&&r.test(valeur);});}
+    function maj(){
+      var ok=satisfaites(nouveau.value),total=ok.filter(Boolean).length;
+      regles.forEach(function(li,i){li.dataset.ok=ok[i]?'oui':'non';});
+      jauge.dataset.niveau=!nouveau.value?'':(total>=4?'fort':(total===3?'moyen':'faible'));
+      /* Les quatre regles sont affichees : les exiger vraiment, sinon elles
+         ne sont qu'un decor. */
+      valider.disabled=!(actuel.value&&total===4&&confirme.value===nouveau.value);
+    }
+    function vider(){
+      champs.forEach(function(c){c.value='';c.type='password';});
+      yeux.forEach(function(b){b.setAttribute('aria-pressed','false');b.setAttribute('aria-label','Afficher le mot de passe');});
+      maj();
+    }
+    function ouvrir(){declencheur=document.activeElement;vider();statut.textContent='';document.body.classList.add('mdp-open');actuel.focus();}
+    function fermer(){document.body.classList.remove('mdp-open');if(declencheur&&declencheur.focus)declencheur.focus();}
+    champs.forEach(function(c){c.addEventListener('input',maj);});
+    ouvrirBouton.addEventListener('click',ouvrir);
+    valider.addEventListener('click',function(){
+      /* Le mot de passe actuel n'est confronte a rien : la maquette n'en detient
+         aucun, et un refus arbitraire ne demontrerait pas le parcours. */
+      date.textContent='Dernière modification le '+new Date().toLocaleDateString('fr-FR');
+      statut.textContent='Mot de passe modifié.';
+      fermer();
+    });
+    document.getElementById('compte-mdp-annuler').addEventListener('click',fermer);
+    document.getElementById('compte-mdp-fermer').addEventListener('click',fermer);
+    voile.addEventListener('click',fermer);
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape'&&document.body.classList.contains('mdp-open'))fermer();});
+    /* Le bouton oeil du login est cable sur un id unique : ici il y en a trois,
+       chacun designant sa cible. */
+    yeux.forEach(function(bouton){
+      bouton.addEventListener('click',function(){
+        var champ=document.getElementById(bouton.dataset.cible),visible=champ.type==='text';
+        champ.type=visible?'password':'text';
+        bouton.innerHTML='<svg aria-hidden="true"><use href="'+(visible?'#i-oeil':'#i-oeil-masque')+'"/></svg>';
+        bouton.setAttribute('aria-pressed',visible?'false':'true');
+        bouton.setAttribute('aria-label',visible?'Afficher le mot de passe':'Masquer le mot de passe');
+      });
+    });
+    maj();
   });
 
   garde('partenaires-supplier-search',function(){
