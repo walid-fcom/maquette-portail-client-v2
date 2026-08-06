@@ -46,7 +46,8 @@ piochant dans la liste ; on en retire par la croix de la pastille, ou par
 retour arrière quand le champ est vide. Une compétence déjà retenue ne se
 duplique pas, quelle que soit la casse.
 
-**Séniorité** est une liste fermée : Junior, Confirmé, Sénior, Expert.
+**Séniorité** est une liste fermée : Junior, Confirmé, Sénior, Expert. Le champ
+est en lecture seule — il n'y a rien à y taper — et le clic bascule la liste.
 
 ### Le référentiel FreeWork
 
@@ -129,10 +130,14 @@ poste*.
 
 ### Les listes déroulantes
 
-Les trois listes — métier, compétence, ville — sont maison, pas natives. La
-liste native du navigateur ignore toute mise en forme : sous macOS en thème
-sombre elle s'ouvrait en noir, sur toute la hauteur de l'écran, par-dessus la
-fenêtre qu'elle était censée servir. *(Constaté le 6 août 2026.)*
+Les quatre listes — métier, compétence, ville, séniorité — sont maison, pas
+natives. Ni la liste d'un `datalist` ni le menu d'un `select` n'acceptent de
+mise en forme : sous macOS en thème sombre, la première s'ouvrait en noir sur
+toute la hauteur de l'écran par-dessus la fenêtre, le second en gris ardoise
+au milieu du formulaire. *(Constaté le 6 août 2026, deux fois.)*
+
+Il ne reste donc dans la fenêtre ni `datalist`, ni attribut `list`, ni
+`select` — un contrôle le vérifie.
 
 Le composant filtre à la frappe, se pilote au clavier (↑ ↓ pour parcourir,
 Entrée pour retenir, Échap pour refermer sans fermer la fenêtre) et à la

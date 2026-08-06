@@ -54,7 +54,7 @@ const CONTROLES=[
   }},
   {nom:'la modale s ouvre entierement vide',fn:async page=>{
     await ouvrirModale(page);
-    const vides=await page.$$eval('#modale .m-corps input,#modale .m-corps select,#modale textarea',
+    const vides=await page.$$eval('#modale .m-corps input,#modale textarea',
       e=>e.map(x=>x.id+'='+x.value).filter(v=>v.split('=')[1]!==''));
     egal(vides.join(', '),'','champs non vides');
     egal((await competences(page)).length,0,'pastilles de compétence');
@@ -65,7 +65,7 @@ const CONTROLES=[
     const sansInvite=await page.$$eval('#modale .m-corps input,#modale textarea',
       e=>e.filter(x=>x.type!=='date'&&!x.placeholder).map(x=>x.id));
     egal(sansInvite.join(', '),'','champs sans placeholder');
-    egal(await page.$eval('#m-seniorite option',o=>o.textContent.trim()),'Sélectionner','1re option de séniorité');
+    egal(await page.$eval('#m-seniorite',e=>e.placeholder),'Sélectionner','invite de séniorité');
   }},
   {nom:'Transmettre reste inerte tant que la description est vide',fn:async page=>{
     await ouvrirModale(page);
@@ -138,6 +138,21 @@ const CONTROLES=[
     egal(await page.$eval('#m-postes',e=>e.hidden),true,'liste refermée');
     egal(await page.evaluate(()=>document.body.classList.contains('modal-open')),true,'modale encore ouverte');
   }},
+  {nom:'la seniorite est une liste fermee, sans menu natif',fn:async page=>{
+    await ouvrirModale(page);
+    egal(await page.$eval('#m-seniorite',e=>e.readOnly),true,'champ en lecture seule');
+    await page.click('#m-seniorite');
+    egal((await page.$$eval('#m-seniorites li[data-valeur]',l=>l.map(x=>x.textContent))).join(', '),
+      'Junior, Confirmé, Sénior, Expert','valeurs proposées');
+    await page.click('#m-seniorites li[data-valeur="Sénior"]');
+    egal(await page.$eval('#m-seniorite',e=>e.value),'Sénior','valeur retenue');
+    egal(await page.$eval('#m-seniorites',e=>e.hidden),true,'liste refermée');
+    /* Un second clic sur un champ en lecture seule referme au lieu de rouvrir. */
+    await page.click('#m-seniorite');
+    egal(await page.$eval('#m-seniorites',e=>e.hidden),false,'liste rouverte');
+    await page.click('#m-seniorite');
+    egal(await page.$eval('#m-seniorites',e=>e.hidden),true,'liste refermée au second clic');
+  }},
   {nom:'la date de demarrage porte un calendrier natif',fn:async page=>{
     await ouvrirModale(page);
     egal(await page.$eval('#m-date',e=>e.type),'date','type du champ');
@@ -187,8 +202,9 @@ const CONTROLES=[
     await ouvrirModale(page);
     /* La liste native ignorait toute mise en forme : sous macOS elle s'ouvrait
        en noir, plein ecran, par-dessus la fenetre. */
-    egal(await page.$$eval('#modale [list],#modale datalist',e=>e.length),0,'attributs list et datalist');
-    egal(await page.$$eval('#modale .m-liste',e=>e.length),3,'listes maison');
+    egal(await page.$$eval('#modale [list],#modale datalist,#modale select',e=>e.length),0,
+      'attributs list, datalist et select');
+    egal(await page.$$eval('#modale .m-liste',e=>e.length),4,'listes maison');
   }},
   {nom:'aucune pastille ne depasse une ligne',fn:async page=>{
     await ouvrirModale(page);

@@ -3468,13 +3468,11 @@
       </div>
       <div>
         <label for="m-seniorite">Séniorité</label>
-        <select id="m-seniorite" class="m-select">
-          <option value="" selected>Sélectionner</option>
-          <option>Junior</option>
-          <option>Confirmé</option>
-          <option>Sénior</option>
-          <option>Expert</option>
-        </select>
+        <div class="m-combo">
+          <input id="m-seniorite" class="m-select" type="text" readonly placeholder="Sélectionner"
+                 role="combobox" aria-expanded="false" aria-controls="m-seniorites" aria-autocomplete="none">
+          <ul class="m-liste" id="m-seniorites" role="listbox" aria-label="Séniorité" hidden></ul>
+        </div>
       </div>
       <div>
         <label for="m-loc">Localisation</label>
@@ -3695,9 +3693,8 @@
   /* Chaque ouverture repart d'un formulaire vierge : une saisie abandonnee ne
      doit pas revenir sur le besoin suivant. */
   function viderModale(){
-    ['m-texte','m-poste','m-loc','m-date','m-tjm'].forEach(function(id){
+    ['m-texte','m-poste','m-seniorite','m-loc','m-date','m-tjm'].forEach(function(id){
       var champ=document.getElementById(id);if(champ)champ.value='';});
-    var seniorite=document.getElementById('m-seniorite');if(seniorite)seniorite.value='';
     if(window.__viderCompetencesBesoin)window.__viderCompetencesBesoin();
     var note=document.getElementById('m-note');if(note)note.textContent='';
     if(window.__majEnvoiBesoin)window.__majEnvoiBesoin();
@@ -3772,6 +3769,14 @@
     }
     champ.addEventListener('input',rendre);
     champ.addEventListener('focus',rendre);
+    /* Un champ en lecture seule ne se saisit pas : son seul geste est le clic,
+       qui bascule donc. Le focus etant deja pris apres un premier choix, on ne
+       peut pas s'en remettre a l'evenement focus pour rouvrir. */
+    champ.addEventListener('mousedown',function(e){
+      if(!champ.readOnly)return;
+      e.preventDefault();
+      if(ouvert())fermer();else{champ.focus();rendre();}
+    });
     champ.addEventListener('keydown',function(e){
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){
         e.preventDefault();
@@ -3797,7 +3802,8 @@
   }
 
   garde('m-postes',function(){
-    [['m-poste','m-postes',METIERS_FREEWORK],['m-loc','m-villes',VILLES]].forEach(function(t){
+    [['m-poste','m-postes',METIERS_FREEWORK],['m-loc','m-villes',VILLES],
+     ['m-seniorite','m-seniorites',['Junior','Confirmé','Sénior','Expert']]].forEach(function(t){
       var champ=document.getElementById(t[0]),panneau=document.getElementById(t[1]);
       if(!champ||!panneau)return;
       comboFiltrant(champ,panneau,t[2],function(v){champ.value=v;});
