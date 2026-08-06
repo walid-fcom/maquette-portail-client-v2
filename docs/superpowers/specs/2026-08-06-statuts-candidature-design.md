@@ -34,7 +34,7 @@ l'existence même ne le regarde pas.
 | *non affiché* | `Rejet sourcing` | — |
 | *non affiché* | `Proposé au commerce` | — |
 | *non affiché* | `Rejet Commerce` | — |
-| En attente de votre retour | `Proposition au client` | bleu |
+| CV à valider | `Proposition au client` | bleu |
 | Rejet client sur CV | `Rejet Client sur CV` | rouge |
 | À valider pour soutenance | `Soutenance` | violet |
 | Rejet client après soutenance | `Rejet Client après soutenance` | rouge |
@@ -50,9 +50,10 @@ fera le filtrage.
 
 Trois libellés ont été arbitrés le 6 août 2026 :
 
-- **En attente de votre retour** : le CV est parti par mail, le client accepte
-  ou refuse de rencontrer le profil. *(Arbitré le 6 août 2026, après
-  « Proposée » puis « À étudier ».)*
+- **CV à valider** : le CV est parti par mail, le client le retient ou l'écarte.
+  Le libellé nomme l'objet reçu, et sa symétrie avec « Rejet client sur CV »
+  suffit à faire comprendre l'issue négative. *(Arbitré le 6 août 2026, après
+  « Proposée », « À étudier » puis « En attente de votre retour ».)*
 - **À valider pour soutenance** : le client a accepté le CV, reste à arrêter
   la soutenance elle-même. C'est la seconde des deux décisions qu'on lui
   demande, et elle porte sur l'entretien, non sur le profil.
@@ -72,7 +73,7 @@ Les six statuts visibles sont tous représentés au moins une fois :
 | Elsa Weber | Consultant cybersécurité | Rejet client après soutenance |
 | Marc Delon | Consultant cybersécurité | Rejet client sur CV |
 | Inès Martin | Architecte cloud AWS | No Go Candidat |
-| *tous les autres* | — | En attente de votre retour |
+| *tous les autres* | — | CV à valider |
 
 Chaque ligne porte aussi sa valeur Salesforce en `data-statut-candidature` :
 c'est ce qui permet de vérifier le mapping sans se fier au libellé affiché.
@@ -86,7 +87,7 @@ pastille contre celui de sa cellule.
 
 ## Comment on saura que c'est bon
 
-- Un besoin en recherche affiche des candidatures « En attente de votre retour ».
+- Un besoin en recherche affiche des candidatures « CV à valider ».
 - Un besoin démarré affiche un candidat « Démarrage », badge vert.
 - Un besoin rejeté distingue le rejet sur CV du rejet après soutenance.
 - Un profil retenu passe à « À valider pour soutenance », badge violet.

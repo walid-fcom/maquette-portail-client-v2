@@ -20,7 +20,7 @@ const CODE_ACCES='Azerty1234.Azerty1234.@sdkzap';
    statuts internes de INO_Candidature__c.statut__c — Nouveau, Rejet sourcing,
    Propose au commerce, Rejet Commerce — ne doivent jamais paraitre. */
 const ATTENDUS={
-  'En attente de votre retour':'Proposition au client',
+  'CV à valider':'Proposition au client',
   'À valider pour soutenance':'Soutenance',
   'Démarrage':'Démarrage',
   'Rejet client sur CV':'Rejet Client sur CV',
@@ -69,11 +69,11 @@ function egal(reel,attendu,quoi){
 }
 
 const CONTROLES=[
-  {nom:'un besoin en recherche attend le retour du client',fn:async page=>{
+  {nom:'un besoin en recherche attend la validation des CV',fn:async page=>{
     await ouvrirCandidatures(page,'Consultant data gouvernance');
     const b=await badges(page);
     egal(b.length,2,'nombre de candidatures');
-    egal(b.every(x=>x.libelle==='En attente de votre retour'),true,'libellés');
+    egal(b.every(x=>x.libelle==='CV à valider'),true,'libellés');
     egal(b[0].sf,'Proposition au client','valeur Salesforce portée par la ligne');
   }},
   {nom:'un besoin demarre affiche un candidat en demarrage',fn:async page=>{
@@ -98,7 +98,7 @@ const CONTROLES=[
   {nom:'un desistement candidat se lit No Go Candidat',fn:async page=>{
     await ouvrirCandidatures(page,'Architecte cloud AWS');
     const b=await badges(page);
-    egal(b.map(x=>x.libelle).sort().join(' | '),'En attente de votre retour | No Go Candidat','libellés');
+    egal(b.map(x=>x.libelle).sort().join(' | '),'CV à valider | No Go Candidat','libellés');
     egal(b.filter(x=>x.libelle==='No Go Candidat')[0].couleur,'b-neutre','badge neutre');
   }},
   {nom:'les six statuts client sont tous representes, et eux seuls',fn:async page=>{
