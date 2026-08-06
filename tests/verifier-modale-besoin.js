@@ -54,10 +54,9 @@ const CONTROLES=[
   }},
   {nom:'la modale s ouvre entierement vide',fn:async page=>{
     await ouvrirModale(page);
-    const vides=await page.$$eval('#modale .m-corps input:not([type=radio]),#modale textarea',
+    const vides=await page.$$eval('#modale .m-corps input,#modale textarea',
       e=>e.map(x=>x.id+'='+x.value).filter(v=>v.split('=')[1]!==''));
     egal(vides.join(', '),'','champs non vides');
-    egal(await page.$$eval('input[name="m-type"]:checked',e=>e.length),0,'type pré-sélectionné');
     egal((await competences(page)).length,0,'pastilles de compétence');
   }},
   {nom:'chaque champ porte un exemple ou une invite',fn:async page=>{
@@ -68,30 +67,16 @@ const CONTROLES=[
     egal(sansInvite.join(', '),'','champs sans placeholder');
     egal(await page.$eval('#m-seniorite',e=>e.placeholder),'Sélectionner','invite de séniorité');
   }},
-  {nom:'Transmettre exige le type et la description',fn:async page=>{
+  {nom:'Transmettre reste inerte tant que la description est vide',fn:async page=>{
     await ouvrirModale(page);
     egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'bouton au repos');
     await page.fill('#m-texte','Un développeur Node.js senior à Paris.');
-    egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'description seule');
-    await page.check('input[name="m-type"][value="AT"]');
-    egal(await page.$eval('#m-envoyer',e=>e.disabled),false,'type et description');
+    egal(await page.$eval('#m-envoyer',e=>e.disabled),false,'bouton après saisie');
     await page.fill('#m-texte','   ');
     egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'espaces seulement');
   }},
-  {nom:'les quatre types sont proposes et pilotent deux libelles',fn:async page=>{
-    await ouvrirModale(page);
-    egal((await page.$$eval('input[name="m-type"]',e=>e.map(x=>x.value))).join(','),
-      'AT,FORFAIT,ATF,RM','types proposés');
-    await page.check('input[name="m-type"][value="FORFAIT"]');
-    egal(await page.$eval('#m-date-label',e=>e.textContent),'Date de livraison souhaitée','libellé date en forfait');
-    egal(await page.$eval('#m-tjm-label',e=>e.textContent),'Budget cible','libellé budget en forfait');
-    await page.check('input[name="m-type"][value="AT"]');
-    egal(await page.$eval('#m-date-label',e=>e.textContent),'Date de démarrage','libellé date en AT');
-    egal(await page.$eval('#m-tjm-label',e=>e.textContent),'TJM ou budget cible','libellé budget en AT');
-  }},
   {nom:'la transmission annonce l envoi au commercial et ferme',fn:async page=>{
     await ouvrirModale(page);
-    await page.check('input[name="m-type"][value="AT"]');
     await page.fill('#m-texte','Un développeur Node.js senior à Paris.');
     await page.click('#m-envoyer');
     egal(await page.evaluate(()=>document.body.classList.contains('modal-open')),false,'modale fermée');
@@ -104,7 +89,6 @@ const CONTROLES=[
     const appels=[];
     page.on('request',r=>{if(r.url().indexOf('salesforce')>-1)appels.push(r.url());});
     await ouvrirModale(page);
-    await page.check('input[name="m-type"][value="RM"]');
     await page.fill('#m-texte','Contractualiser Pierre Morel.');
     await page.click('#m-envoyer');
     await page.waitForTimeout(400);
@@ -112,7 +96,6 @@ const CONTROLES=[
   }},
   {nom:'une saisie abandonnee ne revient pas a l ouverture suivante',fn:async page=>{
     await ouvrirModale(page);
-    await page.check('input[name="m-type"][value="AT"]');
     await page.fill('#m-texte','Besoin abandonné');
     await page.fill('#m-loc','Lyon');
     await page.fill('#m-competence-saisie','Node.js');
@@ -122,7 +105,6 @@ const CONTROLES=[
     egal(await page.$eval('#m-texte',e=>e.value),'','description');
     egal(await page.$eval('#m-loc',e=>e.value),'','localisation');
     egal((await competences(page)).length,0,'pastilles de compétence');
-    egal(await page.$$eval('input[name="m-type"]:checked',e=>e.length),0,'type décoché');
     egal(await page.$eval('#m-envoyer',e=>e.disabled),true,'bouton de nouveau inerte');
   }},
   {nom:'les trois listes s ouvrent et se filtrent',fn:async page=>{

@@ -385,17 +385,6 @@
     transition:background .15s,border-color .15s}
   #modale .m-fermer:hover{background:#f6f5f0;border-color:#c9c6bd;color:#161616}
   .m-corps{padding:26px 32px 28px}
-  /* Un fieldset porte une bordure par defaut, et .m-box label impose display
-     block : les deux se rappellent ici, d'ou la portee sur #modale. */
-  #modale .m-types{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 24px;border:0;padding:0}
-  #modale .m-type-carte{display:flex;align-items:flex-start;gap:11px;margin:0;padding:14px 16px;
-    border:1.5px solid var(--t-200);border-radius:12px;cursor:pointer;transition:border-color .15s,background .15s}
-  #modale .m-type-carte:hover{border-color:#c9c6bd;background:#faf9f6}
-  #modale .m-type-carte input{width:18px;height:18px;min-height:0;margin:1px 0 0;padding:0;border:0;border-radius:0;
-    accent-color:var(--brand);flex:none;appearance:auto}
-  #modale .m-type-carte b{display:block;font-size:13.5px;font-weight:700;color:#253147}
-  #modale .m-type-carte small{display:block;margin-top:3px;font-size:12px;line-height:1.45;color:var(--t-600)}
-  #modale .m-type-carte:has(input:checked){border-color:var(--brand);background:var(--blue-50)}
   .toast{position:fixed;z-index:200;left:50%;bottom:32px;transform:translate(-50%,14px);max-width:min(560px,calc(100vw - 32px));
     display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-radius:14px;background:#161616;color:#fff;
     box-shadow:0 18px 46px rgba(15,23,42,.34);font-size:13.5px;line-height:1.5;opacity:0;pointer-events:none;
@@ -825,7 +814,7 @@
   .avatar-res:hover::before,.avatar-res:focus-visible::before{opacity:1}
   @media(max-width:1200px){.profils{grid-template-columns:1fr 1fr}}
   @media(max-width:960px){.infos{grid-template-columns:1fr 1fr}.fin-grid{grid-template-columns:1fr 1fr}
-    .duo{grid-template-columns:1fr}.m-grille{grid-template-columns:1fr}.m-type .cartes{grid-template-columns:1fr}}
+    .duo{grid-template-columns:1fr}.m-grille{grid-template-columns:1fr}}
   @media(max-width:600px){.profils{grid-template-columns:1fr}.infos{grid-template-columns:1fr}}
 
   /* ═══ MFA — vérification de sécurité en modale (2026-07-19) ═══ */
@@ -3466,17 +3455,6 @@
       <button class="m-fermer" id="m-fermer" aria-label="Fermer la fenêtre"><svg class="ic"><use href="#i-croix"/></svg></button>
     </div>
     <div class="m-corps">
-    <fieldset class="m-types">
-      <legend class="sr-only">Type de besoin</legend>
-      <label class="m-type-carte"><input type="radio" name="m-type" value="AT">
-        <span><b>Renforcer mon équipe</b><small>Une personne intégrée à mon équipe, facturée au temps passé.</small></span></label>
-      <label class="m-type-carte"><input type="radio" name="m-type" value="FORFAIT">
-        <span><b>Confier une prestation</b><small>Un résultat livré, un prix ferme, des jalons.</small></span></label>
-      <label class="m-type-carte"><input type="radio" name="m-type" value="ATF">
-        <span><b>Engager une équipe</b><small>Un périmètre défini, à volume et prix engagés.</small></span></label>
-      <label class="m-type-carte"><input type="radio" name="m-type" value="RM">
-        <span><b>Contractualiser un intervenant</b><small>J’ai déjà identifié la personne.</small></span></label>
-    </fieldset>
     <div class="m-description">
       <label for="m-texte">Décrivez votre besoin</label>
       <textarea id="m-texte" rows="4" placeholder="Ex. : un développeur Node.js senior à Paris, à partir de septembre, entre 500 et 700 € par jour, deux jours de télétravail par semaine."></textarea>
@@ -3516,9 +3494,9 @@
           <ul class="m-liste" id="m-villes" role="listbox" aria-label="Villes" hidden></ul>
         </div>
       </div>
-      <div><label for="m-date" id="m-date-label">Date de démarrage</label>
+      <div><label for="m-date">Date de démarrage</label>
         <input id="m-date" type="date" aria-label="Date de démarrage"></div>
-      <div><label for="m-tjm" id="m-tjm-label">TJM ou budget cible</label>
+      <div><label for="m-tjm">TJM ou budget cible</label>
         <input id="m-tjm" type="text" inputmode="numeric" placeholder="Ex. : 500 – 700 € / jour"></div>
     </div>
     </div>
@@ -3728,7 +3706,6 @@
   function viderModale(){
     ['m-texte','m-poste','m-seniorite','m-loc','m-date','m-tjm'].forEach(function(id){
       var champ=document.getElementById(id);if(champ)champ.value='';});
-    document.querySelectorAll('input[name="m-type"]').forEach(function(r){r.checked=false;});
     if(window.__viderCompetencesBesoin)window.__viderCompetencesBesoin();
     var note=document.getElementById('m-note');if(note)note.textContent='';
     if(window.__majEnvoiBesoin)window.__majEnvoiBesoin();
@@ -3894,38 +3871,23 @@
 
   garde('m-envoyer',function(){
     var envoyer=document.getElementById('m-envoyer'),texte=document.getElementById('m-texte'),
-        toast=document.getElementById('toast'),
-        libelleDate=document.getElementById('m-date-label'),libelleTjm=document.getElementById('m-tjm-label'),
-        types=[].slice.call(document.querySelectorAll('input[name="m-type"]'));
+        toast=document.getElementById('toast');
     if(!envoyer)return;
-    function typeChoisi(){var t=types.filter(function(r){return r.checked;})[0];return t?t.value:'';}
-    /* Un forfait ne se commande pas comme une regie : deux libelles suivent le
-       type retenu, sans changer de champ. */
-    function majLibelles(){
-      var forfait=(typeChoisi()==='FORFAIT'||typeChoisi()==='ATF');
-      libelleDate.textContent=forfait?'Date de livraison souhaitée':'Date de démarrage';
-      libelleTjm.textContent=forfait?'Budget cible':'TJM ou budget cible';
-    }
-    /* Le type et la description sont le minimum pour qu'un commercial sache
-       quoi faire de la demande. Le reste accelere sans conditionner. */
-    function majEnvoi(){envoyer.disabled=!(typeChoisi()&&texte&&texte.value.trim());}
-    window.__majEnvoiBesoin=function(){majLibelles();majEnvoi();};
-    types.forEach(function(r){r.addEventListener('change',function(){majLibelles();majEnvoi();});});
+    /* Transmettre une demande sans un mot de description ne dit rien a personne. */
+    function majEnvoi(){envoyer.disabled=!(texte&&texte.value.trim());}
+    window.__majEnvoiBesoin=majEnvoi;
     if(texte)texte.addEventListener('input',majEnvoi);
     var minuterie=null;
-    function annoncer(html){
-      toast.innerHTML=html;toast.dataset.visible='oui';
-      clearTimeout(minuterie);minuterie=setTimeout(function(){toast.dataset.visible='non';},7000);
-    }
     envoyer.addEventListener('click',function(){
       /* Rien ne part vers Salesforce : la demande est un email au commercial du
-         compte, qui cree l'opportunite a la main. La maquette s'arrete au
-         retour visible pour le client. */
-      annoncer('<span><b>Votre demande a bien été envoyée à Camille Moreau.</b>'
-        +'Elle sera créée dans votre interface dès qu’elle aura été traitée par nos équipes.</span>');
+         compte, qui cree l'opportunite a la main. */
+      toast.innerHTML='<span><b>Votre demande a bien été envoyée à Camille Moreau.</b>'
+        +'Elle sera créée dans votre interface dès qu’elle aura été traitée par nos équipes.</span>';
+      toast.dataset.visible='oui';
+      clearTimeout(minuterie);minuterie=setTimeout(function(){toast.dataset.visible='non';},7000);
       fermerModale();
     });
-    majLibelles();majEnvoi();
+    majEnvoi();
   });
 
   document.getElementById('mscrim').addEventListener('click',fermerModale);

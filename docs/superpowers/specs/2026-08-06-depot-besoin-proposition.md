@@ -7,7 +7,6 @@ crée l'opportunité à la main.
 
 | Champ | Obligatoire | Valeurs |
 |---|---|---|
-| Type de besoin | **oui** | 4 cartes → `AT` `FORFAIT` `ATF` `RM` |
 | Description | **oui** | libre |
 | Intitulé du poste | non | FreeWork Métiers (137), liste ouverte |
 | Compétences | non | FreeWork Skills (1 569), multiple |
@@ -16,15 +15,11 @@ crée l'opportunité à la main.
 | Date de démarrage | non | calendrier |
 | TJM ou budget cible | non | texte |
 
-Libellés client des types : Renforcer mon équipe (`AT`), Confier une prestation
-(`FORFAIT`), Engager une équipe (`ATF`), Contractualiser un intervenant (`RM`).
-Les codes ne paraissent pas à l'écran.
+Pas de choix de type dans le formulaire : le type de contrat (RM, AT, Forfait,
+AT forfaitisé) est déterminé par le commercial à la qualification.
 
-Si `FORFAIT` ou `ATF` : « TJM ou budget cible » → « Budget cible », « Date de
-démarrage » → « Date de livraison souhaitée ».
-
-Formulaire vierge à chaque ouverture. Bouton inerte tant que le type ou la
-description manquent. Listes ouvertes à la saisie libre.
+Formulaire vierge à chaque ouverture. Bouton inerte tant que la description est
+vide. Listes ouvertes à la saisie libre.
 
 ## Envoi
 
