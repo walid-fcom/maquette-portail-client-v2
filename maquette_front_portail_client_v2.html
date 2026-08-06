@@ -358,8 +358,10 @@
   body.modal-open .mscrim{display:block}
   .modale{position:fixed;inset:0;z-index:60;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:4vh 16px}
   body.modal-open .modale{display:flex}
-  .m-box{background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.35);width:100%;max-width:640px;
-    padding:24px 26px 22px;margin-bottom:6vh}
+  /* Deux colonnes de champs plus les pastilles de competences : a 640 px la
+     pastille passait sous son propre champ de saisie. */
+  .m-box{background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.35);width:100%;max-width:880px;
+    padding:26px 30px 24px;margin-bottom:6vh}
   .m-tete{display:flex;align-items:flex-start;gap:12px}
   .m-tete h2{font-size:17px;font-weight:800;color:var(--t-900);letter-spacing:-.2px}
   .m-fermer{margin-left:auto;width:44px;height:44px;border:1px solid var(--t-200);border-radius:10px;background:#fff;
@@ -367,7 +369,7 @@
   .dpo{display:inline-flex;align-items:center;gap:7px;background:var(--warn-100);color:#92400e;border:1px solid #fcd9ac;
     border-radius:999px;padding:5px 12px;font-size:11.5px;font-weight:700;margin-top:10px}
   .m-box label{display:block;font-size:12.5px;font-weight:700;color:var(--t-800);margin:15px 0 6px}
-  .m-box textarea,.m-box input{width:100%;border:1px solid var(--t-300);border-radius:10px;padding:11px 13px;
+  .m-box textarea,.m-box input,.m-box select{width:100%;border:1px solid var(--t-300);border-radius:10px;padding:11px 13px;
     font:inherit;font-size:13.5px;min-height:44px}
   .detecte{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:#6b21a8;background:#f1e7fd;
     border-radius:999px;padding:2px 8px;margin-left:7px;vertical-align:1px}
@@ -382,6 +384,33 @@
   .m-grille{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
   .m-pied{display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap}
   .m-pied .note{font-size:11.5px;color:var(--t-600);flex:1;min-width:200px}
+  /* La note ne sert plus qu'au retour de transmission : vide, elle disparait et
+     le pied se reduit aux deux boutons. */
+  .m-pied .note:empty{display:none;min-width:0}
+  .m-pied .note:empty+.btn{margin-left:auto}
+  .m-separateur{margin:22px 0 4px;border:0;border-top:1px solid var(--t-200)}
+  .m-aide{margin:7px 0 0;font-size:11.5px;line-height:1.45;color:var(--t-600)}
+  .m-select{appearance:none;cursor:pointer;
+    background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23354052' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 13px center;
+    padding-right:40px!important}
+  /* Competences : une zone de saisie qui se comporte comme un champ, avec les
+     valeurs retenues en pastilles devant le curseur. */
+  .m-competences{display:flex;align-items:center;flex-wrap:wrap;gap:7px;width:100%;min-height:44px;
+    padding:7px 40px 7px 10px;border:1px solid var(--t-300);border-radius:10px;background:#fff;cursor:text;position:relative}
+  .m-competences:focus-within{border-color:var(--brand);outline:2px solid rgba(0,60,194,.16)}
+  .m-competences::after{content:'';position:absolute;right:13px;top:50%;width:10px;height:10px;margin-top:-6px;
+    border-right:2px solid #354052;border-bottom:2px solid #354052;transform:rotate(45deg);pointer-events:none}
+  .m-competence{display:inline-flex;align-items:center;gap:6px;padding:5px 8px 5px 11px;border-radius:8px;
+    background:var(--blue-50);color:var(--brand);font-size:12.5px;font-weight:800}
+  .m-competence button{display:grid;place-items:center;width:20px;height:20px;padding:0;border:0;border-radius:5px;
+    background:transparent;color:inherit;font-size:14px;line-height:1;cursor:pointer}
+  .m-competence button:hover{background:#dbe6ff}
+  /* appearance:none retire le marqueur de liste natif, qui doublait le chevron
+     dessine sur le cadre. */
+  .m-competences input{flex:1;min-width:150px;min-height:30px!important;padding:0!important;border:0!important;
+    border-radius:0!important;font-size:13.5px;background:transparent;appearance:none}
+  .m-competences input::-webkit-calendar-picker-indicator{display:none!important;opacity:0;width:0;visibility:hidden}
+  .m-competences input:focus{outline:0}
   .profils{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
   .profils>*{min-width:0}
   .profil{border:1px solid var(--t-200);border-radius:13px;padding:14px 16px;background:#fff;box-shadow:var(--ombre)}
@@ -3375,37 +3404,63 @@
 <div class="modale" id="modale" role="dialog" aria-modal="true" aria-labelledby="m-titre" aria-describedby="m-dpo">
   <div class="m-box">
     <div class="m-tete">
-      <div>
-        <h2 id="m-titre">Confiez-nous votre besoin</h2>
-        <p class="card-sub">Décrivez librement — l'assistant pré-remplit, vous vérifiez, on préqualifie.</p>
-      </div>
+      <h2 id="m-titre">Confiez-nous votre besoin</h2>
       <button class="m-fermer" id="m-fermer" aria-label="Fermer la fenêtre"><svg class="ic"><use href="#i-croix"/></svg></button>
     </div>
-    <p class="dpo" id="m-dpo"><svg class="ic s"><use href="#i-ia"/></svg>Assistance IA</p>
     <label for="m-texte">Décrivez votre besoin</label>
-    <textarea id="m-texte" rows="3">Je recherche un développeur Node.js senior à Paris, démarrage au 1er septembre, TJM entre 500 et 700 €, 2 jours de télétravail par semaine.</textarea>
-    <p class="card-sub" aria-live="polite" style="margin-top:8px">Analyse terminée — les champs détectés sont pré-remplis. Vérifiez-les avant d'envoyer.</p>
-    <div class="m-type">
-      <p class="m-type-titre" id="m-type-titre">Type de prestation<span class="detecte">détecté</span></p>
-      <div class="cartes" role="radiogroup" aria-labelledby="m-type-titre">
-        <label class="carte-type"><input type="radio" name="m-type" checked>
-          <span><b>Trouvez-moi un freelance</b><small>Assistance Technique</small></span></label>
-        <label class="carte-type"><input type="radio" name="m-type">
-          <span><b>J'ai déjà mon freelance</b><small>Portage salarial</small></span></label>
-      </div>
-    </div>
+    <textarea id="m-texte" rows="5">Je recherche un développeur Node.js senior à Paris, démarrage au 1er septembre, TJM entre 500 et 700 €, 2 jours de télétravail par semaine.</textarea>
+    <hr class="m-separateur">
     <div class="m-grille">
-      <div><label for="m-poste">Intitulé du poste<span class="detecte">détecté</span></label>
-        <input id="m-poste" type="text" value="Développeur Node.js senior"></div>
-      <div><label for="m-loc">Localisation<span class="detecte">détecté</span></label>
+      <div>
+        <label for="m-poste">Intitulé du poste</label>
+        <input id="m-poste" class="m-select" type="text" list="m-postes" value="Développeur Node.js" autocomplete="off">
+        <datalist id="m-postes">
+          <option value="Développeur Node.js"></option>
+          <option value="Développeur front-end"></option>
+          <option value="Data engineer"></option>
+          <option value="Architecte cloud"></option>
+          <option value="Chef de projet SI"></option>
+          <option value="Consultant cybersécurité"></option>
+          <option value="UX designer"></option>
+        </datalist>
+        <p class="m-aide">Sélectionnez un poste ou saisissez un nouvel intitulé.</p>
+      </div>
+      <div>
+        <label for="m-competence-saisie">Compétences</label>
+        <div class="m-competences" id="m-competences">
+          <input id="m-competence-saisie" type="text" list="m-competences-liste" placeholder="Ajouter une compétence"
+                 autocomplete="off" aria-describedby="m-competences-aide">
+        </div>
+        <datalist id="m-competences-liste">
+          <option value="Node.js"></option>
+          <option value="TypeScript"></option>
+          <option value="React"></option>
+          <option value="PostgreSQL"></option>
+          <option value="Docker"></option>
+          <option value="AWS"></option>
+          <option value="Kubernetes"></option>
+          <option value="Python"></option>
+        </datalist>
+        <p class="m-aide" id="m-competences-aide">Vous pouvez sélectionner plusieurs compétences.</p>
+      </div>
+      <div>
+        <label for="m-seniorite">Séniorité</label>
+        <select id="m-seniorite" class="m-select">
+          <option>Junior</option>
+          <option>Confirmé</option>
+          <option selected>Sénior</option>
+          <option>Expert</option>
+        </select>
+      </div>
+      <div><label for="m-loc">Localisation</label>
         <input id="m-loc" type="text" value="Paris · 2 j de télétravail / semaine"></div>
-      <div><label for="m-tjm">TJM ou budget cible<span class="detecte">détecté</span></label>
-        <input id="m-tjm" type="text" inputmode="numeric" value="500 – 700 € / jour"></div>
-      <div><label for="m-date">Date de démarrage<span class="detecte">détecté</span></label>
+      <div><label for="m-date">Date de démarrage</label>
         <input id="m-date" type="text" value="01/09/2026"></div>
+      <div><label for="m-tjm">TJM ou budget cible</label>
+        <input id="m-tjm" type="text" inputmode="numeric" value="500 – 700 € / jour"></div>
     </div>
     <div class="m-pied">
-      <p class="note" id="m-note" aria-live="polite">À l'envoi, votre demande est prise en charge par nos équipes et passe en <b>Analyse du besoin</b>.</p>
+      <p class="note" id="m-note" aria-live="polite"></p>
       <button class="btn ghost" id="m-annuler">Annuler</button>
       <button class="btn" id="m-envoyer">Transmettre la demande</button>
     </div>
@@ -3621,14 +3676,55 @@
   // Transmission du besoin : crée un vrai Lead dans Salesforce via la function
   // Netlify /api/salesforce-lead. Les identifiants SF n'existent que côté
   // serveur — rien d'exploitable n'est exposé ici.
+  garde('m-competences',function(){
+    var zone=document.getElementById('m-competences'),saisie=document.getElementById('m-competence-saisie');
+    if(!zone||!saisie)return;
+    function ajouter(valeur){
+      valeur=(valeur||'').trim();
+      if(!valeur)return;
+      /* Une competence deja retenue ne se rajoute pas : on remet simplement le
+         curseur a disposition. */
+      var deja=lire().some(function(v){return v.toLowerCase()===valeur.toLowerCase();});
+      if(!deja){
+        var pastille=document.createElement('span');
+        pastille.className='m-competence';
+        pastille.innerHTML='<b></b><button type="button" aria-label="Retirer">×</button>';
+        pastille.querySelector('b').textContent=valeur;
+        pastille.querySelector('button').setAttribute('aria-label','Retirer la compétence '+valeur);
+        zone.insertBefore(pastille,saisie);
+      }
+      saisie.value='';
+    }
+    function lire(){return [].slice.call(zone.querySelectorAll('.m-competence b')).map(function(b){return b.textContent;});}
+    window.__competencesBesoin=lire;
+    saisie.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===','){e.preventDefault();ajouter(saisie.value);}
+      /* Retour arriere sur un champ vide : on retire la derniere pastille,
+         comme dans n'importe quel champ a jetons. */
+      if(e.key==='Backspace'&&!saisie.value){
+        var dernieres=zone.querySelectorAll('.m-competence');
+        if(dernieres.length)dernieres[dernieres.length-1].remove();
+      }
+    });
+    /* Un choix pris dans la liste native arrive par 'change', sans touche Entree. */
+    saisie.addEventListener('change',function(){ajouter(saisie.value);});
+    saisie.addEventListener('blur',function(){ajouter(saisie.value);});
+    zone.addEventListener('click',function(e){
+      var retirer=e.target.closest('.m-competence button');
+      if(retirer){retirer.closest('.m-competence').remove();saisie.focus();return;}
+      if(e.target===zone)saisie.focus();
+    });
+    ajouter('Node.js');
+  });
+
   garde('m-envoyer',function(){
     var envoyer=document.getElementById('m-envoyer'),note=document.getElementById('m-note');
     if(!envoyer||!note)return;
     var noteOrigine=note.innerHTML;
     envoyer.addEventListener('click',function(){
-      var typeChoisi=document.querySelector('input[name="m-type"]:checked'),
-          carte=typeChoisi&&typeChoisi.closest('.carte-type'),
-          libelleType=carte?(carte.querySelector('small')||{}).textContent:'';
+      /* Le choix Assistance Technique / Portage a disparu du formulaire : le
+         lead part donc en AT, cas de tres loin le plus frequent. */
+      var libelleType='Assistance Technique';
       envoyer.disabled=true;
       note.textContent='Transmission en cours…';
       fetch('/api/salesforce-lead',{
@@ -3639,6 +3735,8 @@
           societe:'ELECTRICITE DE FRANCE_EDF',
           type:libelleType||'',
           poste:(document.getElementById('m-poste')||{}).value||'',
+          seniorite:(document.getElementById('m-seniorite')||{}).value||'',
+          competences:(window.__competencesBesoin?window.__competencesBesoin():[]).join(', '),
           localisation:(document.getElementById('m-loc')||{}).value||'',
           tjm:(document.getElementById('m-tjm')||{}).value||'',
           dateDemarrage:(document.getElementById('m-date')||{}).value||'',
