@@ -4203,7 +4203,9 @@
      paraissent jamais ici : une candidature que le client n'a jamais recue
      n'existe pas pour lui. */
   var STATUTS_CANDIDATURE={
-    'a-etudier':{libelle:'À étudier',badge:'b-bleu',sf:'Proposition au client'},
+    /* Le seul des six statuts ou le client doit agir : c'est le seul libelle
+       qui le lui dit. */
+    'a-etudier':{libelle:'En attente de votre retour',badge:'b-bleu',sf:'Proposition au client'},
     'soutenance':{libelle:'Soutenance planifiée',badge:'b-violet',sf:'Soutenance'},
     'demarrage':{libelle:'Démarrage',badge:'ok',sf:'Démarrage'},
     'rejet-cv':{libelle:'Rejet client sur CV',badge:'bad',sf:'Rejet Client sur CV'},

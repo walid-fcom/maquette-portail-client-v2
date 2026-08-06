@@ -34,7 +34,7 @@ l'existence même ne le regarde pas.
 | *non affiché* | `Rejet sourcing` | — |
 | *non affiché* | `Proposé au commerce` | — |
 | *non affiché* | `Rejet Commerce` | — |
-| À étudier | `Proposition au client` | bleu |
+| En attente de votre retour | `Proposition au client` | bleu |
 | Rejet client sur CV | `Rejet Client sur CV` | rouge |
 | Soutenance planifiée | `Soutenance` | violet |
 | Rejet client après soutenance | `Rejet Client après soutenance` | rouge |
@@ -50,8 +50,9 @@ fera le filtrage.
 
 Trois libellés ont été arbitrés le 6 août 2026 :
 
-- **À étudier** plutôt que « Proposée » : formulé du point de vue du client,
-  la balle est dans son camp.
+- **En attente de votre retour** : c'est le seul des six statuts où le client
+  doit agir, et le seul libellé qui le lui dit. Les cinq autres décrivent un
+  état acquis. *(Arbitré le 6 août 2026, après « Proposée » puis « À étudier ».)*
 - **Soutenance planifiée**, repris tel quel du statut de besoin homonyme, pour
   ne pas entretenir deux vocabulaires pour la même chose.
 - **No Go Candidat** conservé tel quel, malgré son air de jargon : aucun écart
@@ -70,7 +71,7 @@ Les six statuts visibles sont tous représentés au moins une fois :
 | Elsa Weber | Consultant cybersécurité | Rejet client après soutenance |
 | Marc Delon | Consultant cybersécurité | Rejet client sur CV |
 | Inès Martin | Architecte cloud AWS | No Go Candidat |
-| *tous les autres* | — | À étudier |
+| *tous les autres* | — | En attente de votre retour |
 
 Chaque ligne porte aussi sa valeur Salesforce en `data-statut-candidature` :
 c'est ce qui permet de vérifier le mapping sans se fier au libellé affiché.
@@ -84,7 +85,7 @@ pastille contre celui de sa cellule.
 
 ## Comment on saura que c'est bon
 
-- Un besoin en recherche affiche des candidatures « À étudier ».
+- Un besoin en recherche affiche des candidatures « En attente de votre retour ».
 - Un besoin démarré affiche un candidat « Démarrage », badge vert.
 - Un besoin rejeté distingue le rejet sur CV du rejet après soutenance.
 - Une soutenance planifiée se lit sur la candidature, badge violet.
