@@ -114,39 +114,43 @@ partie de ce travail qui touche du code existant.
 
 ### Bloc 3 — Mot de passe
 
-La carte ne porte aucun champ : une ligne d'état — « Dernière modification le
-12/05/2026 » —, un masque décoratif, et un bouton **Modifier le mot de passe**
-qui ouvre une modale. *(Décision du 6 août 2026 : la spec initiale posait les
-trois champs à même la carte. Un formulaire vide en permanence sur un écran
-qu'on ouvre pour lire son rôle et sa société pèse pour rien ; la saisie ne
-paraît qu'à la demande.)*
+Le formulaire tient dans la carte, sans détour par une modale. Sous le titre,
+une phrase qui dit la portée réelle du changement :
 
-#### La modale de changement
+> Si votre email est utilisé sur d'autres applications du groupe Freelance.com
+> (ex : Portail Partenaire), le changement de mot de passe sera effectif pour
+> toutes les applications.
 
-Trois champs : mot de passe actuel, nouveau mot de passe, confirmation. Chacun
-porte le bouton œil déjà utilisé sur l'écran de login (`.l-mdp-champ`,
-`.l-mdp-visibilite`), avec son `aria-pressed` et son libellé qui bascule. Les
-trois basculent indépendamment.
+Puis trois champs pleine largeur, libellés en clair au-dessus : mot de passe
+actuel, nouveau mot de passe, confirmation. Chacun porte le bouton œil déjà
+utilisé sur l'écran de login (`.l-mdp-champ`, `.l-mdp-visibilite`), avec son
+`aria-pressed` et son libellé qui bascule. Les trois basculent indépendamment.
+
+Aucune ligne « dernière modification » : le portail ne détient pas cette date,
+et l'inventer sur un écran de démonstration donne un fait pour acquis.
+*(Décisions du 6 août 2026, après deux passages à l'écran : la saisie est
+d'abord partie dans une modale, puis revenue dans la carte sur la référence
+Freelance.com ; la date d'état est tombée au même moment.)*
 
 Les règles sont affichées en clair sous le champ plutôt que devinées : 12
 caractères minimum, une majuscule, un chiffre, un caractère spécial. Chacune se
 coche en vert dès qu'elle est satisfaite. Une jauge les compte — une ou deux :
 faible, trois : moyen, les quatre : fort.
 
-Le bouton **Enregistrer** reste désactivé tant que les quatre règles ne sont
-pas satisfaites, que le mot de passe actuel est vide, ou que la confirmation
-diverge. Les règles sont affichées : les exiger vraiment, sinon elles ne sont
-qu'un décor.
+Le bouton **Changer le mot de passe** reste désactivé tant que les quatre
+règles ne sont pas satisfaites, que le mot de passe actuel est vide, ou que la
+confirmation diverge. Les règles sont affichées : les exiger vraiment, sinon
+elles ne sont qu'un décor. Désactivé, le bouton est grisé — sur cet écran, un
+bouton inerte qui garde son bleu plein se donne pour cliquable, ce qui vaut
+aussi pour le *Configurer* du bloc précédent.
 
 Le mot de passe actuel n'est confronté à aucune valeur : la maquette n'en
 détient pas, et un refus arbitraire ne démontrerait pas le parcours — même
 raisonnement que pour le code d'appairage à six chiffres.
 
-À la validation : la modale se ferme, la date d'état passe au jour même, et un
-message de confirmation paraît sur la carte. On reste sur la page. Annuler, la
-croix, l'Échap et le clic sur le voile ferment sans rien changer ; le focus
-revient au bouton déclencheur. Chaque ouverture repart de champs vides et
-masqués.
+À la validation : un message de confirmation paraît à côté du bouton, les trois
+champs se vident et se remasquent, la jauge et les règles repartent à zéro. On
+reste sur la page.
 
 Explicitement hors périmètre : demande d'un code de vérification à la
 confirmation, historique des mots de passe, déconnexion des autres sessions.
@@ -157,10 +161,9 @@ Le portail est un fichier HTML autonome. Cinq points de contact :
 
 1. **La vue** — `<section class="vue" id="v-profil">` parmi les autres vues,
    avec ses trois cartes.
-2. **Les deux modales** — appairage et mot de passe, au niveau des autres
-   modales, sur le modèle de `#mfa-modale` : un `.ov`, un `.ov-scrim`, une
-   classe sur `<body>` pour l'ouverture, fermeture à l'Échap et au clic sur le
-   voile.
+2. **La modale d'appairage** — au niveau des autres modales, sur le modèle de
+   `#mfa-modale` : un `.ov`, un `.ov-scrim`, une classe sur `<body>` pour
+   l'ouverture, fermeture à l'Échap et au clic sur le voile.
 3. **Le routage** — une entrée `profil:'Mon profil'` dans la table `titres`,
    qui suffit à rendre `#profil` navigable et à titrer la page.
 4. **Le lien du menu compte** — `#profile-link` appelle `afficher('profil')`
@@ -182,10 +185,10 @@ l'écran.
   l'appairage n'est pas confirmé.
 - Après appairage, le bloc affiche la nouvelle méthode, et la modale MFA du
   login parle de l'application, sans bouton de renvoi ni compte à rebours.
-- La carte mot de passe n'expose aucun champ ; ils sont dans la modale.
-- Le bouton *Enregistrer* reste inerte tant qu'une règle n'est pas satisfaite
-  ou que la confirmation ne correspond pas.
-- Annuler et Échap ferment la modale sans toucher à la date d'état.
+- La carte mot de passe porte ses trois champs, sans ligne de date.
+- Le bouton *Changer le mot de passe* reste inerte, et visiblement grisé, tant
+  qu'une règle n'est pas satisfaite ou que la confirmation ne correspond pas.
+- À la validation, les champs se vident et se remasquent.
 - Aucune erreur JavaScript à l'ouverture de la page ni pendant les deux
   parcours.
 - Le reste du portail est intact : navigation, besoins, MFA du login quand la

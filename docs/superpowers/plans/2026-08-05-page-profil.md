@@ -639,26 +639,28 @@ git commit -m "Fait suivre la modale de connexion a la methode de verification c
 
 ### Task 5 : bloc mot de passe — fait le 6 août 2026
 
-La spec a changé entre-temps : la saisie passe dans une modale au lieu de
-tenir dans la carte. Les étapes ci-dessous décrivent ce qui a été livré.
+La forme a bougé deux fois le jour de la livraison : la saisie est partie dans
+une modale, puis revenue dans la carte sur une référence Freelance.com, et la
+ligne « dernière modification » est tombée. Les étapes ci-dessous décrivent ce
+qui est en place.
 
 **Files:**
 - Modify: `maquette_front_portail_client_v2.html` (CSS `#v-profil`, carte dans
-  `#v-profil`, modale `#mdp-modale`, bloc `garde('mdp-modale', …)`)
-- Modify: `tests/verifier-profil.js` (sept contrôles de plus)
+  `#v-profil`, bloc `garde('compte-mdp-valider', …)`)
+- Modify: `tests/verifier-profil.js` (six contrôles de plus)
 
 **Interfaces:**
-- Consumes : la vue `#v-profil` de la tâche 1, la modale `#appairage-modale`
-  de la tâche 3 comme patron.
+- Consumes : la vue `#v-profil` de la tâche 1, le champ à œil de l'écran de
+  login (`.l-mdp-champ`, `.l-mdp-visibilite`).
 - Produces : rien que d'autres tâches consomment. Dernière tâche du plan.
 
-- [x] **Step 1 : écrire les sept contrôles**
+- [x] **Step 1 : écrire les six contrôles**
 
-Ils couvrent, dans l'ordre : l'absence de champ dans la carte et leur présence
-dans la modale, le bouton inerte tant que la confirmation diverge, le bouton
-inerte tant qu'une règle manque, la jauge et les règles qui suivent la frappe,
-la validation qui ferme la modale et met la date à jour, Annuler et Échap qui
-ne changent rien, et l'œil qui bascule chaque champ indépendamment.
+Ils couvrent, dans l'ordre : les trois champs présents et l'absence de ligne de
+date, le bouton inerte tant que la confirmation diverge, le bouton inerte tant
+qu'une règle manque, la jauge et les règles qui suivent la frappe, la
+validation qui confirme et vide les champs, et l'œil qui bascule chaque champ
+indépendamment.
 
 - [x] **Step 2 : lancer le harnais pour les voir échouer**
 
@@ -666,45 +668,37 @@ ne changent rien, et l'œil qui bascule chaque champ indépendamment.
 node tests/verifier-profil.js
 ```
 
-Obtenu : les neuf premiers `OK`, les sept nouveaux en `ECHEC`
-(`#compte-mdp-ouvrir` introuvable).
-
 - [x] **Step 3 : ajouter le CSS**
 
-À la suite du bloc `#v-profil` : la carte (`.compte-mdp-date`,
-`.compte-mdp-masque`, `.compte-mdp-actions`, `.compte-mdp-statut`), la modale
-sur le patron `.ov` / `.ov-scrim` (`body.mdp-open`, `.mdp-box`, `.mdp-champs`,
-`.mdp-actions`), la jauge et les règles cochables.
+À la suite du bloc `#v-profil` : `.compte-mdp-champs` (libellés en clair,
+champs pleine largeur, œil à droite), `.compte-mdp-jauge`, `.compte-mdp-regles`
+cochables, `.compte-mdp-actions`, `.compte-mdp-statut`. Plus
+`#v-profil .btn[disabled]{opacity:.42}` — sans quoi un bouton inerte garde son
+bleu plein et se donne pour cliquable, ce qui valait aussi pour le *Configurer*
+du bloc MFA.
 
 - [x] **Step 4 : ajouter la carte dans la vue**
 
-Après la carte `.compte-mfa` : titre, date d'état, masque décoratif, bouton
-`#compte-mdp-ouvrir`, message `#compte-mdp-statut` en `role="status"`. Aucun
-champ.
+Après la carte `.compte-mfa` : titre, phrase sur la portée du changement dans
+le groupe, les trois champs, le bouton `#compte-mdp-valider` et le message
+`#compte-mdp-statut` en `role="status"`.
 
-- [x] **Step 5 : ajouter la modale**
+- [x] **Step 5 : brancher le bloc**
 
-Après `#appairage-modale` : en-tête `.m-tete` avec la croix, trois champs avec
-leur bouton œil `data-cible`, la jauge `#compte-mdp-jauge`, les quatre règles
-en `<li data-regle>`, pied `Annuler` / `Enregistrer`.
+Un `garde('compte-mdp-valider', …)` : jauge et règles recalculées à la frappe,
+bouton armé seulement quand les quatre règles sont satisfaites et que la
+confirmation correspond, validation qui affiche le message, vide les champs,
+les remasque et remet les yeux à l'état fermé.
 
-- [x] **Step 6 : brancher le bloc**
-
-Un `garde('mdp-modale', …)` calqué sur `garde('appairage-modale', …)` :
-ouverture, fermeture (Annuler, croix, voile, Échap), focus rendu au
-déclencheur, champs vidés et remasqués à chaque ouverture, jauge et règles
-recalculées à la frappe, `Enregistrer` armé seulement quand les quatre règles
-sont satisfaites et que la confirmation correspond.
-
-- [x] **Step 7 : relancer le harnais**
+- [x] **Step 6 : relancer le harnais**
 
 ```bash
 node tests/verifier-profil.js
 ```
 
-Obtenu : les seize contrôles en `OK`.
+Obtenu : les quinze contrôles en `OK`.
 
-- [x] **Step 8 : vérifier que le build passe toujours**
+- [x] **Step 7 : vérifier que le build passe toujours**
 
 ```bash
 python3 build_netlify_v2.py
@@ -712,7 +706,7 @@ python3 build_netlify_v2.py
 
 Obtenu : le script se termine sans erreur.
 
-- [x] **Step 9 : commit**
+- [x] **Step 8 : commit**
 
 ---
 
@@ -731,10 +725,10 @@ Obtenu : le script se termine sans erreur.
 | N'importe quel code accepté, *Confirmer* inerte avant six chiffres | 3 |
 | Bascule de la méthode active, date d'activation, retour possible | 3 |
 | Modale de connexion adaptée, sans renvoi ni compte à rebours | 4 |
-| Carte mot de passe sans champ, date d'état, bouton d'ouverture | 5 |
-| Modale : trois champs, œil par champ, jauge, règles cochables | 5 |
-| Bouton inerte tant qu'une règle manque ou que la confirmation diverge | 5 |
-| Validation : modale fermée, date mise à jour, message sur la carte | 5 |
-| Annuler, croix, voile et Échap ferment sans rien changer | 5 |
+| Carte mot de passe : phrase de portée, trois champs, œil par champ | 5 |
+| Aucune ligne « dernière modification » | 5 |
+| Jauge et quatre règles cochables | 5 |
+| Bouton inerte, et grisé, tant qu'une règle manque ou que la confirmation diverge | 5 |
+| Validation : message en place, champs vidés et remasqués | 5 |
 | Aucune erreur JS | harnais, à chaque contrôle |
 | Reste du portail intact | 1 (aucune entrée allumée), 3 (login non perturbé), 4 (MFA email préservé) |
