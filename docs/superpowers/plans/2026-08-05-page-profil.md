@@ -679,9 +679,9 @@ du bloc MFA.
 
 - [x] **Step 4 : ajouter la carte dans la vue**
 
-Après la carte `.compte-mfa` : titre, phrase sur la portée du changement dans
-le groupe, les trois champs, le bouton `#compte-mdp-valider` et le message
-`#compte-mdp-statut` en `role="status"`.
+Après la carte `.compte-mfa` : titre, les trois champs, le bouton
+`#compte-mdp-valider` et le message `#compte-mdp-statut` en `role="status"`.
+Rien d'autre — ni date d'état, ni mention de portée.
 
 - [x] **Step 5 : brancher le bloc**
 
@@ -725,8 +725,8 @@ Obtenu : le script se termine sans erreur.
 | N'importe quel code accepté, *Confirmer* inerte avant six chiffres | 3 |
 | Bascule de la méthode active, date d'activation, retour possible | 3 |
 | Modale de connexion adaptée, sans renvoi ni compte à rebours | 4 |
-| Carte mot de passe : phrase de portée, trois champs, œil par champ | 5 |
-| Aucune ligne « dernière modification » | 5 |
+| Carte mot de passe : trois champs, œil par champ | 5 |
+| Ni ligne « dernière modification », ni mention de portée | 5 |
 | Jauge et quatre règles cochables | 5 |
 | Bouton inerte, et grisé, tant qu'une règle manque ou que la confirmation diverge | 5 |
 | Validation : message en place, champs vidés et remasqués | 5 |

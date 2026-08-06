@@ -115,22 +115,19 @@ partie de ce travail qui touche du code existant.
 ### Bloc 3 — Mot de passe
 
 Le formulaire tient dans la carte, sans détour par une modale. Sous le titre,
-une phrase qui dit la portée réelle du changement :
+directement trois champs pleine largeur, libellés en clair au-dessus : mot de
+passe actuel, nouveau mot de passe, confirmation. Chacun porte le bouton œil
+déjà utilisé sur l'écran de login (`.l-mdp-champ`, `.l-mdp-visibilite`), avec
+son `aria-pressed` et son libellé qui bascule. Les trois basculent
+indépendamment.
 
-> Si votre email est utilisé sur d'autres applications du groupe Freelance.com
-> (ex : Portail Partenaire), le changement de mot de passe sera effectif pour
-> toutes les applications.
-
-Puis trois champs pleine largeur, libellés en clair au-dessus : mot de passe
-actuel, nouveau mot de passe, confirmation. Chacun porte le bouton œil déjà
-utilisé sur l'écran de login (`.l-mdp-champ`, `.l-mdp-visibilite`), avec son
-`aria-pressed` et son libellé qui bascule. Les trois basculent indépendamment.
-
-Aucune ligne « dernière modification » : le portail ne détient pas cette date,
-et l'inventer sur un écran de démonstration donne un fait pour acquis.
-*(Décisions du 6 août 2026, après deux passages à l'écran : la saisie est
-d'abord partie dans une modale, puis revenue dans la carte sur la référence
-Freelance.com ; la date d'état est tombée au même moment.)*
+Ni ligne « dernière modification », ni phrase sur la portée du changement dans
+les autres applications du groupe. La première inventerait une date que le
+portail ne détient pas ; la seconde décrit un comportement de propagation que
+la maquette ne démontre pas. *(Décisions du 6 août 2026, au fil des passages à
+l'écran : la saisie est d'abord partie dans une modale, puis revenue dans la
+carte sur la référence Freelance.com ; la date d'état et la mention de portée
+sont tombées ensuite.)*
 
 Les règles sont affichées en clair sous le champ plutôt que devinées : 12
 caractères minimum, une majuscule, un chiffre, un caractère spécial. Chacune se
