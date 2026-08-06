@@ -385,14 +385,17 @@
     transition:background .15s,border-color .15s}
   #modale .m-fermer:hover{background:#f6f5f0;border-color:#c9c6bd;color:#161616}
   .m-corps{padding:26px 32px 28px}
-  .m-types{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 24px}
-  .m-type-carte{display:flex;align-items:flex-start;gap:11px;padding:14px 16px;border:1.5px solid var(--t-200);
-    border-radius:12px;cursor:pointer;transition:border-color .15s,background .15s}
-  .m-type-carte:hover{border-color:#c9c6bd;background:#faf9f6}
-  .m-type-carte input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--brand);flex:none}
-  .m-type-carte b{display:block;font-size:13.5px;color:#253147}
-  .m-type-carte small{display:block;margin-top:3px;font-size:12px;line-height:1.45;color:var(--t-600)}
-  .m-type-carte:has(input:checked){border-color:var(--brand);background:var(--blue-50)}
+  /* Un fieldset porte une bordure par defaut, et .m-box label impose display
+     block : les deux se rappellent ici, d'ou la portee sur #modale. */
+  #modale .m-types{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 24px;border:0;padding:0}
+  #modale .m-type-carte{display:flex;align-items:flex-start;gap:11px;margin:0;padding:14px 16px;
+    border:1.5px solid var(--t-200);border-radius:12px;cursor:pointer;transition:border-color .15s,background .15s}
+  #modale .m-type-carte:hover{border-color:#c9c6bd;background:#faf9f6}
+  #modale .m-type-carte input{width:18px;height:18px;min-height:0;margin:1px 0 0;padding:0;border:0;border-radius:0;
+    accent-color:var(--brand);flex:none;appearance:auto}
+  #modale .m-type-carte b{display:block;font-size:13.5px;font-weight:700;color:#253147}
+  #modale .m-type-carte small{display:block;margin-top:3px;font-size:12px;line-height:1.45;color:var(--t-600)}
+  #modale .m-type-carte:has(input:checked){border-color:var(--brand);background:var(--blue-50)}
   .toast{position:fixed;z-index:200;left:50%;bottom:32px;transform:translate(-50%,14px);max-width:min(560px,calc(100vw - 32px));
     display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-radius:14px;background:#161616;color:#fff;
     box-shadow:0 18px 46px rgba(15,23,42,.34);font-size:13.5px;line-height:1.5;opacity:0;pointer-events:none;
