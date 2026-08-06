@@ -1331,14 +1331,18 @@
      (TJM, 11 % = 128 px) couvre encore ses 122 px de contenu. En dessous,
      .twrap defile plutot que de replier les colonnes. Pas de max(%, px) ici :
      Chromium ignore la fonction sur un <col> et retombe a sept parts egales. */
-  #table-candidatures-besoin table{table-layout:fixed;min-width:1160px}
-  #table-candidatures-besoin .c-candidat{width:14%}
-  #table-candidatures-besoin .c-poste{width:22%}
-  #table-candidatures-besoin .c-lieu{width:13%}
-  #table-candidatures-besoin .c-tjm{width:11%}
-  #table-candidatures-besoin .c-statut{width:9.5%}
-  #table-candidatures-besoin .c-cv{width:9%}
-  #table-candidatures-besoin .c-retour{width:21.5%}
+  #table-candidatures-besoin table{table-layout:fixed;min-width:1280px}
+  #table-candidatures-besoin .c-candidat{width:13%}
+  #table-candidatures-besoin .c-poste{width:19%}
+  #table-candidatures-besoin .c-lieu{width:11%}
+  #table-candidatures-besoin .c-tjm{width:10%}
+  /* Assez large pour « Rejet client après soutenance », le plus long des six
+     statuts : en dessous, la pastille sortait de sa colonne et passait sous le
+     lien CV. */
+  #table-candidatures-besoin .c-statut{width:18%}
+  #table-candidatures-besoin .c-cv{width:8%}
+  #table-candidatures-besoin .c-retour{width:21%}
+  #table-candidatures-besoin td .badge{max-width:100%}
   /* Retour client : la cellule ne se saisit plus, elle donne a lire le commentaire et ouvre la modale. */
   /* La colonne ayant desormais une part fixe, le texte n'a plus besoin d'un plafond
      pour se tronquer : min-width:0 suffit a le laisser couper. */
@@ -4193,6 +4197,28 @@
     var historique=document.getElementById(id);if(!historique)return;
     historique.innerHTML='<section class="card"><ol class="sourcing-historique"><li><time>'+dateCreation+' · 09:30</time><i></i><div><b>Besoin créé</b><p>Créé par le contact client : '+contactClient+'. Référence Freelance.com : '+(reference||'E2025048719')+'.</p></div></li><li><time>'+dateStatut+' · 14:15</time><i></i><div><b>Statut modifié</b><p>Nouveau statut : '+statut+'.</p></div></li></ol></section>';
   }
+  /* Statuts de candidature visibles par le client, cales sur
+     INO_Candidature__c.statut__c. Les quatre premiers statuts Salesforce —
+     Nouveau, Rejet sourcing, Propose au commerce, Rejet Commerce — ne
+     paraissent jamais ici : une candidature que le client n'a jamais recue
+     n'existe pas pour lui. */
+  var STATUTS_CANDIDATURE={
+    'a-etudier':{libelle:'À étudier',badge:'b-bleu',sf:'Proposition au client'},
+    'soutenance':{libelle:'Soutenance planifiée',badge:'b-violet',sf:'Soutenance'},
+    'demarrage':{libelle:'Démarrage',badge:'ok',sf:'Démarrage'},
+    'rejet-cv':{libelle:'Rejet client sur CV',badge:'bad',sf:'Rejet Client sur CV'},
+    'rejet-soutenance':{libelle:'Rejet client après soutenance',badge:'bad',sf:'Rejet Client après soutenance'},
+    'no-go':{libelle:'No Go Candidat',badge:'b-neutre',sf:'No Go Candidat'}
+  };
+  /* Chaque candidat de demonstration porte un statut coherent avec celui de son
+     besoin : un besoin rejete ne peut pas n'aligner que des candidats a etudier. */
+  var STATUT_PAR_CANDIDAT={
+    'Léa Morel':'demarrage',
+    'Julien Berthier':'soutenance',
+    'Elsa Weber':'rejet-soutenance',
+    'Marc Delon':'rejet-cv',
+    'Inès Martin':'no-go'
+  };
   function renseignerTableCandidatures(candidats,gele,libelleStatut){
     var corps=document.querySelector('#table-candidatures-besoin tbody'),fiches=window.__candidatFiches||{},profilsATF={
       'Sofia Benali':{role:'Consultante data gouvernance',meta:'Paris · Disponible le 01/09',tjm:'680 € HT / jour'},
@@ -4201,7 +4227,7 @@
     if(!corps)return;
     corps.innerHTML='';
     var titreBesoin=document.querySelector('#v-besoin-detail .fiche-status h2'),besoin=titreBesoin?titreBesoin.textContent.trim():'';
-    candidats.forEach(function(nom){var fiche=fiches[nom]||profilsATF[nom]||{},ligne=document.createElement('tr');ligne.innerHTML='<td><b></b></td><td></td><td></td><td class="num"></td><td><span class="badge b-bleu">Proposée</span></td><td class="candidate-cv"><a class="cv-link" href="cv-demo.pdf" target="_blank" rel="noopener"><svg class="ic s" aria-hidden="true"><use href="#i-doc"/></svg>CV</a></td><td class="candidate-actions"><div class="retour-cell"><div class="retour-texte"><b>Commentaire</b><span></span></div><button class="retour-editer" type="button"><svg class="ic s" aria-hidden="true"><use href="#i-crayon"/></svg></button></div></td>';ligne.cells[0].querySelector('b').textContent=nom;ligne.cells[1].textContent=fiche.role||'Candidat proposé';ligne.cells[2].textContent=(fiche.meta||'').split(' · ')[0]||'—';ligne.cells[3].textContent=fiche.tjm||'—';var lienCv=ligne.querySelector('.cv-link');if(lienCv)lienCv.setAttribute('aria-label','Voir le CV de '+nom);ligne.dataset.candidat=nom;ligne.dataset.besoin=besoin;afficherRetour(ligne);if(gele){var editer=ligne.querySelector('.retour-editer');editer.disabled=true;editer.setAttribute('title','Retour indisponible : besoin en « '+(libelleStatut||'')+' »');}corps.appendChild(ligne);});
+    candidats.forEach(function(nom){var fiche=fiches[nom]||profilsATF[nom]||{},ligne=document.createElement('tr');var etat=STATUTS_CANDIDATURE[STATUT_PAR_CANDIDAT[nom]||'a-etudier'];ligne.innerHTML='<td><b></b></td><td></td><td></td><td class="num"></td><td><span class="badge"></span></td><td class="candidate-cv"><a class="cv-link" href="cv-demo.pdf" target="_blank" rel="noopener"><svg class="ic s" aria-hidden="true"><use href="#i-doc"/></svg>CV</a></td><td class="candidate-actions"><div class="retour-cell"><div class="retour-texte"><b>Commentaire</b><span></span></div><button class="retour-editer" type="button"><svg class="ic s" aria-hidden="true"><use href="#i-crayon"/></svg></button></div></td>';ligne.cells[0].querySelector('b').textContent=nom;var pastille=ligne.cells[4].querySelector('.badge');pastille.className='badge '+etat.badge;pastille.textContent=etat.libelle;ligne.dataset.statutCandidature=etat.sf;ligne.cells[1].textContent=fiche.role||'Candidat proposé';ligne.cells[2].textContent=(fiche.meta||'').split(' · ')[0]||'—';ligne.cells[3].textContent=fiche.tjm||'—';var lienCv=ligne.querySelector('.cv-link');if(lienCv)lienCv.setAttribute('aria-label','Voir le CV de '+nom);ligne.dataset.candidat=nom;ligne.dataset.besoin=besoin;afficherRetour(ligne);if(gele){var editer=ligne.querySelector('.retour-editer');editer.disabled=true;editer.setAttribute('title','Retour indisponible : besoin en « '+(libelleStatut||'')+' »');}corps.appendChild(ligne);});
     if(!corps.dataset.decisionsLiees){
       corps.dataset.decisionsLiees='true';
       corps.addEventListener('click',function(e){
