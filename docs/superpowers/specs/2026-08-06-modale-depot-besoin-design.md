@@ -44,6 +44,39 @@ duplique pas, quelle que soit la casse.
 
 **Séniorité** est une liste fermée : Junior, Confirmé, Sénior, Expert.
 
+### Le référentiel CIGREF
+
+Les valeurs des deux listes viennent de `cigref_metier_competence.csv` : six
+métiers, et les compétences e-CF associées à chacun.
+
+Le niveau accolé à chaque compétence (`niv. 3`, `niv. 4`…) est retiré. Le CSV
+en compte 38 entrées, mais la même compétence y revient à plusieurs niveaux —
+A.1 y figure trois fois. Il en reste 27 distinctes. Le client exprime un
+besoin, pas une fiche de poste : lui faire arbitrer entre « Gestion des risques
+(niv. 2) » et « (niv. 3) » dépasse ce qu'il sait dire, et le niveau reste dans
+le CSV côté Freelance.com.
+
+Le CSV n'est pas une liste plate mais une table métier → compétences : choisir
+un poste du référentiel restreint donc les suggestions aux siennes — neuf pour
+le consultant SI, dix pour l'architecte d'entreprise. Un intitulé libre ne dit
+rien du métier : les vingt-sept sont alors proposées.
+
+Les apostrophes du CSV sont converties en apostrophes typographiques, comme
+partout ailleurs dans le fichier. Sans cela la clé du métier saisi ne
+correspondait pas à celle du référentiel, et le filtrage tombait à côté.
+
+Les libellés e-CF vont jusqu'à soixante caractères : la pastille est donc
+plafonnée à 250 px et tronquée, le libellé entier restant accessible au survol.
+Sans ce plafond, une seule compétence occupait deux lignes.
+
+### Le scénario de démonstration
+
+Il passe du développeur Node.js au **consultant en systèmes d'information**, un
+métier du référentiel, avec deux de ses compétences pré-remplies. L'ancien
+scénario restait valide — le champ est ouvert — mais aucune de ses valeurs ne
+figurait dans les listes, ce qui donnait une démonstration en porte-à-faux avec
+le référentiel qu'elle est censée illustrer.
+
 ### Le pied
 
 Les deux boutons seuls. La note qui occupait la place ne paraît plus qu'au
@@ -79,10 +112,12 @@ de la règle, le rendu ayant été contrôlé à l'œil.
 - Les champs sont pré-remplis à partir de la description.
 - Le bloc *Type de prestation*, les badges *détecté* et *Assistance IA* ont
   disparu.
+- Le référentiel CIGREF alimente les deux listes, et le poste restreint les
+  compétences proposées aux siennes.
 - Une compétence saisie devient une pastille ; la croix la retire ; le retour
   arrière retire la dernière ; un doublon ne s'ajoute pas.
-- La pastille et le champ de saisie tiennent sur une seule ligne.
+- Aucune pastille ne dépasse une ligne, et porte son libellé entier en titre.
 - Le pied ne montre aucune note au repos.
 - Annuler et Échap ferment la modale.
 
-Le harnais `tests/verifier-modale-besoin.js` couvre ces onze points.
+Le harnais `tests/verifier-modale-besoin.js` couvre ces douze points.

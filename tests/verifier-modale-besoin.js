@@ -54,12 +54,28 @@ const CONTROLES=[
   }},
   {nom:'les champs sont pre-remplis a partir de la description',fn:async page=>{
     await ouvrirModale(page);
-    egal(await page.$eval('#m-poste',e=>e.value),'Développeur Node.js','intitulé');
+    egal(await page.$eval('#m-poste',e=>e.value),'Consultant en systèmes d’information','intitulé');
     egal(await page.$eval('#m-seniorite',e=>e.value),'Sénior','séniorité');
     egal(await page.$eval('#m-loc',e=>e.value),'Paris · 2 j de télétravail / semaine','localisation');
     egal(await page.$eval('#m-date',e=>e.value),'01/09/2026','date');
     egal(await page.$eval('#m-tjm',e=>e.value),'500 – 700 € / jour','TJM');
-    egal((await competences(page)).join(', '),'Node.js','compétences');
+    egal((await competences(page)).join(' | '),
+      'A.1 Systèmes d’information et alignement stratégique métier | D.11 Identification des besoins',
+      'compétences');
+  }},
+  {nom:'le referentiel CIGREF alimente les deux listes',fn:async page=>{
+    await ouvrirModale(page);
+    const postes=await page.$$eval('#m-postes option',o=>o.map(x=>x.value));
+    egal(postes.length,6,'métiers proposés');
+    egal(postes[0],'Consultant en systèmes d’information','premier métier');
+    /* Le CSV est une table metier -> competences : le poste restreint donc
+       les suggestions aux siennes. */
+    egal(await page.$$eval('#m-competences-liste option',o=>o.length),9,'compétences du consultant SI');
+    await page.fill('#m-poste','Architecte d’entreprise');
+    egal(await page.$$eval('#m-competences-liste option',o=>o.length),10,'compétences de l’architecte');
+    /* Un intitule libre ne dit rien du metier : on propose alors tout. */
+    await page.fill('#m-poste','Poste hors référentiel');
+    egal(await page.$$eval('#m-competences-liste option',o=>o.length),27,'compétences pour un intitulé libre');
   }},
   {nom:'le bloc Type de prestation a disparu',fn:async page=>{
     await ouvrirModale(page);
@@ -68,31 +84,28 @@ const CONTROLES=[
   }},
   {nom:'une competence saisie devient une pastille',fn:async page=>{
     await ouvrirModale(page);
-    await page.fill('#m-competence-saisie','TypeScript');
+    await page.fill('#m-competence-saisie','B.3 Tests');
     await page.press('#m-competence-saisie','Enter');
-    egal((await competences(page)).join(', '),'Node.js, TypeScript','compétences');
+    egal((await competences(page)).slice(-1)[0],'B.3 Tests','dernière compétence');
+    egal((await competences(page)).length,3,'nombre de compétences');
     egal(await page.$eval('#m-competence-saisie',e=>e.value),'','champ vidé');
   }},
   {nom:'la croix d une pastille la retire',fn:async page=>{
     await ouvrirModale(page);
-    await page.fill('#m-competence-saisie','React');
-    await page.press('#m-competence-saisie','Enter');
     await page.click('#m-competences .m-competence:first-child button');
-    egal((await competences(page)).join(', '),'React','compétences restantes');
+    egal((await competences(page)).join(' | '),'D.11 Identification des besoins','compétences restantes');
   }},
   {nom:'une competence deja retenue ne se duplique pas',fn:async page=>{
     await ouvrirModale(page);
-    await page.fill('#m-competence-saisie','node.js');
+    await page.fill('#m-competence-saisie','d.11 identification des besoins');
     await page.press('#m-competence-saisie','Enter');
-    egal((await competences(page)).join(', '),'Node.js','compétences');
+    egal((await competences(page)).length,2,'compétences après un doublon de casse différente');
   }},
   {nom:'retour arriere sur champ vide retire la derniere pastille',fn:async page=>{
     await ouvrirModale(page);
-    await page.fill('#m-competence-saisie','Docker');
-    await page.press('#m-competence-saisie','Enter');
     egal((await competences(page)).length,2,'avant retour arrière');
     await page.press('#m-competence-saisie','Backspace');
-    egal((await competences(page)).join(', '),'Node.js','après retour arrière');
+    egal((await competences(page)).join(' | '),'A.1 Systèmes d’information et alignement stratégique métier','après retour arrière');
   }},
   {nom:'la regle qui masque le marqueur de liste natif est en place',fn:async page=>{
     await ouvrirModale(page);
@@ -107,10 +120,15 @@ const CONTROLES=[
     egal(presente,true,'règle de masquage du marqueur natif');
     egal(await page.$eval('#m-competence-saisie',i=>getComputedStyle(i).appearance),'none','appearance du champ');
   }},
-  {nom:'la pastille et le champ tiennent sur une seule ligne',fn:async page=>{
+  {nom:'aucune pastille ne depasse une ligne',fn:async page=>{
     await ouvrirModale(page);
-    const h=await page.$eval('#m-competences',z=>Math.round(z.getBoundingClientRect().height));
-    if(h>56)throw new Error('hauteur du champ compétences : '+h+'px, la pastille passe à la ligne');
+    /* Les libelles e-CF vont jusqu'a soixante caracteres : sans plafond, une
+       pastille occupait deux lignes a elle seule. */
+    const hautes=await page.$$eval('#m-competences .m-competence',ps=>ps
+      .map(p=>({t:p.textContent.trim(),h:Math.round(p.getBoundingClientRect().height)}))
+      .filter(x=>x.h>34));
+    egal(hautes.map(x=>x.t+' ('+x.h+'px)').join(', '),'','pastilles sur deux lignes');
+    egal(await page.$$eval('#m-competences .m-competence',ps=>ps.every(p=>!!p.title)),true,'libellé entier en titre');
   }},
   {nom:'le pied ne montre aucune note au repos',fn:async page=>{
     await ouvrirModale(page);

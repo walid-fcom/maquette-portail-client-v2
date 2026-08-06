@@ -400,8 +400,12 @@
   .m-competences:focus-within{border-color:var(--brand);outline:2px solid rgba(0,60,194,.16)}
   .m-competences::after{content:'';position:absolute;right:13px;top:50%;width:10px;height:10px;margin-top:-6px;
     border-right:2px solid #354052;border-bottom:2px solid #354052;transform:rotate(45deg);pointer-events:none}
-  .m-competence{display:inline-flex;align-items:center;gap:6px;padding:5px 8px 5px 11px;border-radius:8px;
-    background:var(--blue-50);color:var(--brand);font-size:12.5px;font-weight:800}
+  /* Les libelles e-CF vont jusqu'a soixante caracteres : sans plafond, une
+     seule pastille occupait deux lignes et le champ enflait. Le libelle entier
+     reste au survol. */
+  .m-competence{display:inline-flex;align-items:center;gap:6px;max-width:min(100%,250px);padding:5px 8px 5px 11px;
+    border-radius:8px;background:var(--blue-50);color:var(--brand);font-size:12.5px;font-weight:800}
+  .m-competence b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
   .m-competence button{display:grid;place-items:center;width:20px;height:20px;padding:0;border:0;border-radius:5px;
     background:transparent;color:inherit;font-size:14px;line-height:1;cursor:pointer}
   .m-competence button:hover{background:#dbe6ff}
@@ -3408,21 +3412,13 @@
       <button class="m-fermer" id="m-fermer" aria-label="Fermer la fenêtre"><svg class="ic"><use href="#i-croix"/></svg></button>
     </div>
     <label for="m-texte">Décrivez votre besoin</label>
-    <textarea id="m-texte" rows="5">Je recherche un développeur Node.js senior à Paris, démarrage au 1er septembre, TJM entre 500 et 700 €, 2 jours de télétravail par semaine.</textarea>
+    <textarea id="m-texte" rows="5">Je recherche un consultant en systèmes d’information senior à Paris pour cadrer l’alignement de notre SI achats, démarrage au 1er septembre, TJM entre 500 et 700 €, 2 jours de télétravail par semaine.</textarea>
     <hr class="m-separateur">
     <div class="m-grille">
       <div>
         <label for="m-poste">Intitulé du poste</label>
-        <input id="m-poste" class="m-select" type="text" list="m-postes" value="Développeur Node.js" autocomplete="off">
-        <datalist id="m-postes">
-          <option value="Développeur Node.js"></option>
-          <option value="Développeur front-end"></option>
-          <option value="Data engineer"></option>
-          <option value="Architecte cloud"></option>
-          <option value="Chef de projet SI"></option>
-          <option value="Consultant cybersécurité"></option>
-          <option value="UX designer"></option>
-        </datalist>
+        <input id="m-poste" class="m-select" type="text" list="m-postes" value="Consultant en systèmes d’information" autocomplete="off">
+        <datalist id="m-postes"></datalist>
         <p class="m-aide">Sélectionnez un poste ou saisissez un nouvel intitulé.</p>
       </div>
       <div>
@@ -3431,16 +3427,7 @@
           <input id="m-competence-saisie" type="text" list="m-competences-liste" placeholder="Ajouter une compétence"
                  autocomplete="off" aria-describedby="m-competences-aide">
         </div>
-        <datalist id="m-competences-liste">
-          <option value="Node.js"></option>
-          <option value="TypeScript"></option>
-          <option value="React"></option>
-          <option value="PostgreSQL"></option>
-          <option value="Docker"></option>
-          <option value="AWS"></option>
-          <option value="Kubernetes"></option>
-          <option value="Python"></option>
-        </datalist>
+        <datalist id="m-competences-liste"></datalist>
         <p class="m-aide" id="m-competences-aide">Vous pouvez sélectionner plusieurs compétences.</p>
       </div>
       <div>
@@ -3676,6 +3663,36 @@
   // Transmission du besoin : crée un vrai Lead dans Salesforce via la function
   // Netlify /api/salesforce-lead. Les identifiants SF n'existent que côté
   // serveur — rien d'exploitable n'est exposé ici.
+  /* Referentiel CIGREF : metiers et competences e-CF associees, importe de
+     cigref_metier_competence.csv. Le niveau (niv. 3, 4, 5) est retire — le
+     client exprime un besoin, pas une fiche de poste, et la meme competence
+     revenait trois fois. */
+  var METIERS_CIGREF={"Consultant en systèmes d’information":["A.1 Systèmes d’information et alignement stratégique métier","A.3 Mise en place d’un plan d’activités","A.6 Conception des applications","A.9 Innovation","D.11 Identification des besoins","E.3 Gestion des risques","E.4 Gestion de la relation client","E.5 Amélioration des processus","E.7 Gestion des changements métier"],"Urbaniste des systèmes d’information":["A.1 Systèmes d’information et alignement stratégique métier","A.5 Conception de l’architecture","A.7 Veille technologique","A.9 Innovation","D.11 Identification des besoins","E.4 Gestion de la relation client","E.5 Amélioration des processus","E.7 Gestion des changements métier","E.8 Gestion de la sécurité de l’information","E.9 Gouvernance des systèmes d’information"],"Responsable du système d’information « métier »":["A.1 Systèmes d’information et alignement stratégique métier","A.3 Mise en place d’un plan d’activités","D.9 Développement du personnel","D.11 Identification des besoins","E.2 Gestion des projets et du portefeuille de projets","E.3 Gestion des risques","E.4 Gestion de la relation client","E.5 Amélioration des processus","E.6 Gestion de la qualité des TIC","E.9 Gouvernance des systèmes d’information"],"Gestionnaire d’applications":["A.6 Conception des applications","B.3 Tests","B.5 Production de la documentation","C.1 Support utilisateur","C.2 Support aux changements","C.3 Fourniture de services","C.4 Gestion des problèmes","D.11 Identification des besoins","E.3 Gestion des risques","E.6 Gestion de la qualité des TIC"],"Chargé d’affaires internes":["A.2 Gestion des niveaux de service","D.5 Développement des ventes","D.8 Gestion des contrats","D.10 Gestion de l’information et de la connaissance","D.11 Identification des besoins","E.4 Gestion de la relation client","E.6 Gestion de la qualité des TIC"],"Architecte d’entreprise":["A.1 Systèmes d’information et alignement stratégique métier","A.3 Mise en place d’un plan d’activités","A.5 Conception de l’architecture","A.7 Veille technologique","A.9 Innovation","D.2 Développement d’une stratégie pour la qualité des TIC","D.11 Identification des besoins","E.4 Gestion de la relation client","E.5 Amélioration des processus","E.9 Gouvernance des systèmes d’information"]};
+  garde('m-postes',function(){
+    var listePostes=document.getElementById('m-postes'),
+        listeComps=document.getElementById('m-competences-liste'),
+        poste=document.getElementById('m-poste');
+    if(!listePostes||!listeComps||!poste)return;
+    function remplir(liste,valeurs){
+      liste.innerHTML='';
+      valeurs.forEach(function(v){var o=document.createElement('option');o.value=v;liste.appendChild(o);});
+    }
+    var tousMetiers=Object.keys(METIERS_CIGREF);
+    var toutesComps=tousMetiers.reduce(function(acc,m){
+      METIERS_CIGREF[m].forEach(function(c){if(acc.indexOf(c)===-1)acc.push(c);});return acc;},[]).sort();
+    remplir(listePostes,tousMetiers);
+    /* Le CSV est une table metier -> competences : un poste du referentiel
+       restreint donc les suggestions aux siennes. Un intitule libre laisse la
+       liste entiere, faute de savoir quoi proposer. */
+    function majCompetences(){
+      var duMetier=METIERS_CIGREF[poste.value.trim()];
+      remplir(listeComps,duMetier||toutesComps);
+    }
+    poste.addEventListener('input',majCompetences);
+    poste.addEventListener('change',majCompetences);
+    majCompetences();
+  });
+
   garde('m-competences',function(){
     var zone=document.getElementById('m-competences'),saisie=document.getElementById('m-competence-saisie');
     if(!zone||!saisie)return;
@@ -3690,6 +3707,8 @@
         pastille.className='m-competence';
         pastille.innerHTML='<b></b><button type="button" aria-label="Retirer">×</button>';
         pastille.querySelector('b').textContent=valeur;
+        /* Le libelle est tronque a l'affichage : le titre le rend entier. */
+        pastille.title=valeur;
         pastille.querySelector('button').setAttribute('aria-label','Retirer la compétence '+valeur);
         zone.insertBefore(pastille,saisie);
       }
@@ -3714,7 +3733,8 @@
       if(retirer){retirer.closest('.m-competence').remove();saisie.focus();return;}
       if(e.target===zone)saisie.focus();
     });
-    ajouter('Node.js');
+    ['A.1 Systèmes d’information et alignement stratégique métier',
+     'D.11 Identification des besoins'].forEach(ajouter);
   });
 
   garde('m-envoyer',function(){
