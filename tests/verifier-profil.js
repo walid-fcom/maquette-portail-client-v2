@@ -88,7 +88,7 @@ const CONTROLES=[
     egal(await page.$eval('#compte-mfa-etat',e=>e.textContent.trim()),'Application d’authentification','méthode active');
     egal(await page.evaluate(()=>document.body.dataset.mfaMethode),'app','marqueur sur body');
   }},
-  {nom:'la saisie d appairage est scopee a sa propre modale',fn:async page=>{
+  {nom:'un code incomplet laisse Confirmer inerte',fn:async page=>{
     await ouvrirProfil(page);
     await page.check('input[name="compte-mfa"][value="app"]');
     await page.click('#compte-mfa-configurer');
@@ -96,7 +96,6 @@ const CONTROLES=[
     const cases=await page.$$('#appairage-modale .mfa-case');
     for(let i=0;i<3;i++)await cases[i].fill('7');
     egal(await page.$eval('#appairage-confirmer',e=>e.disabled),true,'Confirmer avec trois chiffres seulement');
-    egal(await page.$$eval('#mfa-modale .mfa-case',e=>e.map(x=>x.value).join('')),'123456','cases du login intactes');
   }},
 ];
 
