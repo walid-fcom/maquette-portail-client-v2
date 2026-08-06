@@ -116,6 +116,17 @@ const CONTROLES=[
     egal(await page.$eval('#mfa-renvoyer',e=>e.offsetParent===null),true,'bouton Renvoyer masqué');
     egal(await page.$eval('#mfa-validite',e=>e.offsetParent===null),true,'compte à rebours masqué');
   }},
+  {nom:'les modales MFA et appairage gardent leur en-tete',fn:async page=>{
+    /* .m-tete et .m-fermer sont partages avec la fenetre de depot du besoin :
+       la mise en forme pleine largeur de celle-ci ne doit pas leur arriver. */
+    await ouvrirProfil(page);
+    await page.check('input[name="compte-mfa"][value="app"]');
+    await page.click('#compte-mfa-configurer');
+    await page.waitForSelector('#appairage-modale',{state:'visible'});
+    const tete=await page.$eval('#appairage-modale .m-tete',e=>{const s=getComputedStyle(e);
+      return s.paddingTop+'|'+s.borderBottomWidth+'|'+s.borderTopLeftRadius;});
+    egal(tete,'0px|0px|0px','en-tête de la modale d’appairage');
+  }},
   {nom:'la carte mot de passe porte les trois champs, sans date d etat',fn:async page=>{
     await ouvrirProfil(page);
     egal(await page.$$eval('#v-profil .compte-mdp input[type=password]',e=>e.length),3,'champs de la carte');

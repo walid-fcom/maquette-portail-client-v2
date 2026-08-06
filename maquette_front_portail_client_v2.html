@@ -364,11 +364,18 @@
      la creme du portail pour se distinguer des champs sans rien ajouter. */
   .m-box{background:#fff;border-radius:20px;box-shadow:0 30px 80px rgba(15,23,42,.32);width:100%;max-width:880px;
     padding:0;margin-bottom:6vh}
-  .m-tete{display:flex;align-items:center;gap:16px;padding:24px 32px;border-bottom:1px solid #e8e6e0;border-radius:20px 20px 0 0}
-  .m-tete h2{font-size:22px;font-weight:800;color:#161616;letter-spacing:-.025em}
-  .m-fermer{margin-left:auto;width:40px;height:40px;border:1px solid var(--t-200);border-radius:11px;background:#fff;
-    display:grid;place-items:center;color:var(--t-700);flex:none;cursor:pointer;transition:background .15s,border-color .15s}
-  .m-fermer:hover{background:#f6f5f0;border-color:#c9c6bd;color:#161616}
+  /* .m-tete et .m-fermer servent aussi aux modales MFA et appairage, dont les
+     boites portent leur propre marge : la mise en forme pleine largeur ne vaut
+     que pour la fenetre de depot du besoin. */
+  .m-tete{display:flex;align-items:flex-start;gap:12px}
+  .m-tete h2{font-size:17px;font-weight:800;color:var(--t-900);letter-spacing:-.2px}
+  .m-fermer{margin-left:auto;width:44px;height:44px;border:1px solid var(--t-200);border-radius:10px;background:#fff;
+    display:grid;place-items:center;color:var(--t-600);flex:none;cursor:pointer}
+  #modale .m-tete{align-items:center;gap:16px;padding:24px 32px;border-bottom:1px solid #e8e6e0;border-radius:20px 20px 0 0}
+  #modale .m-tete h2{font-size:22px;color:#161616;letter-spacing:-.025em}
+  #modale .m-fermer{width:40px;height:40px;border-radius:11px;color:var(--t-700);
+    transition:background .15s,border-color .15s}
+  #modale .m-fermer:hover{background:#f6f5f0;border-color:#c9c6bd;color:#161616}
   .m-corps{padding:26px 32px 28px}
   .m-box label{display:block;font-size:13px;font-weight:700;color:#253147;margin:0 0 8px}
   .m-box textarea,.m-box input,.m-box select{width:100%;border:1px solid var(--t-200);border-radius:12px;
@@ -396,13 +403,13 @@
   /* En dessous de 780 px les deux colonnes s'ecrasent bien avant le point de
      rupture general du portail. */
   @media(max-width:780px){
-    .m-tete,.m-pied{padding-left:22px;padding-right:22px}
+    #modale .m-tete,.m-pied{padding-left:22px;padding-right:22px}
     .m-corps{padding:22px}
     .m-grille{grid-template-columns:1fr;gap:18px}
     .m-pied .btn{flex:1;justify-content:center}
   }
   @media(prefers-reduced-motion:reduce){
-    .m-box textarea,.m-box input,.m-box select,.m-fermer{transition:none}
+    .m-box textarea,.m-box input,.m-box select,#modale .m-fermer{transition:none}
   }
   /* Portee sur .m-box : sans cela la regle generique des champs, plus
      specifique, effacait le chevron en repeignant le fond. */
