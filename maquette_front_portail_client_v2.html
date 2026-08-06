@@ -358,38 +358,55 @@
   body.modal-open .mscrim{display:block}
   .modale{position:fixed;inset:0;z-index:60;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:4vh 16px}
   body.modal-open .modale{display:flex}
-  /* Deux colonnes de champs plus les pastilles de competences : a 640 px la
-     pastille passait sous son propre champ de saisie. */
-  .m-box{background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.35);width:100%;max-width:880px;
-    padding:26px 30px 24px;margin-bottom:6vh}
-  .m-tete{display:flex;align-items:flex-start;gap:12px}
-  .m-tete h2{font-size:17px;font-weight:800;color:var(--t-900);letter-spacing:-.2px}
-  .m-fermer{margin-left:auto;width:44px;height:44px;border:1px solid var(--t-200);border-radius:10px;background:#fff;
-    display:grid;place-items:center;color:var(--t-600);flex:none;cursor:pointer}
-  .dpo{display:inline-flex;align-items:center;gap:7px;background:var(--warn-100);color:#92400e;border:1px solid #fcd9ac;
-    border-radius:999px;padding:5px 12px;font-size:11.5px;font-weight:700;margin-top:10px}
-  .m-box label{display:block;font-size:12.5px;font-weight:700;color:var(--t-800);margin:15px 0 6px}
-  .m-box textarea,.m-box input,.m-box select{width:100%;border:1px solid var(--t-300);border-radius:10px;padding:11px 13px;
-    font:inherit;font-size:13.5px;min-height:44px}
-  .detecte{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:#6b21a8;background:#f1e7fd;
-    border-radius:999px;padding:2px 8px;margin-left:7px;vertical-align:1px}
-  .m-type{margin-top:14px}
-  .m-type-titre{font-size:12.5px;font-weight:700;color:var(--t-800);display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .m-type .cartes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .carte-type{display:flex;align-items:center;gap:10px;border:1.5px solid var(--t-300);border-radius:11px;padding:12px 14px;cursor:pointer;min-height:44px}
-  .carte-type input{width:18px;height:18px;accent-color:var(--brand);flex:none;margin:0}
-  .carte-type b{display:block;font-size:13px;color:var(--t-900)}
-  .carte-type small{display:block;font-size:11px;font-weight:700;color:var(--t-600);margin-top:1px}
-  .carte-type:has(input:checked){border-color:var(--brand);background:var(--blue-50)}
-  .m-grille{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
-  .m-pied{display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap}
-  .m-pied .note{font-size:11.5px;color:var(--t-600);flex:1;min-width:200px}
-  /* La note ne sert plus qu'au retour de transmission : vide, elle disparait et
-     le pied se reduit aux deux boutons. */
+  /* La modale se lit en deux temps : la phrase que le client ecrit, puis ce
+     qu'elle donne une fois structuree. En-tete et pied sont donc poses sur un
+     filet, comme les autres fenetres du portail, et la description tient sur
+     la creme du portail pour se distinguer des champs sans rien ajouter. */
+  .m-box{background:#fff;border-radius:20px;box-shadow:0 30px 80px rgba(15,23,42,.32);width:100%;max-width:880px;
+    padding:0;margin-bottom:6vh;overflow:hidden}
+  .m-tete{display:flex;align-items:center;gap:16px;padding:24px 32px;border-bottom:1px solid #e8e6e0}
+  .m-tete h2{font-size:22px;font-weight:800;color:#161616;letter-spacing:-.025em}
+  .m-fermer{margin-left:auto;width:40px;height:40px;border:1px solid var(--t-200);border-radius:11px;background:#fff;
+    display:grid;place-items:center;color:var(--t-700);flex:none;cursor:pointer;transition:background .15s,border-color .15s}
+  .m-fermer:hover{background:#f6f5f0;border-color:#c9c6bd;color:#161616}
+  .m-corps{padding:26px 32px 28px}
+  .m-box label{display:block;font-size:13px;font-weight:700;color:#253147;margin:0 0 8px}
+  .m-box textarea,.m-box input,.m-box select{width:100%;border:1px solid var(--t-200);border-radius:12px;
+    padding:13px 15px;font:inherit;font-size:14px;color:#253147;background:#fff;
+    transition:border-color .15s,box-shadow .15s}
+  .m-box input:hover,.m-box select:hover,.m-box textarea:hover{border-color:#c9c6bd}
+  .m-box textarea:focus,.m-box input:focus,.m-box select:focus{border-color:var(--brand);
+    box-shadow:0 0 0 3px rgba(0,60,194,.13);outline:0}
+  .m-box input,.m-box select{min-height:48px}
+  /* La description porte le propos : plus de place, plus d'air, et sa propre
+     surface pour qu'on voie d'ou viennent les champs du dessous. */
+  .m-description textarea{min-height:120px;padding:16px 18px;font-size:15px;line-height:1.6;
+    background:#faf9f6;border-color:#e8e6e0;resize:vertical}
+  .m-description textarea:focus{background:#fff}
+  .m-grille{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:20px 22px;margin-top:26px}
+  .m-pied{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:18px 32px;
+    border-top:1px solid #e8e6e0;background:#faf9f6}
+  .m-pied .note{font-size:12.5px;font-weight:600;color:var(--t-700);flex:1;min-width:200px}
+  /* La note ne sert qu'au retour de transmission : vide, elle disparait et le
+     pied se reduit aux deux boutons. */
   .m-pied .note:empty{display:none;min-width:0}
   .m-pied .note:empty+.btn{margin-left:auto}
-  .m-separateur{margin:22px 0 4px;border:0;border-top:1px solid var(--t-200)}
-  .m-select{appearance:none;cursor:pointer;
+  .m-pied .btn{min-height:46px;padding-inline:20px}
+  .m-pied .btn[disabled]{opacity:.42;cursor:not-allowed}
+  /* En dessous de 780 px les deux colonnes s'ecrasent bien avant le point de
+     rupture general du portail. */
+  @media(max-width:780px){
+    .m-tete,.m-pied{padding-left:22px;padding-right:22px}
+    .m-corps{padding:22px}
+    .m-grille{grid-template-columns:1fr;gap:18px}
+    .m-pied .btn{flex:1;justify-content:center}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .m-box textarea,.m-box input,.m-box select,.m-fermer{transition:none}
+  }
+  /* Portee sur .m-box : sans cela la regle generique des champs, plus
+     specifique, effacait le chevron en repeignant le fond. */
+  .m-box .m-select{appearance:none;cursor:pointer;
     background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23354052' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 13px center;
     padding-right:40px!important}
   /* Competences : une zone de saisie qui se comporte comme un champ, avec les
@@ -412,7 +429,9 @@
      dessine sur le cadre. */
   .m-competences input{flex:1;min-width:150px;min-height:30px!important;padding:0!important;border:0!important;
     border-radius:0!important;font-size:13.5px;background:transparent;appearance:none}
-  .m-competences input::-webkit-calendar-picker-indicator{display:none!important;opacity:0;width:0;visibility:hidden}
+  /* Tout champ a liste native porte son propre marqueur, qui doublait le
+     chevron dessine sur le cadre. */
+  .m-box input[list]::-webkit-calendar-picker-indicator{display:none!important;opacity:0;width:0;visibility:hidden}
   .m-competences input:focus{outline:0}
   .profils{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
   .profils>*{min-width:0}
@@ -3410,38 +3429,41 @@
       <h2 id="m-titre">Confiez-nous votre besoin</h2>
       <button class="m-fermer" id="m-fermer" aria-label="Fermer la fenêtre"><svg class="ic"><use href="#i-croix"/></svg></button>
     </div>
-    <label for="m-texte">Décrivez votre besoin</label>
-    <textarea id="m-texte" rows="5">Je recherche un développeur Node.js senior à Paris, démarrage au 1er septembre, TJM entre 500 et 700 €, 2 jours de télétravail par semaine.</textarea>
-    <hr class="m-separateur">
+    <div class="m-corps">
+    <div class="m-description">
+      <label for="m-texte">Décrivez votre besoin</label>
+      <textarea id="m-texte" rows="4" placeholder="Ex. : un développeur Node.js senior à Paris, à partir de septembre, entre 500 et 700 € par jour, deux jours de télétravail par semaine."></textarea>
+    </div>
     <div class="m-grille">
       <div>
         <label for="m-poste">Intitulé du poste</label>
-        <input id="m-poste" class="m-select" type="text" list="m-postes" value="Développeur·euse front-end (JavaScript, Node, React, Angular, Vue...)" autocomplete="off">
+        <input id="m-poste" class="m-select" type="text" list="m-postes" placeholder="Rechercher un métier" autocomplete="off">
         <datalist id="m-postes"></datalist>
       </div>
       <div>
         <label for="m-competence-saisie">Compétences</label>
         <div class="m-competences" id="m-competences">
-          <input id="m-competence-saisie" type="text" list="m-competences-liste" placeholder="Ajouter une compétence"
-                 autocomplete="off">
+          <input id="m-competence-saisie" type="text" list="m-competences-liste" placeholder="Ajouter une compétence" autocomplete="off">
         </div>
         <datalist id="m-competences-liste"></datalist>
       </div>
       <div>
         <label for="m-seniorite">Séniorité</label>
         <select id="m-seniorite" class="m-select">
+          <option value="" selected>Sélectionner</option>
           <option>Junior</option>
           <option>Confirmé</option>
-          <option selected>Sénior</option>
+          <option>Sénior</option>
           <option>Expert</option>
         </select>
       </div>
       <div><label for="m-loc">Localisation</label>
-        <input id="m-loc" type="text" value="Paris · 2 j de télétravail / semaine"></div>
+        <input id="m-loc" type="text" placeholder="Ex. : Paris, 2 jours de télétravail"></div>
       <div><label for="m-date">Date de démarrage</label>
-        <input id="m-date" type="text" value="01/09/2026"></div>
+        <input id="m-date" type="text" placeholder="JJ/MM/AAAA"></div>
       <div><label for="m-tjm">TJM ou budget cible</label>
-        <input id="m-tjm" type="text" inputmode="numeric" value="500 – 700 € / jour"></div>
+        <input id="m-tjm" type="text" inputmode="numeric" placeholder="Ex. : 500 – 700 € / jour"></div>
+    </div>
     </div>
     <div class="m-pied">
       <p class="note" id="m-note" aria-live="polite"></p>
@@ -3645,7 +3667,17 @@
   window.__majSelection=majSelection;
 
   var modale=document.getElementById('modale'),declencheur=null;
-  function ouvrirModale(e){declencheur=e.currentTarget;document.body.classList.add('modal-open');
+  /* Chaque ouverture repart d'un formulaire vierge : une saisie abandonnee ne
+     doit pas revenir sur le besoin suivant. */
+  function viderModale(){
+    ['m-texte','m-poste','m-loc','m-date','m-tjm'].forEach(function(id){
+      var champ=document.getElementById(id);if(champ)champ.value='';});
+    var seniorite=document.getElementById('m-seniorite');if(seniorite)seniorite.value='';
+    if(window.__viderCompetencesBesoin)window.__viderCompetencesBesoin();
+    var note=document.getElementById('m-note');if(note)note.textContent='';
+    if(window.__majEnvoiBesoin)window.__majEnvoiBesoin();
+  }
+  function ouvrirModale(e){declencheur=e.currentTarget;viderModale();document.body.classList.add('modal-open');
     document.getElementById('m-texte').focus();}
   function fermerModale(){document.body.classList.remove('modal-open');if(declencheur)declencheur.focus();}
   // Le dépôt réel (spec 2026-07-19) passait par un overlay iframe vers
@@ -3720,13 +3752,25 @@
       if(retirer){retirer.closest('.m-competence').remove();saisie.focus();return;}
       if(e.target===zone)saisie.focus();
     });
-    ['Node.js','TypeScript'].forEach(ajouter);
+    /* La modale s'ouvre vide : c'est au client de dire son besoin, pas au
+       formulaire de le lui souffler. */
+    window.__viderCompetencesBesoin=function(){
+      [].slice.call(zone.querySelectorAll('.m-competence')).forEach(function(p){p.remove();});
+      saisie.value='';
+    };
   });
 
   garde('m-envoyer',function(){
-    var envoyer=document.getElementById('m-envoyer'),note=document.getElementById('m-note');
+    var envoyer=document.getElementById('m-envoyer'),note=document.getElementById('m-note'),
+        texte=document.getElementById('m-texte');
     if(!envoyer||!note)return;
     var noteOrigine=note.innerHTML;
+    /* Le formulaire s'ouvre vide : transmettre une demande sans un mot de
+       description ne dit rien a personne. */
+    function majEnvoi(){envoyer.disabled=!(texte&&texte.value.trim());}
+    window.__majEnvoiBesoin=majEnvoi;
+    if(texte)texte.addEventListener('input',majEnvoi);
+    majEnvoi();
     envoyer.addEventListener('click',function(){
       /* Le choix Assistance Technique / Portage a disparu du formulaire : le
          lead part donc en AT, cas de tres loin le plus frequent. */
@@ -3753,12 +3797,12 @@
       .then(function(res){
         if(!res.ok)throw new Error((res.corps&&res.corps.error)||'création refusée');
         note.textContent='Demande transmise — lead '+(res.corps.id||'')+' créé dans Salesforce.';
-        setTimeout(function(){fermerModale();note.innerHTML=noteOrigine;envoyer.disabled=false;},2500);
+        setTimeout(function(){fermerModale();note.innerHTML=noteOrigine;majEnvoi();},2500);
       })
       .catch(function(erreur){
         console.error('Création du lead :',erreur);
         note.textContent='La demande n’a pas pu être transmise. Réessayez ou contactez votre interlocuteur.';
-        envoyer.disabled=false;
+        majEnvoi();
       });
     });
   });

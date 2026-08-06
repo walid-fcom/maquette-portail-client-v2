@@ -16,10 +16,14 @@ libre, un séparateur, six champs en deux colonnes, deux boutons.
 
 ### La description
 
-Un `textarea` de cinq lignes, pré-rempli. C'est lui qui alimente les champs en
-dessous — la démonstration part d'un texte libre dont tout le reste découle.
-Le badge et la mention d'analyse disparaissent : les champs déjà remplis
-racontent la même chose sans le dire.
+Un `textarea` de quatre lignes, **vide**, posé sur la crème du portail. Il porte
+le propos de la fenêtre : une phrase dite en langage courant, dont le reste
+découle. Sa surface le distingue des champs sans qu'il faille l'annoncer, et
+son texte est plus grand et plus aéré que le leur.
+
+Son exemple montre le registre attendu plutôt que de l'expliquer : « Ex. : un
+développeur Node.js senior à Paris, à partir de septembre, entre 500 et 700 €
+par jour, deux jours de télétravail par semaine. »
 
 ### Les six champs
 
@@ -72,13 +76,22 @@ progiciel (ERP, CRM, Dynamics…) » —, et l'écriture inclusive du référent
 reprise telle quelle. La pastille de compétence reste plafonnée à 250 px et
 tronquée, le libellé entier revenant au survol.
 
-### Le scénario de démonstration
+### Un formulaire vierge
 
-Le développeur Node.js de la maquette d'origine, cette fois entièrement pris
-dans le référentiel : le métier « Développeur·euse front-end (JavaScript, Node,
-React, Angular, Vue...) », et les compétences `Node.js` et `TypeScript`. Un
-contrôle vérifie que chaque valeur pré-remplie figure bien dans sa liste — une
-démonstration qui illustre un référentiel ne doit pas en sortir.
+**Aucun champ n'est pré-rempli.** *(Décision du 6 août 2026.)* La fenêtre
+s'ouvre sur une page blanche : c'est au client de dire son besoin, pas au
+formulaire de le lui souffler.
+
+Les invites portent donc seules le guidage — un exemple par champ, formulé
+comme une valeur plausible plutôt que comme une consigne. La séniorité ouvre
+sur « Sélectionner ».
+
+**Transmettre la demande** reste inerte, et visiblement grisé, tant que la
+description est vide : une demande sans un mot d'explication ne dit rien à
+personne. Les autres champs restent facultatifs.
+
+Chaque ouverture repart à zéro. Une saisie abandonnée ne doit pas revenir sur
+le besoin suivant.
 
 ### Le pied
 
@@ -99,29 +112,48 @@ description.*
 Deux champs s'ajoutent au lead : `seniorite` et `competences`, cette dernière
 sérialisée en liste séparée par des virgules.
 
-## Deux réglages de rendu
+## La mise en forme
 
 La boîte passe de 640 à 880 px de large. À 640, chaque colonne ne faisait que
 285 px et la pastille de compétence passait sous son propre champ de saisie.
 
-Le marqueur de liste natif du champ Compétences est masqué : il doublait le
-chevron dessiné sur le cadre. `getComputedStyle` ne sait pas lire ce
-pseudo-élément — il retombe sur l'hôte —, le harnais vérifie donc la présence
-de la règle, le rendu ayant été contrôlé à l'œil.
+En-tête et pied sont posés sur un filet et débordent jusqu'aux bords, comme les
+autres fenêtres du portail ; le pied prend la crème pour ancrer les deux
+boutons, qui flottaient jusque-là sur du blanc. Le titre passe de 17 à 22 px :
+c'était la seule chose à lire en arrivant, elle avait le poids d'un libellé de
+champ.
+
+Les cellules de la grille ne sont plus solidaires en hauteur — le champ
+Compétences, plus haut que son voisin, creusait un vide sous *Intitulé du
+poste*.
+
+Le marqueur de liste natif est masqué sur tout champ à liste : il doublait le
+chevron dessiné sur le cadre, et cela se voyait surtout en dessous de 780 px.
+`getComputedStyle` ne sait pas lire ce pseudo-élément — il retombe sur l'hôte —,
+le harnais vérifie donc la présence de la règle, le rendu ayant été contrôlé à
+l'œil, en large comme en étroit.
+
+Sous 780 px les deux colonnes s'empilent et les boutons prennent toute la
+largeur ; le point de rupture général du portail, à 620 px, arrivait trop tard
+pour une fenêtre de 880.
+
+Les règles devenues orphelines — `.dpo`, `.detecte`, `.m-type`, `.carte-type`,
+`.m-separateur`, `.m-aide` — sont retirées avec les blocs qu'elles habillaient.
 
 ## Comment on saura que c'est bon
 
 - La modale expose les six champs, dans l'ordre de la maquette.
-- Les champs sont pré-remplis à partir de la description.
+- La fenêtre s'ouvre entièrement vide, chaque champ portant son exemple.
+- *Transmettre* reste inerte tant que la description est vide.
+- Une saisie abandonnée ne revient pas à l'ouverture suivante.
 - Le bloc *Type de prestation*, les badges *détecté* et *Assistance IA* ont
   disparu.
 - Les référentiels FreeWork alimentent les deux listes : 137 métiers, 1569
   compétences, sans lien de l'un vers l'autre.
-- Chaque valeur pré-remplie figure dans son référentiel.
 - Une compétence saisie devient une pastille ; la croix la retire ; le retour
   arrière retire la dernière ; un doublon ne s'ajoute pas.
 - Aucune pastille ne dépasse une ligne, et porte son libellé entier en titre.
 - Le pied ne montre aucune note au repos.
 - Annuler et Échap ferment la modale.
 
-Le harnais `tests/verifier-modale-besoin.js` couvre ces treize points.
+Le harnais `tests/verifier-modale-besoin.js` couvre ces quinze points.
