@@ -97,6 +97,25 @@ const CONTROLES=[
     for(let i=0;i<3;i++)await cases[i].fill('7');
     egal(await page.$eval('#appairage-confirmer',e=>e.disabled),true,'Confirmer avec trois chiffres seulement');
   }},
+  {nom:'apres appairage, le MFA de connexion parle de l application',fn:async page=>{
+    await ouvrirProfil(page);
+    await page.check('input[name="compte-mfa"][value="app"]');
+    await page.click('#compte-mfa-configurer');
+    await page.waitForSelector('#appairage-modale',{state:'visible'});
+    const cases=await page.$$('#appairage-modale .mfa-case');
+    for(let i=0;i<cases.length;i++)await cases[i].fill('4');
+    await page.click('#appairage-confirmer');
+    await page.waitForSelector('#appairage-modale',{state:'hidden'});
+    /* Le menu compte s'est referme a l'ouverture de la page : le rouvrir avant
+       de pouvoir cliquer sur Deconnexion. */
+    await page.click('#side-account-trigger');
+    await page.click('#deconnexion');
+    await page.click('#l-connecter');
+    await page.waitForSelector('#mfa-modale .mfa-case',{state:'visible'});
+    egal(await page.$eval('#mfa-sous',e=>e.textContent.trim()),'Saisissez le code à 6 chiffres affiché par votre application.','sous-titre du MFA');
+    egal(await page.$eval('#mfa-renvoyer',e=>e.offsetParent===null),true,'bouton Renvoyer masqué');
+    egal(await page.$eval('#mfa-validite',e=>e.offsetParent===null),true,'compte à rebours masqué');
+  }},
 ];
 
 (async()=>{

@@ -3636,6 +3636,16 @@
       cible.textContent=methode==='app'?'Appairée le '+new Date().toLocaleDateString('fr-FR'):'robert.duris@yopmail.com';
       statut.textContent=methode==='app'?'Application appairée. Elle vous sera demandée à la prochaine connexion.':'Vérification par email rétablie.';
       if(window.__compteMfaMajBouton)window.__compteMfaMajBouton();
+      /* La modale de connexion doit suivre : un code d'application est genere
+         hors ligne, on ne le renvoie pas et on ne decompte pas sa validite. */
+      var sous=document.getElementById('mfa-sous'),
+          renvoyer=document.getElementById('mfa-renvoyer'),
+          validite=document.getElementById('mfa-validite');
+      if(sous)sous.innerHTML=methode==='app'
+        ?'Saisissez le code à 6 chiffres affiché par votre application.'
+        :'Saisissez le code à 6 chiffres envoyé à <b>r.duris@edf.fr</b>.';
+      if(renvoyer)renvoyer.hidden=(methode==='app');
+      if(validite)validite.hidden=(methode==='app');
     }
     /* Revenir a l'email ne demande pas d'appairage : il n'y a rien a prouver. */
     ouvrirBouton.addEventListener('click',function(){if(choix()==='app')ouvrir();else appliquer('email');});
