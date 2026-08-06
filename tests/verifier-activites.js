@@ -132,6 +132,19 @@ const CONTROLES=[
     egal(gabarits[1],gabarits[0],'gabarit du 2e groupe');
     egal(gabarits[2],gabarits[0],'gabarit du 3e groupe');
   }},
+  {nom:'les statuts portent le badge commun au portail',fn:async page=>{
+    await ouvrirActivites(page);
+    await page.click('#prestations-tout-ouvrir');
+    /* Un composant .statut, propre a cet ecran, ecrivait les statuts en
+       majuscules avec une pastille ronde et une bordure, la ou tout le reste du
+       portail emploie .badge. */
+    egal(await page.$$eval('#v-prestations .statut',e=>e.length),0,'composants .statut résiduels');
+    const badges=await page.$$eval('.marche-groupe td[data-col="statut"] span',
+      b=>[...new Set(b.map(x=>x.className+' | '+x.textContent.trim()))].sort());
+    egal(badges.join(' // '),'badge b-neutre | Terminée // badge ok | En cours','badges de statut');
+    egal(await page.$eval('.marche-groupe td[data-col="statut"] .badge',
+      e=>getComputedStyle(e).textTransform),'none','casse du badge');
+  }},
   {nom:'aucun libelle d en-tete ne deborde sur la colonne voisine',fn:async page=>{
     await ouvrirActivites(page);
     await page.click('#prestations-tout-ouvrir');
