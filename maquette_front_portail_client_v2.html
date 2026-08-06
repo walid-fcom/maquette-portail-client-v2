@@ -1174,6 +1174,29 @@
   #v-prestations .f-reset-bar{flex:0 0 auto;min-height:42px;padding:0 14px;border:0;background:transparent;color:var(--brand);font:700 12.5px Montserrat,sans-serif;cursor:pointer;border-radius:999px}
   #v-prestations .f-reset-bar:hover{background:#eef4ff}
   #v-prestations .f-reset{margin-top:6px;min-height:40px;padding:8px 10px 0;border:0;border-top:1px solid #eee;background:transparent;color:var(--brand);font:700 12.5px Montserrat,sans-serif;text-align:left;cursor:pointer}
+  #v-prestations .f-plier{flex:0 0 auto;min-height:42px;padding:0 16px;border:1px solid #d8d6cf;border-radius:10px;background:#fff;color:#161616;font:700 12.5px Montserrat,sans-serif;white-space:nowrap;cursor:pointer}
+  #v-prestations .f-plier:hover{background:#faf9f6;border-color:#9ca3af}
+  #v-prestations #prestations-tout-ouvrir{margin-left:auto}
+  /* ── Prestations groupées par marché (accordéons) ── */
+  .marche-groupe{margin-top:14px;border:1px solid #e8e6e0;border-radius:14px;background:#fff}
+  .marche-groupe[hidden]{display:none}
+  .marche-groupe>summary{display:flex;align-items:center;gap:14px;min-height:76px;padding:0 22px;cursor:pointer;list-style:none}
+  .marche-groupe>summary::-webkit-details-marker{display:none}
+  .marche-groupe>summary:hover{background:#fbfaf7;border-radius:14px}
+  .marche-groupe[open]>summary{border-bottom:1px solid #e8e6e0;border-radius:14px 14px 0 0}
+  .marche-groupe-nom{font-size:16px;font-weight:800;letter-spacing:-.015em;color:#253147}
+  .marche-groupe-compte{display:inline-grid;place-items:center;min-height:26px;padding:0 12px;border-radius:999px;background:#f1f2f4;color:#657084;font-size:11.5px;font-weight:700;white-space:nowrap}
+  .marche-groupe-chev{margin-left:auto;width:10px;height:10px;flex:none;border-right:2px solid #354052;border-bottom:2px solid #354052;transform:rotate(45deg) translate(-2px,-2px);transition:transform .18s}
+  .marche-groupe[open] .marche-groupe-chev{transform:rotate(225deg) translate(-2px,-2px)}
+  #v-prestations .marche-groupe .presta-table{border:0;border-radius:0 0 14px 14px}
+  /* Trois tables distinctes se dimensionnent chacune sur son contenu et leurs
+     colonnes ne tombent plus en face. En largeur fixe, l'en-tete — identique
+     partout — impose le meme gabarit aux trois. La largeur totale est prise
+     large : en deca, la repartition ecrase les colonnes et les libelles se
+     chevauchent. */
+  #v-prestations .marche-groupe table{table-layout:fixed;width:100%;min-width:3000px}
+  #v-prestations .marche-groupe th[data-col="affaire"]{width:340px}
+  @media(max-width:620px){.marche-groupe>summary{flex-wrap:wrap;gap:9px;padding:16px}.marche-groupe-chev{margin-left:auto}}
   #v-prestations .f-config,#v-besoins .f-config{flex:0 0 auto;margin-left:auto;position:relative}
   #v-prestations .f-config>summary,#v-besoins .f-config>summary{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:70px;height:42px;padding:0;border:1px solid #d8d6cf;border-radius:10px;background:#fff;color:#161616;font-weight:700;font-size:12.5px;white-space:nowrap;cursor:pointer;list-style:none}
   #v-prestations .f-config>summary::-webkit-details-marker,#v-besoins .f-config>summary::-webkit-details-marker{display:none}
@@ -2792,7 +2815,7 @@
         </div>
         <div class="activites-panneau" id="v-prestations" role="tabpanel" aria-labelledby="ta-prestations">
         <section class="card presta-page">
-          <div class="presta-filtres" aria-label="Rechercher et filtrer les prestations"><label class="presta-recherche"><svg class="ic s" aria-hidden="true"><use href="#i-loupe"/></svg><input id="filtre-prestations-search" type="search" placeholder="Rechercher une prestation" aria-label="Rechercher une prestation"></label><details class="f-pill"><summary>Entité <span class="f-count" data-count="entite" hidden>0</span><i class="chev" aria-hidden="true"></i></summary><div class="f-menu"><label><input type="checkbox" data-f="entite" value="enedis"> Enedis</label><label><input type="checkbox" data-f="entite" value="edf-commerce"> EDF Commerce</label><label><input type="checkbox" data-f="entite" value="edf-dsi"> EDF — DSI</label></div></details><details class="f-pill"><summary>Statut <span class="f-count" data-count="statut" hidden>0</span><i class="chev" aria-hidden="true"></i></summary><div class="f-menu"><label><input type="checkbox" data-f="statut" value="encours"> En cours</label><label><input type="checkbox" data-f="statut" value="terminee"> Terminée</label></div></details><details class="f-pill"><summary>Marché <span class="f-count" data-count="marche" hidden>0</span><i class="chev" aria-hidden="true"></i></summary><div class="f-menu"><label><input type="checkbox" data-f="marche" value="at-si"> AT Prestations SI 2024-28</label><label><input type="checkbox" data-f="marche" value="data-ia"> Accord-cadre Data &amp; IA</label><label><input type="checkbox" data-f="marche" value="infra"> Marché Infra &amp; Cloud</label></div></details><details class="f-pill"><summary>Période <span class="f-count" data-count="annee" hidden>0</span><i class="chev" aria-hidden="true"></i></summary><div class="f-menu"><label><input type="radio" name="fp-annee" data-f="annee" value="tous" checked> Depuis le début</label><label><input type="radio" name="fp-annee" data-f="annee" value="2026"> Depuis janvier 2026</label><label><input type="radio" name="fp-annee" data-f="annee" value="2025"> Depuis janvier 2025</label></div></details><button type="button" class="f-reset-bar" id="reset-prestations">Réinitialiser</button><span class="presta-bar-spacer" aria-hidden="true"></span><details class="presta-colonnes f-config"><summary>Configurer les colonnes</summary><div class="presta-colonnes-menu"><b>Colonnes à afficher</b><label class="colonne-verrouillee"><input type="checkbox" data-presta-col="affaire" checked disabled title="Colonne structurante, toujours affichée"> Prestation</label><label><input type="checkbox" data-presta-col="statut" checked> Statut</label><label><input type="checkbox" data-presta-col="conso" checked> Consommation</label><label><input type="checkbox" data-presta-col="ref" checked> Référence client</label><label><input type="checkbox" data-presta-col="marche" checked> Marché</label><label><input type="checkbox" data-presta-col="entite" checked> Entité</label><label><input type="checkbox" data-presta-col="op" checked> Opérationnel</label><label><input type="checkbox" data-presta-col="type-partenaire" checked> Type partenaire</label><label><input type="checkbox" data-presta-col="nom-partenaire" checked> Nom partenaire</label><label><input type="checkbox" data-presta-col="lieu" checked> Localisation</label><label><input type="checkbox" data-presta-col="debut" checked> Date début</label><label><input type="checkbox" data-presta-col="fin" checked> Date fin</label><label><input type="checkbox" data-presta-col="commande" checked> Total commandé</label><label><input type="checkbox" data-presta-col="prestations-facturees" checked> Tot. prestations facturées</label><label><input type="checkbox" data-presta-col="frais-factures" checked> Tot. frais facturés</label><label><input type="checkbox" data-presta-col="astreintes-facturees" checked> Tot. astreintes facturées</label><label><input type="checkbox" data-presta-col="total-facture" checked> Total facturé</label><label><input type="checkbox" data-presta-col="reste-facturer" checked> Total restant à facturer</label></div></details></div>
+          <div class="presta-filtres" aria-label="Rechercher et filtrer les prestations"><label class="presta-recherche"><svg class="ic s" aria-hidden="true"><use href="#i-loupe"/></svg><input id="filtre-prestations-search" type="search" placeholder="Rechercher une prestation" aria-label="Rechercher une prestation"></label><details class="f-pill"><summary>Entité <span class="f-count" data-count="entite" hidden>0</span><i class="chev" aria-hidden="true"></i></summary><div class="f-menu"><label><input type="checkbox" data-f="entite" value="enedis"> Enedis</label><label><input type="checkbox" data-f="entite" value="edf-commerce"> EDF Commerce</label><label><input type="checkbox" data-f="entite" value="edf-dsi"> EDF — DSI</label></div></details><details class="f-pill"><summary>Statut <span class="f-count" data-count="statut" hidden>0</span><i class="chev" aria-hidden="true"></i></summary><div class="f-menu"><label><input type="checkbox" data-f="statut" value="encours"> En cours</label><label><input type="checkbox" data-f="statut" value="terminee"> Terminée</label></div></details><details class="f-pill"><summary>Marché <span class="f-count" data-count="marche" hidden>0</span><i class="chev" aria-hidden="true"></i></summary><div class="f-menu"><label><input type="checkbox" data-f="marche" value="at-si"> AT Prestations SI 2024-28</label><label><input type="checkbox" data-f="marche" value="data-ia"> Accord-cadre Data &amp; IA</label><label><input type="checkbox" data-f="marche" value="infra"> Marché Infra &amp; Cloud</label></div></details><details class="f-pill"><summary>Période <span class="f-count" data-count="annee" hidden>0</span><i class="chev" aria-hidden="true"></i></summary><div class="f-menu"><label><input type="radio" name="fp-annee" data-f="annee" value="tous" checked> Depuis le début</label><label><input type="radio" name="fp-annee" data-f="annee" value="2026"> Depuis janvier 2026</label><label><input type="radio" name="fp-annee" data-f="annee" value="2025"> Depuis janvier 2025</label></div></details><button type="button" class="f-reset-bar" id="reset-prestations">Réinitialiser</button><span class="presta-bar-spacer" aria-hidden="true"></span><button type="button" class="f-plier" id="prestations-tout-ouvrir">Tout ouvrir</button><button type="button" class="f-plier" id="prestations-tout-fermer">Tout fermer</button><details class="presta-colonnes f-config"><summary>Configurer les colonnes</summary><div class="presta-colonnes-menu"><b>Colonnes à afficher</b><label class="colonne-verrouillee"><input type="checkbox" data-presta-col="affaire" checked disabled title="Colonne structurante, toujours affichée"> Prestation</label><label><input type="checkbox" data-presta-col="statut" checked> Statut</label><label><input type="checkbox" data-presta-col="conso" checked> Consommation</label><label><input type="checkbox" data-presta-col="ref" checked> Référence client</label><label><input type="checkbox" data-presta-col="marche" checked> Marché</label><label><input type="checkbox" data-presta-col="entite" checked> Entité</label><label><input type="checkbox" data-presta-col="op" checked> Opérationnel</label><label><input type="checkbox" data-presta-col="type-partenaire" checked> Type partenaire</label><label><input type="checkbox" data-presta-col="nom-partenaire" checked> Nom partenaire</label><label><input type="checkbox" data-presta-col="lieu" checked> Localisation</label><label><input type="checkbox" data-presta-col="debut" checked> Date début</label><label><input type="checkbox" data-presta-col="fin" checked> Date fin</label><label><input type="checkbox" data-presta-col="commande" checked> Total commandé</label><label><input type="checkbox" data-presta-col="prestations-facturees" checked> Tot. prestations facturées</label><label><input type="checkbox" data-presta-col="frais-factures" checked> Tot. frais facturés</label><label><input type="checkbox" data-presta-col="astreintes-facturees" checked> Tot. astreintes facturées</label><label><input type="checkbox" data-presta-col="total-facture" checked> Total facturé</label><label><input type="checkbox" data-presta-col="reste-facturer" checked> Total restant à facturer</label></div></details></div>
           <div class="twrap presta-table" role="region" aria-label="Tableau de toutes les prestations" tabindex="0"><table>
             <thead><tr><th data-col="affaire">Prestation</th><th data-col="statut">Statut</th><th data-col="conso">Consommation</th><th data-col="ref">Référence client</th><th data-col="marche">Marché</th><th data-col="entite">Entité</th><th data-col="op">Opérationnel</th><th data-col="type-partenaire">Type partenaire</th><th data-col="nom-partenaire">Nom partenaire</th><th data-col="lieu">Localisation</th><th data-col="debut">Date début</th><th data-col="fin">Date fin</th><th data-col="commande" class="num">Total commandé</th><th data-col="prestations-facturees" class="num">Tot. prestations facturées</th><th data-col="frais-factures" class="num">Tot. frais facturés</th><th data-col="astreintes-facturees" class="num">Tot. astreintes facturées</th><th data-col="total-facture" class="num">Total facturé</th><th data-col="reste-facturer" class="num">Total restant à facturer</th></tr></thead>
             <tbody>
@@ -4145,7 +4168,9 @@
       setTimeout(rendre,0);
     }
     installer('#v-besoins .besoin-table',10);
-    installer('#v-prestations .presta-table table',10);
+    /* Mon activite n'est plus pagine : les prestations sont reparties en
+       accordeons par marche, de quelques lignes chacun. Un compteur global
+       par-dessus ne saurait pas quelle table decrire. */
     installer('#table-factures',10);
   });
   function texteCellule(ligne,cle){
@@ -4477,6 +4502,7 @@
       });
       if(compteur)compteur.textContent=total+' prestation'+(total>1?'s':'')+' sur '+lignes.length;
       majBadgesPresta({statut:stat.length,marche:mar.length,entite:ent.length,annee:annee==='tous'?0:1});
+      majGroupes();
     }
     [].slice.call(document.querySelectorAll('#v-prestations .presta-filtres [data-f]')).forEach(function(input){input.addEventListener('change',filtrerPrestations);});
     if(recherche)recherche.addEventListener('input',filtrerPrestations);
@@ -4519,6 +4545,58 @@
         ancre.parentNode.insertBefore(cellule,ancre.nextSibling);ancre=cellule;
       });
     });
+    /* Les prestations se lisent par marche : un accordeon par marche, replie au
+       depart, plutot qu'une table unique ou le marche n'est qu'une colonne de
+       plus. Le regroupement se fait apres l'injection des colonnes de regie,
+       pour que chaque en-tete clone les porte. */
+    var groupes=[];
+    (function regrouperParMarche(){
+      var cadre=document.querySelector('#v-prestations .presta-table');
+      if(!cadre)return;
+      var enteteSource=cadre.querySelector('thead'),hote=cadre.parentNode;
+      /* L'ordre et les libelles viennent du filtre Marche : une seule source,
+         donc pas de liste a tenir a jour en double. */
+      [].slice.call(document.querySelectorAll('#v-prestations .presta-filtres [data-f="marche"]')).forEach(function(choix){
+        var duMarche=lignes.filter(function(l){return l.dataset.marche===choix.value;});
+        if(!duMarche.length)return;
+        var bloc=document.createElement('details');
+        bloc.className='marche-groupe';bloc.dataset.marche=choix.value;
+        var titre=choix.parentNode.textContent.trim();
+        var resume=document.createElement('summary');
+        resume.innerHTML='<span class="marche-groupe-nom"></span><span class="marche-groupe-compte"></span><i class="marche-groupe-chev" aria-hidden="true"></i>';
+        resume.querySelector('.marche-groupe-nom').textContent=titre;
+        bloc.appendChild(resume);
+        var enveloppe=document.createElement('div');
+        enveloppe.className='twrap presta-table';enveloppe.setAttribute('role','region');
+        enveloppe.setAttribute('aria-label','Prestations du marché '+titre);enveloppe.tabIndex=0;
+        var table=document.createElement('table');
+        table.appendChild(enteteSource.cloneNode(true));
+        var corps=document.createElement('tbody');
+        duMarche.forEach(function(l){corps.appendChild(l);});
+        table.appendChild(corps);enveloppe.appendChild(table);bloc.appendChild(enveloppe);
+        hote.insertBefore(bloc,cadre);
+        groupes.push(bloc);
+      });
+      if(groupes.length)cadre.remove();
+    })();
+    function majGroupes(){
+      /* filtrerPrestations tourne une premiere fois avant le regroupement. */
+      if(!groupes)return;
+      groupes.forEach(function(bloc){
+        var visibles=[].slice.call(bloc.querySelectorAll('tbody tr')).filter(function(l){return !l.hidden;}).length;
+        bloc.querySelector('.marche-groupe-compte').textContent=visibles+' prestation'+(visibles>1?'s':'');
+        /* Un marche sans ligne retenue n'a rien a montrer : on le retire plutot
+           que d'offrir un accordeon vide. */
+        bloc.hidden=!visibles;
+        if(!visibles)bloc.open=false;
+      });
+    }
+    function replierTout(ouvert){groupes.forEach(function(bloc){if(!bloc.hidden)bloc.open=ouvert;});}
+    var toutOuvrir=document.getElementById('prestations-tout-ouvrir'),
+        toutFermer=document.getElementById('prestations-tout-fermer');
+    if(toutOuvrir)toutOuvrir.addEventListener('click',function(){replierTout(true);});
+    if(toutFermer)toutFermer.addEventListener('click',function(){replierTout(false);});
+    majGroupes();
     /* Chaque type de prestation garde son propre cadrage de colonnes. */
     var colonnesParType={
       at:['affaire','ref','marche','entite','op','statut','tjm','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
@@ -4528,7 +4606,9 @@
       /* Liste unique : ordre de reference de la vue Mon activite. Les colonnes
          absentes de ce tableau restent disponibles dans le configurateur, en
          fin de liste et decochees. */
-      tous:['affaire','ref','statut','marche','entite','op','lieu','debut','fin','conso','jours-commandes','jours-travailles','tjm','commande','total-facture','type-partenaire','nom-partenaire','jours-restant-facturer','prestations-facturees','frais-factures','astreintes-facturees','reste-facturer']
+      /* 'marche' n'est plus de la liste : c'est desormais le titre du groupe.
+         La colonne reste offerte dans le configurateur, simplement decochee. */
+      tous:['affaire','ref','statut','entite','op','lieu','debut','fin','conso','jours-commandes','jours-travailles','tjm','commande','total-facture','type-partenaire','nom-partenaire','jours-restant-facturer','prestations-facturees','frais-factures','astreintes-facturees','reste-facturer']
     };
     function appliquerConfigurationColonnes(type){
       var selection=colonnesParType[type]||colonnesParType.tous,choix=[].slice.call(document.querySelectorAll('[data-presta-col]'));
