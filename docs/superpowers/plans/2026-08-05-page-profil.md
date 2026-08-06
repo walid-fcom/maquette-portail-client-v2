@@ -140,7 +140,6 @@ Dans le `<style>`, juste après la ligne `#v-factures .presta-filtre-label{color
   .compte-champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px 26px;margin-top:24px}
   .compte-champs dt{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t-600)}
   .compte-champs dd{margin-top:6px;font-size:14px;font-weight:600;color:var(--t-900)}
-  .compte-note{margin-top:22px;padding-top:18px;border-top:1px solid var(--t-200);color:var(--t-600);font-size:12.5px;line-height:1.6}
 ```
 
 - [ ] **Step 4 : ajouter la vue**
@@ -166,7 +165,6 @@ Dans `<div class="cont">`, juste après la fermeture de la vue `#v-documents` et
             <div><dt>Société</dt><dd>ELECTRICITE DE FRANCE — EDF</dd></div>
             <div><dt>Rôle portail</dt><dd><span class="badge b-neutre">Contract manager</span></dd></div>
           </dl>
-          <p class="compte-note">Ces informations viennent de votre fiche Freelance.com. Pour les corriger, contactez <a class="lien" href="#" id="compte-contact">Camille Moreau</a>.</p>
         </section>
       </section>
 ```
@@ -830,7 +828,7 @@ git commit -m "Ajoute le changement de mot de passe a la page Profil"
 | Vue `#v-profil`, atteinte par le lien et par `#profil` | 1 |
 | Aucune entrée de barre latérale allumée | 1 |
 | Fiche d'identité, quatre champs, lecture seule | 1 |
-| Mention « informations Freelance.com » avec lien contact | 1 |
+| ~~Mention « informations Freelance.com » avec lien contact~~ — retirée le 6 août 2026 sur décision de Walid, commit `9715b94` | — |
 | État MFA actuel en évidence | 2 |
 | Deux méthodes en radio | 2 |
 | Sélectionner l'application n'active rien, arme *Configurer* | 2 |

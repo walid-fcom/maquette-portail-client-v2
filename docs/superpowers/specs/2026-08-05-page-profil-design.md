@@ -60,9 +60,9 @@ Le rôle portail porte un badge parce qu'il n'est pas décoratif : c'est lui qui
 détermine ce que Robert voit du portefeuille, via le `data-role` déjà câblé
 sur `<body>`.
 
-Sous le bloc, une phrase discrète : « Ces informations viennent de votre fiche
-Freelance.com. Pour les corriger, contactez Camille Moreau », le nom étant un
-lien vers l'interlocuteur.
+Rien d'autre : ni mention de provenance des données, ni renvoi vers un
+interlocuteur pour les corriger. La fiche se lit, point. *(Décision du 6 août
+2026, après avoir vu la phrase à l'écran.)*
 
 ### Bloc 2 — Vérification en deux étapes
 
