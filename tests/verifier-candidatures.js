@@ -31,8 +31,11 @@ const INTERNES=['Nouveau','Rejet sourcing','Proposé au commerce','Rejet Commerc
 
 async function ouvrirPortail(page){
   await page.goto(FICHIER);
-  await page.fill('#access-code',CODE_ACCES);
-  await page.click('#access-gate-form button[type=submit]');
+  /* L'ecran de code d'acces peut etre desactive : ne saisir le code que s'il est affiche. */
+  if(await page.$('#access-gate:not([hidden])')){
+    await page.fill('#access-code',CODE_ACCES);
+    await page.click('#access-gate-form button[type=submit]');
+  }
   await page.click('#l-connecter');
   await page.waitForSelector('#mfa-modale .mfa-case',{state:'visible'});
   const cases=await page.$$('#mfa-modale .mfa-case');
