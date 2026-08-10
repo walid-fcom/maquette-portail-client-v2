@@ -4058,7 +4058,9 @@
     if(!Object.prototype.hasOwnProperty.call(titres,nom))nom='accueil';
     if(!conserverUrl&&location.hash!==('#'+nom))history.pushState({vue:nom},'','#'+nom);
     var ongletActivite=(nom==='prestations'||nom==='marches'||nom==='conformite')?nom:null;
-    var vueId=ongletActivite?'activites':nom;
+    /* RM correspond au portage : la même fiche « Commande de la mission » est
+       utilisée pour AT, ATF et RM, y compris via l'ancienne URL partagée. */
+    var vueId=ongletActivite?'activites':(nom==='portage-prestation-detail'?'activite-detail':nom);
     document.querySelectorAll('.vue').forEach(function(v){v.hidden=(v.id!=='v-'+vueId);});
     if(ongletActivite&&window.__afficherOngletActivite)window.__afficherOngletActivite(ongletActivite);
     else if(nom==='activites'&&window.__afficherOngletActivite)window.__afficherOngletActivite('prestations');
@@ -4068,7 +4070,7 @@
     var cible=document.getElementById('v-'+vueId);
     if(cible)cible.focus({preventScroll:false});
     if(nom==='forfait-detail'&&window.__afficherOngletForfait)window.__afficherOngletForfait('detail');
-    if(nom==='portage-prestation-detail'&&window.__afficherOngletPortage)window.__afficherOngletPortage('overview');
+    if(nom==='portage-prestation-detail'){var lignePortage=document.querySelector('#v-prestations tbody tr[data-type="portage"],#v-prestations tbody tr[data-type="portage-salarial"]');if(lignePortage)renseignerActivite(lignePortage);}
     if(nom==='documents'&&window.__majSelection)window.__majSelection();
     /* L'URL partagée de la fiche besoin ouvre sa vue d'ensemble. */
     if(nom==='besoin-detail'&&typeof afficherOngletBesoin==='function'){
@@ -4619,7 +4621,24 @@
     if(reperes[1])reperes[1].textContent=(ligne.querySelector('[data-col="debut"]')||{}).textContent||reperes[1].textContent;
     if(reperes[2])reperes[2].textContent=(ligne.querySelector('[data-col="fin"]')||{}).textContent||reperes[2].textContent;
     rendreHistoriqueSimple('ppresta-historique','01/07/2026','C. Dupont','18/07/2026',statut||'En cours','E2025047382');
-    /* Repères + vue d'ensemble « Commandes de la mission » (mise en page validée) conservés tels quels — plus de réécriture par l'ancien gabarit. */
+    /* AT/ATF : vue d'ensemble « Commandes de la mission » (mise en page validée) conservée telle quelle.
+       RM/portage : même fiche, mais la vue d'ensemble est recomposée avec la commande de la ligne. */
+    var listeCommandes=document.querySelector('#v-activite-detail .commandes-resume-list'),titreCommandes=document.querySelector('#v-activite-detail .commandes-overview>h2');
+    if(!listeCommandes||!titreCommandes)return;
+    if(renseignerActivite.gabaritAt===undefined){renseignerActivite.gabaritAt=listeCommandes.innerHTML;renseignerActivite.titreAt=titreCommandes.innerHTML;}
+    var typePrestation=ligne.dataset.type;
+    if(typePrestation==='portage'||typePrestation==='portage-salarial'){
+      var valeur=function(colonne){var cellule=ligne.querySelector('[data-col="'+colonne+'"]');return cellule?cellule.textContent.trim():'';};
+      var euros=function(texte){return Number((texte||'').replace(/[^0-9]/g,''))||0;};
+      var bdc=ligne.dataset.bdc||'',ressources={'448006':'Karim Aït Mansour','448007':'Pierre Morel'},ressource=ressources[bdc]||valeur('nom-partenaire'),
+          montantCommande=euros(valeur('commande')),montantFacture=euros(valeur('total-facture')),
+          pourcentage=montantCommande?Math.round(montantFacture/montantCommande*100):0,terminee=/termin/i.test(statut),
+          joursVendus=Math.round(montantCommande/650),joursRealises=Math.round(joursVendus*pourcentage/100);
+      listeCommandes.innerHTML='<details class="commande-resume" open><summary><div><small>Commande</small><strong>CMD-'+bdc+'</strong></div><div><small>Période</small><strong>'+valeur('debut')+' → '+valeur('fin')+'</strong></div><div><small>Montant</small><strong>'+valeur('commande')+'</strong></div><div><small>Statut</small><span class="resume-statut'+(terminee?' terminee':'')+'"><i></i>'+statut+'</span></div><span class="commande-toggle" aria-hidden="true"></span></summary><div class="commande-client-detail"><div class="commande-client-top"><section class="commande-client-section"><h3>Contexte de la mission</h3><div class="commande-client-infos"><div><span>Client</span><b>'+valeur('entite')+' · Direction Finance</b></div><div><span>Opérationnel</span><b>'+valeur('op')+'</b></div><div class="mission-lieu"><span>Lieu</span><b><svg class="ic"><use href="#i-lieu"/></svg><span><strong>4 avenue de l’Europe</strong><em>92300 Levallois-Perret</em></span></b></div><div><span>Marché</span><b>'+valeur('marche')+'</b></div></div></section><section class="commande-client-section"><h3>Détails de la commande</h3><div class="commande-client-infos detail"><div><span>Référence client</span><b>'+valeur('ref')+'</b></div><div><span>Référence bon de commande</span><b>'+bdc+'</b></div><div class="wide"><span>Ressources</span><b>'+ressource+'</b></div></div></section></div><section class="commande-client-section finance commande-client-finance"><h3>Progression financière</h3><div class="commande-progress"><span>'+(terminee?'Commande entièrement consommée':'Commande consommée à '+pourcentage+' %')+'</span><b class="progress-pct">'+pourcentage+' %</b><i style="--progress:'+pourcentage+'%"></i></div><div class="commande-finance-grid"><div><span>Jours vendus</span><b>'+joursVendus+' j</b></div><div><span>Jours réalisés</span><b>'+joursRealises+' j</b></div><div><span>Montant commandé</span><b>'+valeur('commande')+'</b></div><div><span>Montant facturé</span><b>'+valeur('total-facture')+'</b></div><div><span>Reste à facturer</span><b>'+valeur('reste-facturer')+'</b></div></div></section></div></details>';
+      titreCommandes.innerHTML='<svg class="ic"><use href="#i-doc"/></svg>Commande de la mission (1)';
+    }else{
+      listeCommandes.innerHTML=renseignerActivite.gabaritAt;titreCommandes.innerHTML=renseignerActivite.titreAt;
+    }
   }
   /* Historique volontairement synthétique et identique pour chaque type de besoin et de prestation. */
   rendreHistoriqueSimple('fp-historique','09/07/2026','C. Dupont','18/07/2026','Proposition des candidats','E2025048719');
@@ -4760,7 +4779,7 @@
       modeleAT.parentNode.appendChild(prestationATF);lignes.push(prestationATF);
     }
     lignes.forEach(function(ligne){
-      function ouvrirDetail(){var typePrestation=ligne.getAttribute('data-type');if(typePrestation==='forfait'){renseignerForfaitAffaire(ligne);afficher('forfait-affaire');}else{if(typePrestation==='at'||typePrestation==='atf')renseignerActivite(ligne);afficher((typePrestation==='portage'||typePrestation==='portage-salarial')?'portage-prestation-detail':'activite-detail');}}
+      function ouvrirDetail(){var typePrestation=ligne.getAttribute('data-type');if(typePrestation==='forfait'){renseignerForfaitAffaire(ligne);afficher('forfait-affaire');}else{afficher((typePrestation==='portage'||typePrestation==='portage-salarial')?'portage-prestation-detail':'activite-detail');renseignerActivite(ligne);}}
       ligne.classList.add('presta-row-click');ligne.tabIndex=0;ligne.setAttribute('role','link');ligne.setAttribute('aria-label','Voir le détail de la prestation');
       ligne.addEventListener('click',ouvrirDetail);
       ligne.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();ouvrirDetail();}});
