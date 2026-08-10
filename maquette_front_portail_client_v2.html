@@ -4795,17 +4795,16 @@
     document.addEventListener('keydown',function(e){if(e.key==='Escape')[].slice.call(document.querySelectorAll('#v-prestations .presta-filtres details[open]')).forEach(function(d){d.open=false;});});
     /* Les indicateurs de régie sont disponibles dans le configurateur des colonnes. */
     var colonnesRegie=[
-      {id:'tjm',libelle:'TJM'},
       {id:'jours-commandes',libelle:'Nb de jours commandés'},
       {id:'jours-travailles',libelle:'Nb de jours travaillés'},
       {id:'jours-restant-facturer',libelle:'Nb de jours restant à facturer'}
     ],donneesRegie={
-      'SRC-4165':['800 €','210','65','145'],
-      'SRC-4207':['620 €','120','19','101'],
-      'SRC-4214':['700 €','120','120','0'],
-      'SRC-4241':['680 €','210','42','168'],
-      'SRC-4188':['800 €','120','20','100'],
-      'SRC-4193':['800 €','120','20','100']
+      'SRC-4165':['210','65','145'],
+      'SRC-4207':['120','19','101'],
+      'SRC-4214':['120','120','0'],
+      'SRC-4241':['210','42','168'],
+      'SRC-4188':['120','20','100'],
+      'SRC-4193':['120','20','100']
     };
     var menuRegie=document.querySelector('#v-prestations .presta-colonnes-menu');
     if(menuRegie){
@@ -4881,16 +4880,16 @@
     majGroupes();
     /* Chaque type de prestation garde son propre cadrage de colonnes. */
     var colonnesParType={
-      at:['affaire','ref','marche','entite','op','statut','tjm','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
-      atf:['affaire','ref','marche','entite','op','statut','tjm','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
-      portage:['affaire','ref','marche','entite','op','statut','tjm','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
+      at:['affaire','ref','marche','entite','op','statut','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
+      atf:['affaire','ref','marche','entite','op','statut','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
+      portage:['affaire','ref','marche','entite','op','statut','debut','fin','jours-commandes','jours-travailles','commande','total-facture'],
       forfait:['affaire','statut','conso','fin'],
       /* Liste unique : ordre de reference de la vue Mon activite. Les colonnes
          absentes de ce tableau restent disponibles dans le configurateur, en
          fin de liste et decochees. */
       /* 'marche' n'est plus de la liste : c'est desormais le titre du groupe.
          La colonne reste offerte dans le configurateur, simplement decochee. */
-      tous:['affaire','ref','statut','entite','op','lieu','debut','fin','conso','jours-commandes','jours-travailles','tjm','commande','total-facture','type-partenaire','nom-partenaire','jours-restant-facturer','prestations-facturees','frais-factures','astreintes-facturees','reste-facturer']
+      tous:['affaire','ref','statut','entite','op','lieu','debut','fin','conso','jours-commandes','jours-travailles','commande','total-facture','type-partenaire','nom-partenaire','jours-restant-facturer','prestations-facturees','frais-factures','astreintes-facturees','reste-facturer']
     };
     function appliquerConfigurationColonnes(type){
       var selection=colonnesParType[type]||colonnesParType.tous,choix=[].slice.call(document.querySelectorAll('[data-presta-col]'));
