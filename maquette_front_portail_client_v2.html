@@ -2736,7 +2736,7 @@
                 <div class="forfait-tile wide"><span>Partenaire</span><b>Ataraxie Conseil</b></div>
               </div></section>
             </div>
-            <section class="forfait-info-section finances forfait-finances"><h2>Progression financière</h2><div class="forfait-progress"><span>Forfait non démarré</span><b class="forfait-progress-pct">0 %</b><i style="--progress:0%"></i></div><div class="forfait-finance-grid"><div class="forfait-tile"><span>Montant commandé</span><b>45 k€</b></div><div class="forfait-tile"><span>Montant engagé</span><b>0 €</b></div><div class="forfait-tile"><span>Montant facturé</span><b>0 €</b></div><div class="forfait-tile"><span>En attente de facturation</span><b>0 €</b></div></div></section>
+            <section class="forfait-info-section finances forfait-finances"><h2>Progression financière</h2><div class="forfait-progress"><span>Forfait non démarré</span><b class="forfait-progress-pct">0 %</b><i style="--progress:0%"></i></div><div class="forfait-finance-grid"><div class="forfait-tile"><span>Montant commandé</span><b>45 k€</b></div><div class="forfait-tile"><span>Montant facturé</span><b>0 €</b></div><div class="forfait-tile"><span>En attente de facturation</span><b>0 €</b></div></div></section>
           </section>
         </section>
         <section class="fiche-sourcing-panel" id="fap-phases" role="tabpanel" aria-labelledby="fa-phases" hidden>
@@ -4568,7 +4568,7 @@
     var ctx=v.querySelectorAll('.forfait-general-grid .forfait-tile b');setT(ctx[0],col('entite'));setT(ctx[1],col('op'));setT(ctx[2],col('lieu'));setT(ctx[3],col('marche'));
     /* Tuiles : 0 Référence client (colonne « ref » de la liste), 1 Référence bon de commande, 2 Partenaire. */
     var det=v.querySelectorAll('.forfait-detail-grid .forfait-tile b');setT(det[0],col('ref'));setT(det[1],ligne.dataset.bdc);setT(det[2],col('nom-partenaire'));
-    var fin=v.querySelectorAll('.forfait-finance-grid .forfait-tile b');setT(fin[0],col('commande'));setT(fin[1],col('commande'));setT(fin[2],col('total-facture'));setT(fin[3],col('reste-facturer'));
+    var fin=v.querySelectorAll('.forfait-finance-grid .forfait-tile b');setT(fin[0],col('commande'));setT(fin[1],col('total-facture'));setT(fin[2],col('reste-facturer'));
     var conso=(col('conso').match(/\d+/)||['0'])[0];
     var pct=v.querySelector('.forfait-progress-pct');if(pct)pct.textContent=conso+' %';
     var pl=v.querySelector('.forfait-progress > span');if(pl)pl.textContent=(conso==='0'?'Forfait non démarré':'Avancement du forfait');
