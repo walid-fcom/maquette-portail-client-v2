@@ -2733,8 +2733,6 @@
               <section class="forfait-info-section"><h2>Détails de la commande</h2><div class="forfait-detail-grid">
                 <div class="forfait-tile wide"><span>Référence client</span><b>SRC-4172</b></div>
                 <div class="forfait-tile wide"><span>Référence bon de commande</span><b>447982</b></div>
-                <div class="forfait-tile"><span>Nom de l’affaire</span><b>Audit RGPD du SI clients</b></div>
-                
                 <div class="forfait-tile wide"><span>Partenaire</span><b>Ataraxie Conseil</b></div>
               </div></section>
             </div>
@@ -4566,8 +4564,8 @@
     var badge=v.querySelector('.fiche-status .badge');if(badge){badge.textContent=statut||'En cours';badge.className='badge '+(/[Tt]ermin/.test(statut)?'ok':'b-bleu')+' statut-besoin';}
     var rep=v.querySelectorAll('.presta-repere strong');if(rep[0])rep[0].textContent=col('commande');if(rep[1])rep[1].textContent=col('debut');if(rep[2])rep[2].textContent=col('fin');
     var ctx=v.querySelectorAll('.forfait-general-grid .forfait-tile b');setT(ctx[0],col('entite'));setT(ctx[1],col('op'));setT(ctx[2],col('lieu'));setT(ctx[3],col('marche'));
-    /* Tuiles : 0 Référence client (colonne « ref » de la liste), 1 Référence bon de commande, 2 Nom de l'affaire, 3 Partenaire. */
-    var det=v.querySelectorAll('.forfait-detail-grid .forfait-tile b');setT(det[0],col('ref'));setT(det[1],ligne.dataset.bdc);setT(det[2],col('affaire'));
+    /* Tuiles : 0 Référence client (colonne « ref » de la liste), 1 Référence bon de commande, 2 Partenaire. */
+    var det=v.querySelectorAll('.forfait-detail-grid .forfait-tile b');setT(det[0],col('ref'));setT(det[1],ligne.dataset.bdc);setT(det[2],col('nom-partenaire'));
     var fin=v.querySelectorAll('.forfait-finance-grid .forfait-tile b');setT(fin[0],col('commande'));setT(fin[1],col('commande'));setT(fin[2],col('total-facture'));setT(fin[3],col('reste-facturer'));
     var conso=(col('conso').match(/\d+/)||['0'])[0];
     var pct=v.querySelector('.forfait-progress-pct');if(pct)pct.textContent=conso+' %';
