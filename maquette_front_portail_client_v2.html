@@ -1268,12 +1268,21 @@
      partout — impose le meme gabarit aux trois. La largeur totale est calee sur
      ce que reclament les vingt et une colonnes affichees : en deca, la
      repartition les ecrase et les libelles debordent sur la voisine. */
-  #v-prestations .marche-groupe table{table-layout:fixed;width:100%;min-width:3700px}
+  #v-prestations .marche-groupe table{table-layout:fixed;width:100%;min-width:4300px}
   #v-prestations .marche-groupe th[data-col="affaire"]{width:340px}
   /* En largeur fixe, un libelle plus long que sa colonne ne la pousse pas : il
-     deborde sur la voisine. Les en-tetes passent donc a la ligne — la seule
-     alternative etait d'elargir sans fin au gre du libelle le plus long. */
-  #v-prestations .marche-groupe th{height:auto;min-height:48px;padding:12px 18px;white-space:normal;vertical-align:middle;line-height:1.5}
+     deborde sur la voisine. Chaque libelle tient donc sur une ligne, et c'est
+     la largeur de colonne qui absorbe les intitules longs. */
+  #v-prestations .marche-groupe th{height:auto;min-height:48px;padding:12px 18px;white-space:nowrap;vertical-align:middle}
+  #v-prestations .marche-groupe th[data-col="ref"]{width:175px}
+  #v-prestations .marche-groupe th[data-col="commande"]{width:195px}
+  #v-prestations .marche-groupe th[data-col="jours-commandes"]{width:250px}
+  #v-prestations .marche-groupe th[data-col="jours-travailles"]{width:230px}
+  #v-prestations .marche-groupe th[data-col="jours-restant-facturer"]{width:290px}
+  #v-prestations .marche-groupe th[data-col="prestations-facturees"]{width:260px}
+  #v-prestations .marche-groupe th[data-col="frais-factures"]{width:205px}
+  #v-prestations .marche-groupe th[data-col="astreintes-facturees"]{width:250px}
+  #v-prestations .marche-groupe th[data-col="reste-facturer"]{width:240px}
   @media(max-width:620px){.marche-groupe>summary{flex-wrap:wrap;gap:9px;padding:16px}.marche-groupe-chev{margin-left:auto}}
   #v-prestations .f-config,#v-besoins .f-config{flex:0 0 auto;margin-left:auto;position:relative}
   #v-prestations .f-config>summary,#v-besoins .f-config>summary{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:70px;height:42px;padding:0;border:1px solid #d8d6cf;border-radius:10px;background:#fff;color:#161616;font-weight:700;font-size:12.5px;white-space:nowrap;cursor:pointer;list-style:none}
