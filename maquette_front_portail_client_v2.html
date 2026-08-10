@@ -1712,11 +1712,11 @@
   #v-activite-detail .presta-repere{box-shadow:none}
   #v-activite-detail .presta-repere .repere-ic{background:#eaeffb;color:var(--brand)}
   #v-activite-detail .fiche-tabs .tab[aria-selected="true"]{background:#eaeffb}
-  #v-activite-detail .commande-resume{box-shadow:none}
-  #v-activite-detail .commande-client-detail{background:#fbfaf7}
-  #v-activite-detail .commande-client-top>.commande-client-section,#v-activite-detail .commande-client-finance{background:#fff;border-color:#e8e6e0}
-  #v-activite-detail .commande-client-infos div,#v-activite-detail .commande-finance-grid div{background:#fff;border-color:#e8e6e0}
-  #v-activite-detail .commande-progress i{background:#ecebe5}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume{box-shadow:none}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-detail{background:#fbfaf7}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-top>.commande-client-section,:is(#v-activite-detail,#v-forfait-affaire) .commande-client-finance{background:#fff;border-color:#e8e6e0}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-infos div,:is(#v-activite-detail,#v-forfait-affaire) .commande-finance-grid div{background:#fff;border-color:#e8e6e0}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-progress i{background:#ecebe5}
   #v-activite-detail .commande-progress>span{color:#1a7f37}
   /* Transposition de refonte-pilote-prestation-detail_at.html : la fiche AT garde la
      coquille du portail mais reprend ses proportions, ses surfaces et sa hiérarchie. */
@@ -1738,25 +1738,25 @@
   #v-activite-detail .fiche-tabs .tab:hover{background:#f0efea;color:#141414}
   #v-activite-detail .fiche-tabs .tab[aria-selected="true"]{background:#eaeffb;color:var(--brand)}
   #v-activite-detail .prestation-panel>.card{border:1px solid #e8e6e0;border-radius:18px;background:#fff;box-shadow:none}
-  #v-activite-detail .commandes-overview>h2{padding:26px 30px;color:#161616;font-size:18px;letter-spacing:-.02em}
-  #v-activite-detail .commandes-resume-list{gap:16px;padding:0 30px 26px}
-  #v-activite-detail .commande-resume{border-color:#e8e6e0;border-radius:16px;background:#fff}
-  #v-activite-detail .commande-resume>summary{gap:22px;padding:20px 24px}
-  #v-activite-detail .commande-resume small{color:#a3a29c}
-  #v-activite-detail .commande-resume strong{margin-top:4px;color:#141414;font-size:15px}
-  #v-activite-detail .commande-resume .resume-statut{margin-top:4px;padding:0;background:transparent;color:#9a6700;font-size:13.5px}
-  #v-activite-detail .commande-resume .resume-statut.terminee{color:#1a7f37}
-  #v-activite-detail .commande-resume .resume-statut i{width:8px;height:8px;background:#d4a72c}
-  #v-activite-detail .commande-resume .resume-statut.terminee i{background:#1a7f37}
-  #v-activite-detail .commande-toggle{min-height:0;padding:0;border:0;border-radius:0;color:var(--brand);font-size:13px}
-  #v-activite-detail .commande-client-detail{padding:22px 24px;border-top:1px solid #e8e6e0}
-  #v-activite-detail .commande-client-top{gap:16px}
-  #v-activite-detail .commande-client-top>.commande-client-section,#v-activite-detail .commande-client-finance{padding:20px 22px;border-radius:14px}
-  #v-activite-detail .commande-client-section h3{font-size:14px}
-  #v-activite-detail .commande-client-infos div,#v-activite-detail .commande-finance-grid div{padding:12px 14px;border-radius:12px}
-  #v-activite-detail .commande-client-infos b,#v-activite-detail .commande-finance-grid b{font-size:14px}
-  #v-activite-detail .commande-progress .progress-pct{background:transparent;color:#1a7f37;font-size:13px;padding:0}
-  #v-activite-detail .commande-finance-grid{gap:12px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commandes-overview>h2{padding:26px 30px;color:#161616;font-size:18px;letter-spacing:-.02em}
+  :is(#v-activite-detail,#v-forfait-affaire) .commandes-resume-list{gap:16px;padding:0 30px 26px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume{border-color:#e8e6e0;border-radius:16px;background:#fff}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume>summary{gap:22px;padding:20px 24px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume small{color:#a3a29c}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume strong{margin-top:4px;color:#141414;font-size:15px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume .resume-statut{margin-top:4px;padding:0;background:transparent;color:#9a6700;font-size:13.5px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume .resume-statut.terminee{color:#1a7f37}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume .resume-statut i{width:8px;height:8px;background:#d4a72c}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-resume .resume-statut.terminee i{background:#1a7f37}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-toggle{min-height:0;padding:0;border:0;border-radius:0;color:var(--brand);font-size:13px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-detail{padding:22px 24px;border-top:1px solid #e8e6e0}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-top{gap:16px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-top>.commande-client-section,:is(#v-activite-detail,#v-forfait-affaire) .commande-client-finance{padding:20px 22px;border-radius:14px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-section h3{font-size:14px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-infos div,:is(#v-activite-detail,#v-forfait-affaire) .commande-finance-grid div{padding:12px 14px;border-radius:12px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-client-infos b,:is(#v-activite-detail,#v-forfait-affaire) .commande-finance-grid b{font-size:14px}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-progress .progress-pct{background:transparent;color:#1a7f37;font-size:13px;padding:0}
+  :is(#v-activite-detail,#v-forfait-affaire) .commande-finance-grid{gap:12px}
   #v-activite-detail .activites-suivi{padding:26px 30px}
   #v-activite-detail .activites-suivi h3{margin:0 0 20px;color:#161616;font-size:18px;letter-spacing:-.02em}
   #v-activite-detail .activites-suivi th{color:#a3a29c;font-size:11px}
@@ -1767,8 +1767,8 @@
     #v-activite-detail .fiche-header{padding:22px 20px}
     #v-activite-detail .fiche-status .h-vue{font-size:25px}
     #v-activite-detail .presta-reperes{grid-template-columns:1fr}
-    #v-activite-detail .commande-client-top{grid-template-columns:1fr}
-    #v-activite-detail .commande-finance-grid{grid-template-columns:repeat(2,1fr)}
+    :is(#v-activite-detail,#v-forfait-affaire) .commande-client-top{grid-template-columns:1fr}
+    :is(#v-activite-detail,#v-forfait-affaire) .commande-finance-grid{grid-template-columns:repeat(2,1fr)}
   }
   /* ═══ Détail forfait (#v-forfait-detail) · refonte charte crème (transposition detail_projet_forfait.html) ═══ */
   .cont:has(#v-forfait-detail:not([hidden])){max-width:1560px;padding:24px 44px 64px;background:#f6f5f0}
@@ -2722,7 +2722,12 @@
           </div>
         </section>
         <section class="fiche-sourcing-panel" id="fap-detail" role="tabpanel" aria-labelledby="fa-detail">
-          <section class="card forfait-overview-card">
+          <section class="card commandes-overview">
+            <h2><svg class="ic"><use href="#i-doc"/></svg>Commande de la mission (1)</h2>
+            <div class="commandes-resume-list">
+              <details class="commande-resume" open>
+                <summary><div><small>Commande</small><strong>CMD-447982</strong></div><div><small>Période</small><strong>01/08/2026 → 30/11/2026</strong></div><div><small>Montant</small><strong>45 k€</strong></div><div><small>Statut</small><span class="resume-statut"><i></i>En cours</span></div><span class="commande-toggle" aria-hidden="true"></span></summary>
+                <div class="commande-client-detail">
             <div class="forfait-info-columns">
               <section class="forfait-info-section"><h2>Contexte de la mission</h2><div class="forfait-general-grid">
                 <div class="forfait-tile"><span>Client</span><b>EDF DTP</b></div>
@@ -2737,6 +2742,9 @@
               </div></section>
             </div>
             <section class="forfait-info-section finances forfait-finances"><h2>Progression financière</h2><div class="forfait-progress"><span>Forfait non démarré</span><b class="forfait-progress-pct">0 %</b><i style="--progress:0%"></i></div><div class="forfait-finance-grid"><div class="forfait-tile"><span>Montant commandé</span><b>45 k€</b></div><div class="forfait-tile"><span>Montant facturé</span><b>0 €</b></div><div class="forfait-tile"><span>En attente de facturation</span><b>0 €</b></div></div></section>
+                </div>
+              </details>
+            </div>
           </section>
         </section>
         <section class="fiche-sourcing-panel" id="fap-phases" role="tabpanel" aria-labelledby="fa-phases" hidden>
@@ -4565,6 +4573,9 @@
     setT(v.querySelector('.h-vue'),col('affaire'));
     var badge=v.querySelector('.fiche-status .badge');if(badge){badge.textContent=statut||'En cours';badge.className='badge '+(/[Tt]ermin/.test(statut)?'ok':'b-bleu')+' statut-besoin';}
     var rep=v.querySelectorAll('.presta-repere strong');if(rep[0])rep[0].textContent=col('commande');if(rep[1])rep[1].textContent=col('debut');if(rep[2])rep[2].textContent=col('fin');
+    var resume=v.querySelector('.commande-resume>summary');
+    if(resume){var rcells=resume.querySelectorAll('div>strong');setT(rcells[0],'CMD-'+(ligne.dataset.bdc||''));setT(rcells[1],col('debut')+' → '+col('fin'));setT(rcells[2],col('commande'));
+      var rstatut=resume.querySelector('.resume-statut');if(rstatut){rstatut.className='resume-statut'+(/[Tt]ermin/.test(statut)?' terminee':'');rstatut.innerHTML='<i></i>'+(statut||'En cours');}}
     var ctx=v.querySelectorAll('.forfait-general-grid .forfait-tile b');setT(ctx[0],col('entite'));setT(ctx[1],col('op'));setT(ctx[2],col('lieu'));setT(ctx[3],col('marche'));
     /* Tuiles : 0 Référence client (colonne « ref » de la liste), 1 Référence bon de commande, 2 Partenaire. */
     var det=v.querySelectorAll('.forfait-detail-grid .forfait-tile b');setT(det[0],col('ref'));setT(det[1],ligne.dataset.bdc);setT(det[2],col('nom-partenaire'));
