@@ -1266,6 +1266,7 @@
   .marche-groupe-chev{margin-left:auto;width:10px;height:10px;flex:none;border-right:2px solid #354052;border-bottom:2px solid #354052;transform:rotate(45deg) translate(-2px,-2px);transition:transform .18s}
   .marche-groupe[open] .marche-groupe-chev{transform:rotate(225deg) translate(-2px,-2px)}
   #v-prestations .marche-groupe .presta-table{border:0;border-radius:0 0 14px 14px}
+  #v-prestations .marche-groupe .pagination{margin:12px 22px 18px}
   /* Trois tables distinctes se dimensionnent chacune sur son contenu et leurs
      colonnes ne tombent plus en face. En largeur fixe, l'en-tete — identique
      partout — impose le meme gabarit aux trois. La largeur totale est calee sur
@@ -4479,9 +4480,10 @@
       setTimeout(rendre,0);
     }
     installer('#v-besoins .besoin-table',10);
-    /* Mon activite n'est plus pagine : les prestations sont reparties en
-       accordeons par marche, de quelques lignes chacun. Un compteur global
-       par-dessus ne saurait pas quelle table decrire. */
+    /* Mon activite : chaque accordeon de marche pagine sa propre table avec ce
+       meme composant. L'installation se fait apres le regroupement par marche,
+       qui construit ces tables. */
+    window.__installerPagination=installer;
     installer('#table-factures',10);
   });
   function texteCellule(ligne,cle){
@@ -4990,6 +4992,12 @@
         groupes.push(bloc);
       });
       if(groupes.length)cadre.remove();
+      /* Pagination par accordeon, calquee sur le module Factures : 25 lignes
+         par page et compteur « 1–25 sur N ». Le badge du groupe continue
+         d'annoncer le volume total avant ouverture. */
+      if(window.__installerPagination)groupes.forEach(function(bloc){
+        window.__installerPagination('#v-prestations .marche-groupe[data-marche="'+bloc.dataset.marche+'"] table',25);
+      });
     })();
     function majGroupes(){
       /* filtrerPrestations tourne une premiere fois avant le regroupement. */

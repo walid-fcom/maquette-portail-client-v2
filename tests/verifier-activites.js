@@ -148,9 +148,17 @@ const CONTROLES=[
     await page.click('.marche-groupe[data-marche="infra"] tbody tr');
     await page.waitForSelector('#v-forfait-affaire:not([hidden]),#v-activite-detail:not([hidden]),#v-portage-prestation-detail:not([hidden])');
   }},
-  {nom:'la vue ne porte plus de pagination',fn:async page=>{
+  {nom:'chaque accordeon porte sa pagination calquee sur Factures',fn:async page=>{
     await ouvrirActivites(page);
-    egal(await page.$$eval('#v-prestations .pagination',p=>p.length),0,'barres de pagination');
+    /* Le rendu initial de la pagination est differe d'un tour de boucle. */
+    await page.waitForFunction(()=>{
+      const etats=[...document.querySelectorAll('.marche-groupe .pagination-etat')];
+      return etats.length&&etats.every(e=>e.textContent.trim());
+    });
+    egal(await page.$$eval('.marche-groupe .pagination',p=>p.length),MARCHES.length,'barres de pagination');
+    egal(await page.$$eval('.marche-groupe .pagination select',s=>s.every(x=>x.value==='25')),true,'25 lignes par page');
+    const etats=await page.$$eval('.marche-groupe .pagination-etat',e=>e.map(x=>x.textContent.trim()));
+    egal(etats.join(' | '),MARCHES.map(m=>'1–'+m[2]+' sur '+m[2]).join(' | '),'compteurs « 1–25 sur N »');
   }},
   {nom:'les colonnes tombent en face d un groupe a l autre',fn:async page=>{
     await ouvrirActivites(page);
