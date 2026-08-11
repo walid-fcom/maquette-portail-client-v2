@@ -5825,6 +5825,11 @@
     error.textContent='Code d’accès incorrect.';
     input.select();
   });
+  /* En ligne, le code est exigé côté serveur (edge function garde-acces,
+     variable ACCES_CODE) avant même de livrer cette page : l'écran local est
+     court-circuité pour ne pas redemander le code. Il reste fonctionnel pour
+     une ouverture du fichier hors Netlify. */
+  ouvrir();
 })();
 </script>
 </body>

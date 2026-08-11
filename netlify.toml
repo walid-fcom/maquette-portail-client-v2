@@ -1,0 +1,5 @@
+# Uniquement la déclaration des edge functions : les réglages de build
+# (commande, dossier publié) restent pilotés par l'interface Netlify.
+[[edge_functions]]
+  path = "/*"
+  function = "garde-acces"
