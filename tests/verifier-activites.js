@@ -51,13 +51,39 @@ async function groupes(page){
   })));
 }
 
+/* Marches attendus : ordre du filtre Marche, avec le nombre de lignes de
+   contrat de chacun. Une seule table a tenir a jour quand la maquette bouge. */
+const MARCHES=[
+  ['at-si','AT Prestations SI 2024-28',4],
+  ['data-ia','Accord-cadre Data & IA',2],
+  ['infra','Marché Infra & Cloud',2],
+  ['amoe-lot1','EDF_ AMOE/APSM/SD_Lot 1 AMOE',1],
+  ['apsm-lot2','EDF_ AMOE/APSM/SD_Lot 2 APSM',1],
+  ['sd-lot3','EDF_AMOE/APSM/SD_Lot 3 Sites Diffus',2],
+  ['mapsif-lot4','EDF-MAPSIF MOA Finance / Lot 4 Trésorerie',1],
+  ['mapsif-lot5','EDF-MAPSIF MOA Finance Lot 5 : AMOA Activités de Marché',2],
+  ['mapsif-sap-lot1','EDF – MAPSIF – MOA SI Finance – Lot 1 /SAP Finance',2],
+  ['conseil-it','EDF-Marché Conseil IT',2],
+  ['rpa','EDF_ Marché de Prestations de RPA',2],
+  ['dipnn-dmr3','EDF – Marché DIPNN – DMR LOT3',1],
+  ['mad-lot3','EDF – Marché MAD Solutions Lab – LOT 3 – Apps Mobile',2],
+  ['pux-lot1','EDF – Marché PUX – LOT 1 – Démarche Expérience Utilisateur Générale',2],
+  ['archi-lot1',"EDF-Prestations d'architecture-Lot 1-Architecture d'Entreprise et urbanisme",1],
+  ['archi-lot2',"EDF-Prestations d'architecture-Lot 2-Architecture Technique",2],
+  ['epsa-lot6','EDF-Réf EPSA – LOT 6 -Digital PAAS/Ech donnée/IOT',2],
+  ['smash',"EDF_SMASH_Prestations d'intermédiation en expertises informatiques",2],
+  ['mad-lot5','Marché MAD Solutions Lab – LOT 5',1],
+  ['mad-lot6','Marché MAD Solutions Lab – LOT 6',1],
+];
+const NOMS_ATTENDUS=MARCHES.map(m=>m[1]).join(' | ');
+const COMPTES_ATTENDUS=MARCHES.map(m=>m[2]+' prestation'+(m[2]>1?'s':'')).join(' | ');
+
 const CONTROLES=[
   {nom:'les prestations sont regroupees par marche, tout replie',fn:async page=>{
     await ouvrirActivites(page);
     const g=await groupes(page);
-    egal(g.map(x=>x.nom).join(' | '),
-      'AT Prestations SI 2024-28 | Accord-cadre Data & IA | Marché Infra & Cloud','marchés et ordre');
-    egal(g.map(x=>x.compte).join(' | '),'4 prestations | 2 prestations | 2 prestations','décomptes');
+    egal(g.map(x=>x.nom).join(' | '),NOMS_ATTENDUS,'marchés et ordre');
+    egal(g.map(x=>x.compte).join(' | '),COMPTES_ATTENDUS,'décomptes');
     egal(g.every(x=>!x.ouvert),true,'tous repliés à l’ouverture');
   }},
   {nom:'chaque groupe ne contient que les prestations de son marche',fn:async page=>{
@@ -66,11 +92,11 @@ const CONTROLES=[
       const attendus=[].slice.call(b.querySelectorAll('tbody tr')).map(l=>l.dataset.marche);
       return b.dataset.marche+':'+Array.from(new Set(attendus)).join(',');
     }));
-    egal(marches.join(' | '),'at-si:at-si | data-ia:data-ia | infra:infra','appartenance des lignes');
+    egal(marches.join(' | '),MARCHES.map(m=>m[0]+':'+m[0]).join(' | '),'appartenance des lignes');
   }},
   {nom:'la table unique a disparu au profit des groupes',fn:async page=>{
     await ouvrirActivites(page);
-    egal(await page.$$eval('#v-prestations .presta-table',t=>t.length),3,'nombre de tables');
+    egal(await page.$$eval('#v-prestations .presta-table',t=>t.length),MARCHES.length,'nombre de tables');
     egal(await page.$$eval('#v-prestations .presta-table',t=>t.every(x=>!!x.closest('.marche-groupe'))),true,'toutes dans un groupe');
   }},
   {nom:'la colonne Marche est masquee, devenue titre de groupe',fn:async page=>{
@@ -78,7 +104,7 @@ const CONTROLES=[
     egal(await page.$$eval('#v-prestations th[data-col="marche"]',t=>t.every(x=>x.classList.contains('masque'))),true,'colonne Marché masquée');
     egal(await page.$eval('[data-presta-col="marche"]',e=>e.checked),false,'case décochée dans le configurateur');
   }},
-  {nom:'Tout ouvrir et Tout fermer pilotent les trois groupes',fn:async page=>{
+  {nom:'Tout ouvrir et Tout fermer pilotent tous les groupes',fn:async page=>{
     await ouvrirActivites(page);
     await page.click('#prestations-tout-ouvrir');
     egal(await page.$$eval('.marche-groupe',b=>b.every(x=>x.open)),true,'tous ouverts');
@@ -108,13 +134,13 @@ const CONTROLES=[
     await page.fill('#filtre-prestations-search','zzzzz-introuvable');
     egal((await groupes(page)).length,0,'groupes restants');
   }},
-  {nom:'Reinitialiser rend les trois groupes',fn:async page=>{
+  {nom:'Reinitialiser rend tous les groupes',fn:async page=>{
     await ouvrirActivites(page);
     await page.fill('#filtre-prestations-search','zzzzz-introuvable');
     await page.click('#reset-prestations');
     const g=await groupes(page);
-    egal(g.length,3,'groupes restants');
-    egal(g.map(x=>x.compte).join(' | '),'4 prestations | 2 prestations | 2 prestations','décomptes rétablis');
+    egal(g.length,MARCHES.length,'groupes restants');
+    egal(g.map(x=>x.compte).join(' | '),COMPTES_ATTENDUS,'décomptes rétablis');
   }},
   {nom:'une ligne de groupe ouvre toujours le detail de la prestation',fn:async page=>{
     await ouvrirActivites(page);
@@ -132,8 +158,7 @@ const CONTROLES=[
     const gabarits=await page.$$eval('.marche-groupe table',tables=>tables.map(t=>
       [].slice.call(t.querySelectorAll('thead th')).filter(h=>!h.classList.contains('masque'))
         .map(h=>Math.round(h.getBoundingClientRect().width)).join(',')));
-    egal(gabarits[1],gabarits[0],'gabarit du 2e groupe');
-    egal(gabarits[2],gabarits[0],'gabarit du 3e groupe');
+    gabarits.slice(1).forEach((gabarit,i)=>egal(gabarit,gabarits[0],'gabarit du groupe '+(i+2)));
   }},
   {nom:'les statuts portent le badge commun au portail',fn:async page=>{
     await ouvrirActivites(page);
