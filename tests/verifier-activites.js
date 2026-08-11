@@ -148,6 +148,16 @@ const CONTROLES=[
     await page.click('.marche-groupe[data-marche="infra"] tbody tr');
     await page.waitForSelector('#v-forfait-affaire:not([hidden]),#v-activite-detail:not([hidden]),#v-portage-prestation-detail:not([hidden])');
   }},
+  {nom:'les accordeons sont pagines par 10 comme Factures',fn:async page=>{
+    await ouvrirActivites(page);
+    egal(await page.$eval('.pagination-groupes .pagination-etat',e=>e.textContent.trim()),'1–10 sur '+MARCHES.length,'compteur des marchés');
+    egal(await page.$$eval('.marche-groupe:not(.hors-page)',b=>b.length),10,'accordéons de la première page');
+    await page.click('.pagination-groupes button[data-pg="2"]');
+    const noms=await page.$$eval('.marche-groupe:not(.hors-page) .marche-groupe-nom',n=>n.map(x=>x.textContent.trim()));
+    egal(noms.join(' | '),MARCHES.slice(10).map(m=>m[1]).join(' | '),'marchés de la page 2');
+    await page.selectOption('.pagination-groupes select','25');
+    egal(await page.$$eval('.marche-groupe:not(.hors-page)',b=>b.length),MARCHES.length,'tout sur une page en 25');
+  }},
   {nom:'chaque accordeon porte sa pagination calquee sur Factures',fn:async page=>{
     await ouvrirActivites(page);
     /* Le rendu initial de la pagination est differe d'un tour de boucle. */
@@ -162,6 +172,9 @@ const CONTROLES=[
   }},
   {nom:'les colonnes tombent en face d un groupe a l autre',fn:async page=>{
     await ouvrirActivites(page);
+    /* Les accordeons hors page sont en display:none (largeur nulle) : tout
+       ramener sur une page avant de mesurer. */
+    await page.selectOption('.pagination-groupes select','25');
     await page.click('#prestations-tout-ouvrir');
     const gabarits=await page.$$eval('.marche-groupe table',tables=>tables.map(t=>
       [].slice.call(t.querySelectorAll('thead th')).filter(h=>!h.classList.contains('masque'))
@@ -183,6 +196,7 @@ const CONTROLES=[
   }},
   {nom:'aucun libelle d en-tete ne deborde sur la colonne voisine',fn:async page=>{
     await ouvrirActivites(page);
+    await page.selectOption('.pagination-groupes select','25');
     await page.click('#prestations-tout-ouvrir');
     /* En largeur fixe, un libelle trop long deborde silencieusement sur la
        colonne voisine. Le retour a la ligne coupe aux espaces : ce qui doit

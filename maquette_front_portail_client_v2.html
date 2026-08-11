@@ -1267,6 +1267,7 @@
   .marche-groupe[open] .marche-groupe-chev{transform:rotate(225deg) translate(-2px,-2px)}
   #v-prestations .marche-groupe .presta-table{border:0;border-radius:0 0 14px 14px}
   #v-prestations .marche-groupe .pagination{margin:12px 22px 18px}
+  #v-prestations .presta-page>.pagination-groupes{margin-top:24px}
   /* Trois tables distinctes se dimensionnent chacune sur son contenu et leurs
      colonnes ne tombent plus en face. En largeur fixe, l'en-tete — identique
      partout — impose le meme gabarit aux trois. La largeur totale est calee sur
@@ -1380,7 +1381,7 @@
   .pagination-pages button:hover:not(:disabled){background:#f4f6fa}
   .pagination-pages button[aria-current="true"]{border-color:var(--brand);background:var(--brand);color:#fff}
   .pagination-pages button:disabled{opacity:.4;cursor:not-allowed}
-  tr.hors-page{display:none}
+  tr.hors-page,.marche-groupe.hors-page{display:none}
   .presta-colonnes-menu label.colonne-verrouillee{color:var(--t-400);cursor:default}
   .presta-colonnes-menu label.colonne-verrouillee input{cursor:default}
   #v-besoins .besoin-table th{white-space:nowrap}
@@ -5010,7 +5011,65 @@
         bloc.hidden=!visibles;
         if(!visibles)bloc.open=false;
       });
+      /* Les filtres viennent de changer la liste des marchés visibles : la
+         pagination des accordéons se recale (page conservée, bornée). */
+      if(rendrePaginationGroupes)rendrePaginationGroupes();
     }
+    /* Pagination des accordéons eux-mêmes, calquée sur le module Factures :
+       10 marchés par page (sélecteur 5/10/25), compteur « 1–10 sur N ». Les
+       marchés sans prestation retenue par les filtres sortent du décompte. */
+    var rendrePaginationGroupes=null;
+    (function installerPaginationGroupes(){
+      var hote=document.querySelector('#v-prestations .presta-page');
+      if(!hote||!groupes.length)return;
+      var pageGroupes=1,groupesParPage=10;
+      var barre=document.createElement('div');
+      barre.className='pagination pagination-groupes';
+      barre.setAttribute('role','navigation');
+      barre.setAttribute('aria-label','Pagination des marchés');
+      barre.innerHTML='<label class="pagination-taille">Marchés par page '
+        +'<select>'+[5,10,25].map(function(n){
+          return '<option value="'+n+'"'+(n===groupesParPage?' selected':'')+'>'+n+'</option>';}).join('')
+        +'</select></label>'
+        +'<span class="pagination-etat" aria-live="polite"></span>'
+        +'<div class="pagination-pages"></div>';
+      hote.appendChild(barre);
+      var etat=barre.querySelector('.pagination-etat'),
+          pages=barre.querySelector('.pagination-pages'),
+          taille=barre.querySelector('select');
+      function rendre(){
+        var visibles=groupes.filter(function(b){return !b.hidden;}),total=visibles.length,
+            nb=Math.max(1,Math.ceil(total/groupesParPage));
+        if(pageGroupes>nb)pageGroupes=nb;
+        var debut=(pageGroupes-1)*groupesParPage;
+        groupes.forEach(function(b){b.classList.remove('hors-page');});
+        visibles.forEach(function(b,i){
+          if(i<debut||i>=debut+groupesParPage)b.classList.add('hors-page');});
+        etat.textContent=total
+          ? (debut+1)+'–'+Math.min(debut+groupesParPage,total)+' sur '+total
+          : 'Aucun marché';
+        var boutons='<button type="button" data-pg="prec" aria-label="Page précédente"'
+          +(pageGroupes===1?' disabled':'')+'>‹</button>';
+        for(var n=1;n<=nb;n++){
+          boutons+='<button type="button" data-pg="'+n+'"'
+            +(n===pageGroupes?' aria-current="true"':'')
+            +' aria-label="Page '+n+'">'+n+'</button>';
+        }
+        boutons+='<button type="button" data-pg="suiv" aria-label="Page suivante"'
+          +(pageGroupes===nb?' disabled':'')+'>›</button>';
+        pages.innerHTML=boutons;
+        barre.hidden=!total;
+      }
+      pages.addEventListener('click',function(e){
+        var b=e.target.closest('button[data-pg]');if(!b||b.disabled)return;
+        var v=b.dataset.pg;
+        pageGroupes=v==='prec'?pageGroupes-1:(v==='suiv'?pageGroupes+1:Number(v));
+        rendre();
+      });
+      taille.addEventListener('change',function(){groupesParPage=Number(taille.value)||10;pageGroupes=1;rendre();});
+      rendrePaginationGroupes=rendre;
+      rendre();
+    })();
     function replierTout(ouvert){groupes.forEach(function(bloc){if(!bloc.hidden)bloc.open=ouvert;});}
     var toutOuvrir=document.getElementById('prestations-tout-ouvrir'),
         toutFermer=document.getElementById('prestations-tout-fermer');
